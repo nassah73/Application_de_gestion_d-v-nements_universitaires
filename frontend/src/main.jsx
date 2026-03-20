@@ -5,6 +5,6 @@ const root=createRoot(document.getElementById('root'))
 root.render(
     <>
    <Login/>
-   <h1>heloo</h1>
+   
    </>
 )

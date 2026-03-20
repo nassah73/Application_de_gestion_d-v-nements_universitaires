@@ -2,17 +2,78 @@
     margin: 0;
     padding: 0;
 }
+body{
+    background-image:linear-gradient(rgba(0, 0 ,0, 0.5),rgba(0, 0 ,0, 0.5) ),url('./signin&signup/bg.jpg');
+    height: 101vh;
+    background-position: center;
+    background-attachment: fixed;
+    object-fit: cover;
+    position: relative;
+}
 .container{
     width: 800px;
-    height: 700px;
-    background-color: aqua;
+    height: 500px;
+    position: absolute;
+    top: 20%;
     justify-self: center;
+    border-radius: 10px;
+    box-shadow: 2px 2px 7px;
+    display: flex;
     
+    background-color: transparent;
 }
 .bg-login{
-        background-image: url('./signin&signup/bg.jpg');
+        position: relative;
         width: 50%;
         height: 100%;
-        object-fit: cover;
-        background-position: center;
+       box-shadow: 2px 2px 8px black;
+       border-radius: 0px 20px 20px 0px;
+       .bt-signup{
+        position: absolute;
+        bottom: 10px;
+        width: 70%;
+        left: 30px;
+        height: 30px;
+        border-radius: 10px;
+        cursor: pointer;
+       }
+ }
+ .signin{
+  
+  width: 50%;
+   position: relative;
+    form{
+        width: 80%;
+       
+         position: absolute;
+      justify-self: center;
+      top: 30%;
+      
+       
+       
+       label{
+        display: block;
+        margin-top: 10px;
+        text-transform: capitalize;
+       }
+       input{
+        width: 80%;
+        height: 23px;
+        border-radius: 5px;
+       }
+       h1{
+        text-align: center;
+        color: rgb(205, 115, 41);
+        text-transform: capitalize;
+        font-weight: 700;
+       }
+       .signin{
+            margin-top: 20px;
+            width: 80%;
+            height: 25px;
+            font-weight: 600;
+            border-radius: 10px;
+             background-color: rgb(205, 115, 41);
+       }
+    }
  }
