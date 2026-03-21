@@ -1,10 +1,12 @@
-export default function login(){
+import { useState } from "react"
+export default function Login(){
+    const [issignup,setsignup]=useState(false)
     return(
         <div className="container">
-           <div className="bg-login">
-              <button className="bt-signup">sign up</button>
+           <div className={`bg-login ${issignup?"slide":"inslide"}`}>
+              <button className="bt-signup" onClick={()=>{setsignup(!issignup)}}>{`sign ${issignup?"in":"up"}`}</button>
            </div>
-           <div className="signin">
+           <div className={`signin ${issignup?"invesible":"vesible"}`}>
             
               <form action="">
                  <h1>sign in</h1>
