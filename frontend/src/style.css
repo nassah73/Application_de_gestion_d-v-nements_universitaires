@@ -11,15 +11,15 @@ body{
     position: relative;
 }
 .container{
-    width: 800px;
+    width: 700px;
     height: 500px;
-    position: absolute;
+    position: relative;
     top: 20%;
     justify-self: center;
     border-radius: 10px;
     box-shadow: 2px 2px 7px;
     display: flex;
-    
+   
     background-color: transparent;
 }
 .bg-login{
@@ -29,6 +29,7 @@ body{
        box-shadow: 2px 2px 8px black;
        border-radius: 0px 20px 20px 0px;
        background-color: rgb(205, 115, 41);
+       position: absolute;
        .bt-signup{
         position: absolute;
         bottom: 10px;
@@ -100,4 +101,17 @@ body{
 .vesible{
     opacity: 1;
      transition: all 0.8s ease-in-out;
+}
+.signup{
+    width: 50%;
+    form{
+        
+        justify-self: center;
+        width: 90%;
+    }
+    input{
+        display: block;
+        width: 90%;
+
+    }
 }
