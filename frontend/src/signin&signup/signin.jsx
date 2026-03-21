@@ -9,6 +9,25 @@ export default function Login(){
           <input type="email" placeholder="email"  name="email"/>
           <input type="password" placeholder="password" name="email" />
           <input type="password" placeholder="conferm password" name="conferm_password" />
+           <div className="Radio">
+ <div className="Radio">
+       <label>
+         <input type="radio" name="role" value="student" />
+          student
+       </label>
+
+       <label>
+         <input type="radio" name="role" value="teacher" />
+           teacher
+       </label>
+        <label>
+         <input type="radio" name="role" value="admin" />
+         admine
+       </label>
+       
+       
+</div>
+           </div>
           <button>sign up</button>
         </form>
       </div>
