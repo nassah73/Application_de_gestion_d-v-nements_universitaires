@@ -1,3 +1,4 @@
+import Icon_image from "./zzzzz-removebg-preview.png"
 import { useState } from "react"
 export default function Login(){
     const [issignup,setsignup]=useState(false)
@@ -32,7 +33,7 @@ export default function Login(){
         </form>
       </div>
            <div className={`bg-login ${issignup?"slide":"inslide"}`}>
-             
+              <nav><img src={Icon_image} alt="event icons"  width={"200px"}/></nav>
               <button className="bt-signup" onClick={()=>{setsignup(!issignup)}}>{`sign ${issignup?"in":"up"}`}</button>
            </div>
            <div className={`signin ${issignup?"invesible":"vesible"}`}>
