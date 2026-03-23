@@ -5,12 +5,14 @@
 body{
     background-image:linear-gradient(rgba(0, 0 ,0, 0.5),rgba(0, 0 ,0, 0.5) ),url('./signin&signup/bg.jpg');
     height: 101vh;
-    background-position: center;
+    background-position: bottom;
     background-attachment: fixed;
     object-fit: cover;
     position: relative;
+   
 }
 .container{
+
     width: 700px;
     height: 500px;
     position: relative;
@@ -19,7 +21,8 @@ body{
     border-radius: 10px;
     box-shadow: 2px 2px 7px;
     display: flex;
-   
+    position: absolute;
+    top: 10%;
     background-color: transparent;
 }
 .bg-login{
@@ -150,4 +153,7 @@ body{
         gap: 10px;
          margin-top: 10px;
 
+  }
+  span{
+    color: white;
   }

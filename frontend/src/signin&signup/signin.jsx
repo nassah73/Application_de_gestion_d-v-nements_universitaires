@@ -13,16 +13,16 @@ export default function Login(){
  <div className="Radio">
        <label>
          <input type="radio" name="role" value="student" />
-          student
+          <span> student</span>
        </label>
 
        <label>
          <input type="radio" name="role" value="teacher" />
-           teacher
+           <span> teacher </span>
        </label>
         <label>
          <input type="radio" name="role" value="admin" />
-         admine
+         <span>admine</span> 
        </label>
        
        
