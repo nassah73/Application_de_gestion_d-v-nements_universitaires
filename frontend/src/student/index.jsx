@@ -1,7 +1,7 @@
-import './style.css'
+import style from './Home.module.css'
 export default function Main(){
     return(
-        <div className="container">
+        <div className={style.container}>
             
         </div>
     )

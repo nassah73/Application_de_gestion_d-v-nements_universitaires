@@ -2,8 +2,8 @@
     margin: 0;
     padding: 0;
 }
-body{
-    background-image:linear-gradient(rgba(0, 0 ,0, 0.5),rgba(0, 0 ,0, 0.5) ),url('./signin&signup/bg.jpg');
+.content{
+    background-image:linear-gradient(rgba(0, 0 ,0, 0.5),rgba(0, 0 ,0, 0.5) ),url('./bg.jpg');
     height: 101vh;
     background-position: bottom;
     background-attachment: fixed;
