@@ -4,7 +4,7 @@ import Bg_img from '../signin&signup/zzzzz-removebg-preview.png'
 export default function Main(){
     return(
         <div className={style.container}>
-            <div>
+            
                 <nav className={style.interface_bar}>
                     <nav className={style.logo}>
                         <img src={Bg_img} alt="dashbord logo"  width={'100px'}/>
@@ -20,7 +20,7 @@ export default function Main(){
                             <li> <FaBell size={20}/><span> Notification </span></li>
                          </ul>
                     <nav className={style.profile}>
-                        <hr  />
+                        <hr   />
                         <section className={style.contentPro}>
                         
                          <img src={Bg_img} alt="" width={'40px'} className={style.proImg} />
@@ -33,7 +33,12 @@ export default function Main(){
                      </nav>      
                    </nav>
                 </nav>
-            </div>
+                <nav className={style.content_space}>
+                       <h1>
+                        hello
+                       </h1>
+                </nav>
+        
         </div>
     )
 }

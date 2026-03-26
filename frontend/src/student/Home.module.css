@@ -11,11 +11,12 @@
     background-attachment: fixed;
     object-fit: cover;
     position: relative;
+    display: flex;
    
 }
 .interface_bar{
       background-image:linear-gradient(rgba(0, 0 ,0, 0.5),rgba(0, 0 ,0, 0.5) );
-      width: 300px;
+      width: 20%;
       height: 101vh;
       position: relative;
 }
@@ -54,19 +55,17 @@
       
         
     }
-   li:hover{
-        color: gold;
-      }
-      li span:hover{
-        color: gold;
+  
+      li:hover{
+     
         cursor: pointer;
+        background-color: rgb(204, 204, 204);
       }
 }
 .profile{
     position: absolute;
     bottom: 10px;
-    
-    
+    width: 100%;
     .proImg{
         border-radius: 100%;
         background-color: aqua;
@@ -75,5 +74,20 @@
     }
     .contentPro{
       display: flex;
+      
+      .infoPro{
+        margin-left: 20px;
+               h1{
+        font-size: 20px;
+        
+      }
+      }
+      
     }
+}
+
+.content_space{
+   
+     width: 62%;
+    height: 101vh;
 }
