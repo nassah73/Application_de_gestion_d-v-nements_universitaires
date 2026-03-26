@@ -1,4 +1,5 @@
 import style from './Home.module.css'
+import { FaHome, FaCalendarAlt, FaUser, FaBell } from 'react-icons/fa';
 import Bg_img from '../signin&signup/zzzzz-removebg-preview.png'
 export default function Main(){
     return(
@@ -13,18 +14,22 @@ export default function Main(){
                    <hr />
                    <nav className={style.list_items}>
                          <ul >
-                            <li>Home</li>
-                            <li>My Events</li>
-                            <li>Profile</li>
-                            <li>Notification</li>
+                            <li> <FaHome size={20}/><span> Home </span> </li>
+                            <li><FaCalendarAlt size={20}/> <span> My Events </span></li>
+                            <li><FaUser size={20}/> <span> Profile</span></li>
+                            <li> <FaBell size={20}/><span> Notification </span></li>
                          </ul>
                     <nav className={style.profile}>
-                        <hr />
-                         <img src={Bg_img} alt="" width={'20px'} className={style.proImg} />
+                        <hr  />
+                        <section className={style.contentPro}>
+                        
+                         <img src={Bg_img} alt="" width={'40px'} className={style.proImg} />
+                       
                          <div className={style.infoPro}>
                             <h1>Name prename</h1>
                             <p>student ID :111111</p>
                          </div>
+                          </section>
                      </nav>      
                    </nav>
                 </nav>
