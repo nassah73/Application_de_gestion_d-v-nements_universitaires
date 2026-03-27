@@ -12,6 +12,8 @@
     object-fit: cover;
     position: relative;
     display: flex;
+    background-repeat: no-repeat;
+   
    
 }
 .interface_bar{
@@ -22,12 +24,19 @@
 }
 .logo{
      display: flex;
+     height: 100px;
+   
      p{
         align-self: center;
         margin-left: 20px;
         font-size: 23px;
         color: white;
         font-weight: 600;
+     }
+     img{
+        background-color: rgb(144, 142, 142);
+        object-fit: cover;
+      
      }
 }
 .list_items{
