@@ -1,0 +1,2 @@
+ const obj={ prename :"hassan" ,name:'sobai', Id:"11111"}
+export default obj
