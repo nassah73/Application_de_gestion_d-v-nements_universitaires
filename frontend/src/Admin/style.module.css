@@ -7,7 +7,7 @@
     position: relative;
     display: flex;
     background-repeat: no-repeat;
-   
+   display: flex;
    
 }
 .navBar{
@@ -77,4 +77,17 @@
 position: absolute;
     bottom: 10px;
     width: 100%;
+}
+.main{
+  
+  width: 80%;
+  height: 101vh;
+  .Allcontent{
+     margin-left: 30px;
+     margin-top: 20px;
+     color: white;
+     p{
+        color: rgb(186, 187, 189);
+     }
+  }
 }

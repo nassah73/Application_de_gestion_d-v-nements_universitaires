@@ -10,7 +10,7 @@ import {
 } from 'react-icons/fa6';
 export default function(){
     return(
-        
+        <>
         <div className={style.container}>
              <nav className={style.navBar}>
                   <section className={style.logo}>
@@ -37,8 +37,16 @@ export default function(){
                     </div>
                   </section>
              </nav>
+             <div className={style.main}>
+                <nav className={style.Allcontent}>
+                    <h1>Global Statistics</h1>
+                    <p>Overview of your university events platform</p>
+                      
+                </nav>
+              </div>
         </div>
         
+        </>
     )
 }
 function Info(props){
