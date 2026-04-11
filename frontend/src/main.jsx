@@ -1,7 +1,7 @@
 import {createRoot}from 'react-dom/client'
-import Login from './signin&signup/signin'
-import Admin from './Admin/indix'
-import Home from './student/index'
+import Login from './pages/signin&signup/signin'
+import Admin from './pages/Admin/indix'
+import Home from './pages/student/index'
 
 const root=createRoot(document.getElementById('root'))
 root.render(

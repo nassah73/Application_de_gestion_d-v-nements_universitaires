@@ -1,5 +1,5 @@
 import style from './Home.module.css'
-import Bg_img from '../signin&signup/Masters_et_Masters_Spécialisés_à_la_FP_Taroudant_2020-2021-removebg-preview.png';
+import Bg_img from '../../assets/Masters_et_Masters_Spécialisés_à_la_FP_Taroudant_2020-2021-removebg-preview.png';
 import { FaHome, FaCalendarAlt, FaUser, FaBell } from 'react-icons/fa';
 
 export default function Main(){
