@@ -1,4 +1,4 @@
-import Icon_image from "./Masters_et_Masters_Spécialisés_à_la_FP_Taroudant_2020-2021-removebg-preview.png";
+import Icon_image from "../../assets/Masters_et_Masters_Spécialisés_à_la_FP_Taroudant_2020-2021-removebg-preview.png";
 import style from './style.module.css';
 import { useState } from "react";
 
