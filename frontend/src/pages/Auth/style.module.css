@@ -1,0 +1,298 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+.content {
+    background-image: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(15, 23, 42, 0.85) 100%), url('../../assets/bg.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.container {
+    width: 1000px;
+    height: 600px;
+    display: flex;
+    background: rgba(255, 255, 255, 0.05);
+    /* Glassmorphism effect */
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    box-shadow: 0 40px 60px -15px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.bgLogin {
+    width: 45%;
+    background: linear-gradient(145deg, rgba(205, 115, 41, 0.95), rgba(168, 85, 20, 0.9));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 50px;
+    position: relative;
+    z-index: 10;
+    box-shadow: 15px 0 40px rgba(0, 0, 0, 0.25);
+    transition: transform 0.6s ease;
+}
+
+.bgLogin img {
+    max-width: 220px;
+    margin-bottom: 25px;
+    filter: drop-shadow(0px 15px 15px rgba(0, 0, 0, 0.4));
+    transition: transform 0.5s ease;
+}
+
+.bgLogin img:hover {
+    transform: translateY(-5px) scale(1.05);
+}
+
+.bgLogin h2 {
+    color: white;
+    font-weight: 800;
+    font-size: 2rem;
+    text-align: center;
+    line-height: 1.25;
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    letter-spacing: -0.5px;
+}
+
+.bgLogin p {
+    color: rgba(255, 255, 255, 0.85);
+    margin-top: 20px;
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.formSection {
+    width: 55%;
+    padding: 60px 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    background: transparent;
+    position: relative;
+}
+
+.formSection h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin-bottom: 10px;
+    letter-spacing: -1px;
+}
+
+.subtitle {
+    color: #94a3b8;
+    font-size: 1rem;
+    margin-bottom: 40px;
+    font-weight: 400;
+}
+
+.inputRow {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.inputGroup {
+    position: relative;
+    margin-bottom: 25px;
+    width: 100%;
+}
+
+.inputGroup label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #e2e8f0;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.inputWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.inputIcon {
+    position: absolute;
+    left: 16px;
+    color: #94a3b8;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.inputGroup input,
+.inputGroup select {
+    width: 100%;
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 14px;
+    padding: 16px 16px 16px 50px;
+    color: #ffffff;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.inputGroup select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    background-size: 18px;
+    padding-right: 40px;
+    cursor: pointer;
+}
+
+.inputGroup select:focus,
+.inputGroup select:hover {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgb(205, 115, 41)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+}
+
+.inputGroup select option {
+    background-color: #0f172a;
+    color: #ffffff;
+    font-size: 0.95rem;
+}
+
+/* Fix for File inputs */
+.inputGroup input[type="file"] {
+    padding: 14px 16px 14px 50px;
+}
+
+.inputGroup input[type="file"]::file-selector-button {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 8px;
+    margin-right: 15px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.inputGroup input[type="file"]::file-selector-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.inputGroup input::placeholder {
+    color: #475569;
+    font-weight: 400;
+}
+
+.inputGroup input:focus,
+.inputGroup input:hover,
+.inputGroup select:focus,
+.inputGroup select:hover {
+    outline: none;
+    background: rgba(15, 23, 42, 0.7);
+    border-color: rgb(205, 115, 41);
+    box-shadow: 0 0 0 4px rgba(205, 115, 41, 0.15);
+}
+
+/* Icon color changes when input is focused */
+.inputGroup input:focus~.inputIcon,
+.inputGroup select:focus~.inputIcon {
+    color: rgb(205, 115, 41);
+    transform: scale(1.1);
+}
+
+.submitBtn {
+    width: 100%;
+    background: linear-gradient(135deg, rgb(205, 115, 41), rgb(235, 130, 50));
+    color: white;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 16px;
+    border: none;
+    border-radius: 14px;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 25px -5px rgba(205, 115, 41, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+}
+
+.submitBtn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 35px -5px rgba(205, 115, 41, 0.7);
+}
+
+.submitBtn:active {
+    transform: translateY(1px);
+    box-shadow: 0 5px 15px -5px rgba(205, 115, 41, 0.6);
+}
+
+.formFooter {
+    margin-top: 35px;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.formFooter a {
+    color: rgb(235, 130, 50);
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    margin-left: 5px;
+}
+
+.formFooter a:hover {
+    color: #ffffff;
+    text-shadow: 0 0 10px rgba(235, 130, 50, 0.5);
+}
+
+.infoText {
+    font-size: 0.8rem;
+    color: #ef4444;
+    /* red-500 equivalent */
+    margin-top: -15px;
+    margin-bottom: 20px;
+    padding-left: 5px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.97);
+        filter: blur(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}

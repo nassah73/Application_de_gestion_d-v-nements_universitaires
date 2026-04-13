@@ -8,7 +8,7 @@ import {
   FaUserCheck, 
   FaFileShield 
 } from 'react-icons/fa6';
-export default function(){
+export default function Admin(){
     return(
         <>
         <div className={style.container}>
