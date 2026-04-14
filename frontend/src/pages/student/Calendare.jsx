@@ -1,4 +1,5 @@
 import Navbar from "../../assets/NavBar"
+import { CalendarCheckIcon } from "lucide-react";
 import { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -17,8 +18,10 @@ export default function Main(){
                <h1 className="mt-2 ml-10 text-3xl">Student Schedule</h1>
                <p className="ml-10 text-2xl">Manage your time and track registered events</p>
                </div>
-               <div className=" bg-blue-300 h-1/2 w-40 mr-20 mt-5 rounded-[5px]">
-                   <div></div>
+               <div className="   flex items-center bg-blue-300 h-1/2 w-40 mr-20 mt-5 rounded-[5px]">
+                   <div className=" ">
+                    <p className="text-black ml-2  flex gap-2 "><CalendarCheckIcon className="mt-1"/>10 Events</p>
+                   </div>
                </div>
             </nav>
               <div>
