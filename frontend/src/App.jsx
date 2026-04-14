@@ -5,23 +5,23 @@ import RegisterOrganisateur from './pages/Auth/registerOrganisateur';
 import Admin from './pages/Admin/indix';
 import Student from './pages/student/inde';
 import Responsable from './pages/responsable/index';
+import OrganizerDashboard from './pages/organisateur/OrganizerDashboard';
 
 function App() {
   return (
     <Routes>
+      {/* Redirect root to organizer dashboard for now to see the interface */}
+      <Route path="/" element={<OrganizerDashboard />} />
       
-      <Route path="/" element={<Navigate to="/login" />} />
-      
-      
+      {/* Other Routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/register-student" element={<RegisterStudent />} />
       <Route path="/register-organisateur" element={<RegisterOrganisateur />} />
       
-      
-      <Route path="/admin" element={<Admin />} />
-      <Route path="/student" element={<Student />} />
-      <Route path="/responsable" element={<Responsable />} />
+      {/* Dashboard and other routes can be protected later */}
+      <Route path="/organisateur" element={<OrganizerDashboard />} />
     </Routes>
   );
 }
-export default App;
+
+export default App;
