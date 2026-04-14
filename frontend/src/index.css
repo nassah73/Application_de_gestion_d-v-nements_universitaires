@@ -1,1 +1,42 @@
 @import "tailwindcss";
+
+/* في Tailwind v4، كنستعملو هاد الطريقة باش نعدلو على الـ Classes ديال المكتبات */
+
+@layer components {
+  /* الـ Container اللي جامع التقويم */
+  .custom-calendar {
+    @apply !bg-transparent !border-none !w-full text-white relative top-2 left-5;
+  }
+
+  /* تخصيص شكل التقويم من الداخل */
+  .react-calendar {
+    @apply !bg-[#0f172a] !rounded-2xl !border-slate-800 !p-4 !font-sans;
+  }
+
+  /* تلوين أزرار التنقل (الشهر الفايت والماجي) */
+  .react-calendar__navigation button {
+    @apply !text-white hover:!bg-slate-800 !rounded-lg !text-lg;
+  }
+
+  /* أيام الأسبوع (S M T W...) */
+  .react-calendar__month-view__weekdays {
+    @apply !text-slate-500 !font-bold !no-underline;
+  }
+
+  /* شكل مربعات الأيام */
+  .react-calendar__tile {
+    @apply !text-slate-300 hover:!bg-slate-800 !rounded-xl !transition-all h-[100px];
+  }
+
+  /* اليوم اللي مبروك عليه (Selected) */
+  .react-calendar__tile--active {
+    @apply !bg-blue-600 !text-white !shadow-lg !shadow-blue-500/20;
+  }
+
+  /* يوم اليوم (Today) */
+  .react-calendar__tile--now {
+    @apply !bg-slate-700 !text-blue-400;
+   
+  }
+}
+
