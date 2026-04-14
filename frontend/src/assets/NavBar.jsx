@@ -2,7 +2,7 @@ import { Search, Calendar, MapPin, Filter } from 'lucide-react';
 import { Bell, UserCircle } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 export default function Navbar(){
-      const items=[{name:'events',path:'/Event'},{name:'calendar',path:'/Calendare'},{name:'My teckets',path:'/My_tecket'},{name:'Announcements',path:'/Annencement'},{name:'My event',path:'/My_event'},{name:'analytics',path:'/Analityc'}]
+      const items=[{name:'events',path:'/Event'},{name:'calendar',path:'/Calendare'},{name:'My Events',path:'/My_event'},{name:'Announcements',path:'/Annencement'},{name:'analytics',path:'/Analityc'}]
     return(
 <nav className=' main bg-white h-15 flex justify-between relative top-5 capitalize font-[600] '>
                 <h1 className='font-[800] uppercase relative left-20 '><span className=' text-[#164167]'>fpt</span><span>event</span></h1>

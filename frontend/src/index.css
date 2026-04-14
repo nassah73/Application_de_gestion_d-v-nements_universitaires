@@ -5,12 +5,12 @@
 @layer components {
   /* الـ Container اللي جامع التقويم */
   .custom-calendar {
-    @apply !bg-transparent !border-none !w-full text-white relative top-2 left-5;
+    @apply !bg-transparent !border-none !w-140 text-white relative top-2 left-5;
   }
 
   /* تخصيص شكل التقويم من الداخل */
   .react-calendar {
-    @apply !bg-[#0f172a] !rounded-2xl !border-slate-800 !p-4 !font-sans;
+    @apply !bg-[#0f172a] !rounded-2xl  !border-slate-800 !p-4 !font-sans;
   }
 
   /* تلوين أزرار التنقل (الشهر الفايت والماجي) */
@@ -25,7 +25,7 @@
 
   /* شكل مربعات الأيام */
   .react-calendar__tile {
-    @apply !text-slate-300 hover:!bg-slate-800 !rounded-xl !transition-all h-[100px];
+    @apply !text-slate-300 hover:!bg-slate-800 !rounded-xl !transition-all !h-[100px] ;
   }
 
   /* اليوم اللي مبروك عليه (Selected) */
