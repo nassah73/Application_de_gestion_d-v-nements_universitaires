@@ -6,13 +6,14 @@ import Admin from './pages/Admin/indix';
 import Student from './pages/student/inde';
 import Responsable from './pages/responsable/index';
 import OrganizerDashboard from './pages/organisateur/OrganizerDashboard';
+import Appk from './pages/student/App'
 
 function App() {
   return (
     <Routes>
       {/* Redirect root to organizer dashboard for now to see the interface */}
       <Route path="/" element={<OrganizerDashboard />} />
-      
+      <Route path='/app/*' element={<Appk/>}/>
       {/* Other Routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/register-student" element={<RegisterStudent />} />
@@ -24,4 +25,4 @@ function App() {
   );
 }
 
-export default App;
+export default App;
