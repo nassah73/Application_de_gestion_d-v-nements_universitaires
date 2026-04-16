@@ -3,7 +3,7 @@ import { Search, Calendar, MapPin, Filter } from 'lucide-react';
 import { Bell, UserCircle } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useEffect ,useRef} from 'react';
-
+import Profile from'./bg.jpg'
 
 
 export default function Navbar(){
@@ -59,7 +59,12 @@ useEffect(() => {
                      <Bell  size={24} strokeWidth={1.5}/>
                      <div className=' leading-5'>
                      <button className=' hover:cursor-pointer' onClick={pr} ref={profileRef}><UserCircle size={24} strokeWidth={1.5}/></button>
-                       {profil && ( <div  className='absolute z-30 justify-self-center h-100 w-80 bg-amber-500 '></div>     )}
+                       {profil && ( <div  className='absolute z-30 justify-self-center h-100 w-80 bg-amber-500  rounded-2xl'>
+                                     <div className='flex justify-center'>
+                                      <img src={Profile} alt="" className='rounded-[50%] h-40 w-40 object-cover object-bottom' />
+                                     </div>
+
+                                   </div>     )}
                       </div>
                       <button className='bg-blue-500  rounded-xl h-10 relative   w-40 capitalize'>create event</button>
                     
