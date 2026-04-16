@@ -58,12 +58,21 @@ useEffect(() => {
                 <div className=' flex gap-15 relative right-20 items-center'>
                      <Bell  size={24} strokeWidth={1.5}/>
                      <div className=' leading-5'>
-                     <button className=' hover:cursor-pointer' onClick={pr} ref={profileRef}><UserCircle size={24} strokeWidth={1.5}/></button>
-                       {profil && ( <div  className='absolute z-30 justify-self-center h-100 w-80 bg-amber-500  rounded-2xl'>
-                                     <div className='flex justify-center'>
-                                      <img src={Profile} alt="" className='rounded-[50%] h-40 w-40 object-cover object-bottom' />
+                     <button className= {`hover:cursor-pointer ${profil ? 'bg-blue-200 rounded-t-[10px] block ' : ''}` } onClick={pr} ref={profileRef}><UserCircle size={24} strokeWidth={1.5}/></button>
+                       {profil && ( <div  className='absolute z-30 justify-self-center h-100 w-80 bg-blue-200 mt-  rounded-2xl'>
+                                     <div >
+                                       <nav className='flex justify-center'>
+                                      <img src={Profile} alt="" className='rounded-[50%] h-30 w-30 object-cover object-bottom  mt-2'  />
+                                      </nav>
+                                      <nav className='text-center mt-2'>
+                                        <h1>full Name:ahmed karim</h1>
+                                        <p>CNE:D123456789</p>
+                                      </nav>
                                      </div>
-
+                                     <hr className='mt-2'/>
+                                          <div className='mt-2'>
+                                            
+                                          </div>
                                    </div>     )}
                       </div>
                       <button className='bg-blue-500  rounded-xl h-10 relative   w-40 capitalize'>create event</button>
