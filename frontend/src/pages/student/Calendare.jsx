@@ -55,7 +55,7 @@ export default function Main() {
     return (
         <>
             <Navbar />
-            <div className="bg-[#28374e] min-h-screen w-screen relative pb-10">
+            <div className="bg-[#28374e] mt-4 min-h-screen w-screen relative pb-10">
                 {/* الجزء العلوي (Header) */}
                 <nav className="flex justify-between bg-[#0f172a] h-24 text-white items-center px-10 shadow-xl">
                     <div>
