@@ -4,7 +4,14 @@ import { Bell, UserCircle } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useEffect ,useRef} from 'react';
 import Profile from'./bg.jpg'
-
+import { 
+  Mail, 
+  Phone, 
+  UserSquare, 
+  GraduationCap, 
+  PencilLine, 
+  LogOut 
+} from 'lucide-react';
 
 export default function Navbar(){
   const profileRef = useRef(null);
@@ -70,8 +77,18 @@ useEffect(() => {
                                       </nav>
                                      </div>
                                      <hr className='mt-2'/>
-                                          <div className='mt-2'>
-                                            
+                                          <div className='mt-4'>
+                                            <p className='flex gap-2'><Mail size={20}/> hassanhassan@gmail.com</p>
+                                            <p className='flex gap-2 mt-1'><Phone size={20}/> +212 72563158</p>
+                                            <hr className='mt-2' />
+                                             <p className='flex gap-2 mt-2'><UserSquare size={20}/> felier:smi</p>
+                                             <p className='flex gap-2 mt-1'><GraduationCap size={20}/>Nevaux:2eme annes</p>
+                                             <p className='flex gap-2 mt-1'><Calendar size={20}/> 2023-2024</p>
+                                             <hr className='mt-2' />
+                                             <div className='mt-2  h-10 flex'>
+                                              <button className='border-r-1 border-gray-600 w-[50%] h-[100%] flex gap-1'><PencilLine size={20} className='self-center'/> <p className='self-center'>modifier le profile</p> </button>
+                                              <button className='w-[50%] h-[100%] flex gap-1 pl-4'><LogOut className='self-center'/> <p className='self-center'>logout</p> </button>
+                                             </div>
                                           </div>
                                    </div>     )}
                       </div>
