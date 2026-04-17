@@ -6,7 +6,7 @@ export default function Main(){
     return(
         <>
         <Navbar/>
-         <section className='min-h-screen w-screen bg-bottom relative flex  bg-[#0f172a]' > 
+         <section className=' mt-4 min-h-screen w-screen bg-bottom relative flex  bg-[#0f172a]' > 
             <div className="absolute inset-0 bg-black/60" ></div>
             <nav className=" w-[1300px]  mx-auto text-white relative mt-5">
                 <h1 className="font-[600] uppercase text-4xl italic">disopver events</h1>
