@@ -1,19 +1,27 @@
-// App.js
-import { Routes, Route } from 'react-router-dom';
-import Appk from './pages/student/App'
-import Login from './pages/Auth/Login'
-import RegisterOrganisateur from './pages/Auth/registerOrganisateur';
-import RegisterStudent from './pages/Auth/RegisterStudent'
-export default function App() {
-  return (
+import { Routes, Route, Navigate } from 'react-router-dom';
 
-    
-      <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/app/*" element={<Appk />} />
-        <Route path="/register-student" element={<RegisterStudent />} />
-       <Route path="/register-organisateur" element={<RegisterOrganisateur />} />
-      </Routes>
-   
+// استيراد الصفحات اللي صاوبنا (تأكد من المسار الصحيح حسب Dossiers ديالك)
+import Dashboard from './pages/Administration/index';
+import ValidateEvents from './pages/Administration/ValidateEvents';
+import ValidateOrganizers from './pages/Administration/ValidateOrganizers';
+import GlobalNotifications from './pages/Administration/GlobalNotifications';
+import EventCategories from './pages/Administration/EventCategories';
+
+function App() {
+  return (
+    <Routes>
+      {/* توجيه تلقائي لصفحة Dashboard فاش كيدخل المسؤول */}
+      <Route path="/responsable" element={<Dashboard />} />
+      
+      <Route path="/responsable/events" element={<ValidateEvents />} />
+      <Route path="/responsable/users" element={<ValidateOrganizers />} />
+      <Route path="/responsable/notifications" element={<GlobalNotifications />} />
+      <Route path="/responsable/categories" element={<EventCategories />} />
+
+      {/* إلا دخل لشي رابط ما كاينش، يرجعو لـ Dashboard */}
+      <Route path="*" element={<Navigate to="/responsable" />} />
+    </Routes>
   );
-} 
+}
+
+export default App;
