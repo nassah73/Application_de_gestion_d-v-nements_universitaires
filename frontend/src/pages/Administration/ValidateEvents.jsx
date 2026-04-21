@@ -1,17 +1,18 @@
 import React, { useState } from 'react';
-import { Eye, Check, X, Search, Bell, Settings, LogOut, LayoutDashboard, CalendarCheck, Users } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Eye, Check, X, Search, Bell, Settings, LogOut, LayoutDashboard, CalendarCheck, Users, Tag } from 'lucide-react';
 
 const ValidateEvents = () => {
   const [activeTab, setActiveTab] = useState('All Events');
 
   // البيانات الظاهرة في الصورة (image_b9df44.png)
   const events = [
-    { id: 1, title: 'Science Fair 2026', organizer: 'Physics Club', category: 'Science & Technology', date: '2026-04-15', capacity: 200, status: 'Soumis' },
-    { id: 2, title: 'Cultural Night', organizer: 'International Students Association', category: 'Cultural', date: '2026-04-18', capacity: 500, status: 'Validé' },
+    { id: 1, title: 'Science Fair 2026', organizer: 'Physics Club', category: 'Sociale', date: '2026-04-15', capacity: 200, status: 'Soumis' },
+    { id: 2, title: 'Cultural Night', organizer: 'International Students Association', category: 'Culturel', date: '2026-04-18', capacity: 500, status: 'Validé' },
     { id: 3, title: 'Basketball Tournament', organizer: 'Sports Committee', category: 'Sports', date: '2026-04-10', capacity: 150, status: 'Publié' },
-    { id: 4, title: 'AI Workshop Series', organizer: 'Computer Science Club', category: 'Science & Technology', date: '2026-04-20', capacity: 80, status: 'Soumis' },
-    { id: 5, title: 'Spring Music Festival', organizer: 'Music Society', category: 'Cultural', date: '2026-04-12', capacity: 300, status: 'Validé' },
-    { id: 6, title: 'Debate Competition', organizer: 'Debate Club', category: 'Academic', date: '2026-04-08', capacity: 100, status: 'Rejeté' },
+    { id: 4, title: 'AI Workshop Series', organizer: 'Computer Science Club', category: 'Sociale', date: '2026-04-20', capacity: 80, status: 'Soumis' },
+    { id: 5, title: 'Spring Music Festival', organizer: 'Music Society', category: 'Culturel', date: '2026-04-12', capacity: 300, status: 'Validé' },
+    { id: 6, title: 'Debate Competition', organizer: 'Debate Club', category: 'Académique', date: '2026-04-08', capacity: 100, status: 'Rejeté' },
   ];
 
   const tabs = [
@@ -24,49 +25,51 @@ const ValidateEvents = () => {
   ];
 
   return (
-    <div className="flex min-h-screen bg-slate-50 font-sans">
-      {/* Sidebar - Reusable Sidebar Component */}
-      <aside className="w-64 bg-[#1E3A8A] text-white flex flex-col shrink-0">
-        <div className="p-6">
-          <h1 className="text-xl font-bold uppercase tracking-wider">UIZ University</h1>
-          <p className="text-xs text-blue-200">Event Management</p>
+    <div className="flex h-screen overflow-hidden font-sans" style={{ background: '#0f172a' }}>
+      {/* Sidebar */}
+      <aside className="w-64 flex flex-col shrink-0" style={{ background: 'linear-gradient(145deg,rgba(205,115,41,0.95),rgba(168,85,20,0.9))' }}>
+        <div className="p-6 border-b border-white/10">
+          <h1 className="text-xl font-black uppercase tracking-wider text-white">UIZ University</h1>
+          <p className="text-xs text-white/60 mt-1">Administration</p>
         </div>
-        <nav className="flex-1 px-4 space-y-2 mt-4">
-          <NavItem icon={<LayoutDashboard size={20} />} label="Dashboard" />
-          <NavItem icon={<CalendarCheck size={20} />} label="Event Validation" active />
-          <NavItem icon={<Users size={20} />} label="User Management" />
-          <NavItem icon={<Bell size={20} />} label="Notifications" />
+        <nav className="flex-1 px-4 space-y-1 mt-4 overflow-y-auto">
+          <NavItem path="/responsable"               icon={<LayoutDashboard size={20}/>} label="Dashboard"        />
+          <NavItem path="/responsable/events"        icon={<CalendarCheck   size={20}/>} label="Event Validation" active />
+          <NavItem path="/responsable/users"         icon={<Users           size={20}/>} label="User Management"  />
+          <NavItem path="/responsable/notifications" icon={<Bell            size={20}/>} label="Notifications"    />
+          <NavItem path="/responsable/categories"    icon={<Tag             size={20}/>} label="Categories"       />
         </nav>
-        <div className="p-4 border-t border-blue-800 space-y-2">
-          <NavItem icon={<Settings size={20} />} label="Settings" />
-          <NavItem icon={<LogOut size={20} />} label="Logout" />
+        <div className="mt-auto p-4 border-t border-white/10 space-y-1 shrink-0">
+          <NavItem path="/responsable/settings" icon={<Settings size={20}/>} label="Settings" />
+          <NavItem path="/auth/login"           icon={<LogOut   size={20}/>} label="Logout"   />
         </div>
       </aside>
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col overflow-hidden">
         {/* Header */}
-        <header className="bg-white h-16 border-b flex items-center justify-between px-8 shrink-0">
-          <div className="relative w-96">
-            <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
-              <Search size={18} />
-            </span>
-            <input 
-              className="block w-full pl-10 pr-3 py-2 border border-slate-200 rounded-lg bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" 
-              placeholder="Search events, organizers, students..." 
+        <header className="h-16 border-b flex items-center justify-between px-8 shrink-0"
+          style={{ background: 'rgba(15,23,42,0.85)', backdropFilter: 'blur(12px)', borderColor: 'rgba(255,255,255,0.08)' }}>
+          <div className="relative w-80">
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+            <input
+              className="w-full pl-9 pr-3 py-2 rounded-lg text-sm text-white placeholder-white/30 border outline-none"
+              style={{ background: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.12)' }}
+              placeholder="Search events, organizers, students..."
             />
           </div>
           <div className="flex items-center gap-4">
-            <div className="relative p-2 text-slate-400 hover:bg-slate-100 rounded-full cursor-pointer">
-              <Bell size={20} />
-              <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white"></span>
+            <div className="relative p-2 rounded-full cursor-pointer text-white/50" style={{ background: 'rgba(255,255,255,0.06)' }}>
+              <Bell size={18} />
+              <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-orange-400 rounded-full" />
             </div>
-            <div className="flex items-center gap-3 border-l pl-4">
+            <div className="flex items-center gap-3 border-l pl-4" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
               <div className="text-right">
-                <p className="text-sm font-semibold text-slate-700">Admin User</p>
-                <p className="text-[10px] text-slate-400 uppercase">Super Administrator</p>
+                <p className="text-sm font-semibold text-white">Admin User</p>
+                <p className="text-[10px] text-white/40 uppercase">Super Administrator</p>
               </div>
-              <div className="w-10 h-10 bg-blue-900 rounded-full flex items-center justify-center text-white font-bold">U</div>
+              <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-black text-sm"
+                style={{ background: 'linear-gradient(135deg,#cd7329,#eb8232)' }}>A</div>
             </div>
           </div>
         </header>
@@ -150,12 +153,23 @@ const ValidateEvents = () => {
 };
 
 // Sub-components
-const NavItem = ({ icon, label, active = false }) => (
-  <div className={`flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-colors ${active ? 'bg-white text-[#1E3A8A]' : 'hover:bg-blue-800 text-blue-100'}`}>
-    {icon}
-    <span className="text-sm font-medium">{label}</span>
-  </div>
-);
+const NavItem = ({ icon, label, path, active = false }) => {
+  const navigate = useNavigate();
+  return (
+    <div
+      onClick={() => path && navigate(path)}
+      className="flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all"
+      style={active
+        ? { background: 'rgba(255,255,255,0.2)', color: '#fff', fontWeight: 700 }
+        : { color: 'rgba(255,255,255,0.75)' }}
+      onMouseEnter={e => !active && (e.currentTarget.style.background = 'rgba(255,255,255,0.1)')}
+      onMouseLeave={e => !active && (e.currentTarget.style.background = 'transparent')}
+    >
+      {icon}
+      <span className="text-sm">{label}</span>
+    </div>
+  );
+};
 
 const StatusBadge = ({ status }) => {
   const styles = {

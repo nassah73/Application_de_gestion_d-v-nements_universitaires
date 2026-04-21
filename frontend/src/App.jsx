@@ -17,6 +17,7 @@ import ValidateEvents from './pages/Administration/ValidateEvents';
 import ValidateOrganizers from './pages/Administration/ValidateOrganizers';
 import GlobalNotifications from './pages/Administration/GlobalNotifications';
 import EventCategories from './pages/Administration/EventCategories';
+import AdminSettings from './pages/Administration/Settings';
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
       <Route path="/responsable/users" element={<ValidateOrganizers />} />
       <Route path="/responsable/notifications" element={<GlobalNotifications />} />
       <Route path="/responsable/categories" element={<EventCategories />} />
+      <Route path="/responsable/settings" element={<AdminSettings />} />
 
       {/* Fallback */}
       <Route path="*" element={<Navigate to="/auth/login" />} />
