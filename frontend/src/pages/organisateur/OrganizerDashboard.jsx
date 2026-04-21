@@ -25,6 +25,7 @@ import Stats from './Stats';
 import Guide from './Guide';
 import Profile from './Profile';
 import Settings from './Settings';
+import { LanguageProvider, useLanguage } from './LanguageContext';
 import './style.css';
 
 const NOTIFS = [
@@ -35,9 +36,10 @@ const NOTIFS = [
   { id: 5, icon: <CalendarCheck size={16} />, iconBg: 'bg-blue-100 text-blue-600', title: 'Rappel événement', desc: 'Conférence Cloud Computing commence demain à 10h.', time: 'Hier', read: true },
 ];
 
-const OrganizerDashboard = () => {
+const OrganizerDashboardContent = () => {
+  const { t, language } = useLanguage();
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('Tableau de Bord');
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [notifications, setNotifications] = useState(NOTIFS);
@@ -64,25 +66,25 @@ const OrganizerDashboard = () => {
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'Tableau de Bord': return <Dashboard setActiveTab={setActiveTab} />;
-      case 'Mes Événements': return <MyEvents setActiveTab={setActiveTab} />;
-      case 'Créer Événement': return <CreateEvent setActiveTab={setActiveTab} />;
-      case 'Scanner QR': return <Scanner />;
-      case 'Statistiques': return <Stats />;
-      case 'Guide': return <Guide setActiveTab={setActiveTab} />;
-      case 'Mon Profil': return <Profile />;
-      case 'Paramètres': return <Settings />;
+      case 'dashboard': return <Dashboard setActiveTab={setActiveTab} />;
+      case 'my_events': return <MyEvents setActiveTab={setActiveTab} />;
+      case 'create_event': return <CreateEvent setActiveTab={setActiveTab} />;
+      case 'scanner': return <Scanner />;
+      case 'stats': return <Stats />;
+      case 'guide': return <Guide setActiveTab={setActiveTab} />;
+      case 'profile': return <Profile />;
+      case 'settings': return <Settings />;
       default: return <Dashboard setActiveTab={setActiveTab} />;
     }
   };
 
   const menuItems = [
-    { name: 'Tableau de Bord', icon: <LayoutDashboard size={20} /> },
-    { name: 'Mes Événements', icon: <Calendar size={20} /> },
-    { name: 'Créer Événement', icon: <PlusSquare size={20} /> },
-    { name: 'Scanner QR', icon: <QrCode size={20} /> },
-    { name: 'Statistiques', icon: <BarChart3 size={20} /> },
-    { name: 'Guide', icon: <BookOpen size={20} /> }
+    { id: 'dashboard', icon: <LayoutDashboard size={20} /> },
+    { id: 'my_events', icon: <Calendar size={20} /> },
+    { id: 'create_event', icon: <PlusSquare size={20} /> },
+    { id: 'scanner', icon: <QrCode size={20} /> },
+    { id: 'stats', icon: <BarChart3 size={20} /> },
+    { id: 'guide', icon: <BookOpen size={20} /> }
   ];
 
   return (
@@ -100,30 +102,27 @@ const OrganizerDashboard = () => {
             </div>
           </div>
 
-          <p className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 mb-6">Plateforme</p>
+          <p className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 mb-6">{t('platform')}</p>
 
           <nav className="space-y-2 flex-1">
             {menuItems.map((item) => (
               <button
-                key={item.name}
-                onClick={() => setActiveTab(item.name)}
-                className={`nav-item w-full ${activeTab === item.name ? 'active' : ''}`}
+                key={item.id}
+                onClick={() => setActiveTab(item.id)}
+                className={`nav-item flex items-center gap-3 w-full px-4 py-3 rounded-2xl transition-all ${activeTab === item.id ? 'active bg-slate-800 text-orange-500 font-bold' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-300'}`}
               >
-                <span className={`${activeTab === item.name ? 'text-orange-500' : 'text-slate-500'}`}>
+                <span className={`${activeTab === item.id ? 'text-orange-500' : 'text-slate-500'}`}>
                   {item.icon}
                 </span>
-                <span className="tracking-tight">{item.name}</span>
-                {activeTab === item.name && (
-                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.8)]"></div>
-                )}
+                <span className="tracking-tight">{t(item.id)}</span>
               </button>
             ))}
           </nav>
 
           <div className="pt-8 border-t border-slate-800/50">
-            <button onClick={() => navigate('/auth/login')} className="nav-item w-full hover:text-red-400 hover:bg-red-400/5 group cursor-pointer">
-              <LogOut size={20} className="group-hover:rotate-12 transition-transform" />
-              <span className="font-bold">Déconnexion</span>
+            <button onClick={() => navigate('/auth/login')} className="nav-item flex items-center gap-3 w-full hover:text-red-400 hover:bg-red-400/5 group cursor-pointer px-4 py-3 rounded-2xl transition-all">
+              <LogOut size={20} className={`group-hover:rotate-12 transition-transform ${language === 'ar' ? 'rotate-180' : ''}`} />
+              <span className="font-bold">{t('logout')}</span>
             </button>
           </div>
         </div>
@@ -133,10 +132,10 @@ const OrganizerDashboard = () => {
       <div className="flex-1 flex flex-col min-w-0 bg-transparent">
         <header className="h-24 dashboard-header flex items-center justify-between px-12 shrink-0 relative z-10">
           <div className="animate-in" key={activeTab}>
-            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">{activeTab}</h2>
+            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">{t(activeTab)}</h2>
             <div className="flex items-center gap-2 mt-1">
               <span className="w-8 h-0.5 bg-orange-500 rounded-full"></span>
-              <p className="text-slate-400 text-[11px] font-bold uppercase tracking-widest">Console Organisateur</p>
+              <p className="text-slate-400 text-[11px] font-bold uppercase tracking-widest">{t('console')}</p>
             </div>
           </div>
 
@@ -157,19 +156,19 @@ const OrganizerDashboard = () => {
 
               {/* Dropdown */}
               {notifOpen && (
-                <div className="absolute right-0 top-[calc(100%+12px)] w-[380px] bg-white rounded-[28px] shadow-2xl shadow-slate-200/80 border border-slate-100 z-50 overflow-hidden">
+                <div className={`absolute ${language === 'ar' ? 'left-0' : 'right-0'} top-[calc(100%+12px)] w-[380px] bg-white rounded-[28px] shadow-2xl shadow-slate-200/80 border border-slate-100 z-50 overflow-hidden`}>
                   {/* Header */}
                   <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-100">
                     <div>
-                      <h5 className="text-sm font-black text-slate-900">Notifications</h5>
-                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{unreadCount} non lue{unreadCount > 1 ? 's' : ''}</p>
+                      <h5 className="text-sm font-black text-slate-900">{t('notifications')}</h5>
+                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{unreadCount} {t('unread')}</p>
                     </div>
                     {unreadCount > 0 && (
                       <button
                         onClick={markAllRead}
                         className="flex items-center gap-1.5 text-[10px] font-black text-orange-500 hover:text-orange-600 uppercase tracking-widest transition-colors"
                       >
-                        <CheckCheck size={13} /> Tout marquer lu
+                        <CheckCheck size={13} /> {t('mark_read')}
                       </button>
                     )}
                   </div>
@@ -179,7 +178,7 @@ const OrganizerDashboard = () => {
                     {notifications.length === 0 ? (
                       <div className="py-12 text-center">
                         <Bell size={32} className="mx-auto text-slate-200 mb-3" />
-                        <p className="text-sm font-bold text-slate-400">Aucune notification</p>
+                        <p className="text-sm font-bold text-slate-400">{t('no_notif')}</p>
                       </div>
                     ) : notifications.map(n => (
                       <div
@@ -233,38 +232,38 @@ const OrganizerDashboard = () => {
               {profileOpen && (
                 <div className="absolute right-0 top-[calc(100%+12px)] w-64 bg-white rounded-[28px] shadow-2xl shadow-slate-200/80 border border-slate-100 z-50 overflow-hidden animate-in fade-in zoom-in duration-200">
                   <div className="p-6 border-b border-slate-50 bg-slate-50/50">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Connecté en tant que</p>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{t('logged_in_as')}</p>
                     <p className="text-sm font-black text-slate-900">Club Informatique</p>
                   </div>
 
                   <div className="p-2">
                     <button 
-                      onClick={() => { setActiveTab('Mon Profil'); setProfileOpen(false); }}
-                      className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-slate-600 hover:bg-orange-50 hover:text-orange-600 transition-all group"
+                      onClick={() => { setActiveTab('profile'); setProfileOpen(false); }}
+                      className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-slate-600 hover:bg-orange-50 hover:text-orange-600 transition-all group cursor-pointer"
                     >
                       <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center group-hover:bg-white shadow-sm transition-all text-slate-400 group-hover:text-orange-500">
                         <User size={16} />
                       </div>
-                      <span className="text-sm font-bold">Mon Profil</span>
+                      <span className="text-sm font-bold">{t('profile')}</span>
                     </button>
 
                     <button 
-                      onClick={() => { setActiveTab('Paramètres'); setProfileOpen(false); }}
+                      onClick={() => { setActiveTab('settings'); setProfileOpen(false); }}
                       className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-slate-600 hover:bg-orange-50 hover:text-orange-600 transition-all group cursor-pointer"
                     >
                       <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center group-hover:bg-white shadow-sm transition-all text-slate-400 group-hover:text-orange-500">
                         <PlusSquare size={16} />
                       </div>
-                      <span className="text-sm font-bold">Paramètres</span>
+                      <span className="text-sm font-bold">{t('settings')}</span>
                     </button>
                   </div>
 
                   <div className="p-2 border-t border-slate-50">
                     <button onClick={() => navigate('/auth/login')} className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-red-500 hover:bg-red-50 transition-all group cursor-pointer">
                       <div className="w-8 h-8 rounded-xl bg-red-50 flex items-center justify-center group-hover:bg-white shadow-sm transition-all text-red-400 group-hover:text-red-500">
-                        <LogOut size={16} />
+                        <LogOut size={16} className={language === 'ar' ? 'rotate-180' : ''} />
                       </div>
-                      <span className="text-sm font-bold">Déconnexion</span>
+                      <span className="text-sm font-bold">{t('logout')}</span>
                     </button>
                   </div>
                 </div>
@@ -282,5 +281,11 @@ const OrganizerDashboard = () => {
     </div>
   );
 };
+
+const OrganizerDashboard = () => (
+  <LanguageProvider>
+    <OrganizerDashboardContent />
+  </LanguageProvider>
+);
 
 export default OrganizerDashboard;
