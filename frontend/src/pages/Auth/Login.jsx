@@ -47,20 +47,7 @@ export default function Login() {
                         </div>
                     </div>
 
-                    <div className={style.inputGroup}>
-                        <label htmlFor="role">Connexion en tant que</label>
-                        <div className={style.inputWrapper}>
-                            <select 
-                                name="role" 
-                                id="role" 
-                                value={role} 
-                                onChange={(e) => setRole(e.target.value)}
-                            >
-                                <option value="student">Étudiant</option>
-                                <option value="organizer">Organisateur</option>
-                            </select>
-                        </div>
-                    </div>
+                   
 
                     <button type="button" className={style.submitBtn} onClick={handleLogin}>
                         Se Connecter <ArrowRight size={20} strokeWidth={2.5} />
