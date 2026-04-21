@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard,
   Calendar,
@@ -22,6 +23,8 @@ import CreateEvent from './CreateEvent';
 import Scanner from './Scanner';
 import Stats from './Stats';
 import Guide from './Guide';
+import Profile from './Profile';
+import Settings from './Settings';
 import './style.css';
 
 const NOTIFS = [
@@ -33,6 +36,7 @@ const NOTIFS = [
 ];
 
 const OrganizerDashboard = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('Tableau de Bord');
   const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -66,6 +70,8 @@ const OrganizerDashboard = () => {
       case 'Scanner QR': return <Scanner />;
       case 'Statistiques': return <Stats />;
       case 'Guide': return <Guide setActiveTab={setActiveTab} />;
+      case 'Mon Profil': return <Profile />;
+      case 'Paramètres': return <Settings />;
       default: return <Dashboard setActiveTab={setActiveTab} />;
     }
   };
@@ -115,7 +121,7 @@ const OrganizerDashboard = () => {
           </nav>
 
           <div className="pt-8 border-t border-slate-800/50">
-            <button className="nav-item w-full hover:text-red-400 hover:bg-red-400/5 group">
+            <button onClick={() => navigate('/auth/login')} className="nav-item w-full hover:text-red-400 hover:bg-red-400/5 group cursor-pointer">
               <LogOut size={20} className="group-hover:rotate-12 transition-transform" />
               <span className="font-bold">Déconnexion</span>
             </button>
@@ -232,14 +238,20 @@ const OrganizerDashboard = () => {
                   </div>
 
                   <div className="p-2">
-                    <button className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-slate-600 hover:bg-orange-50 hover:text-orange-600 transition-all group">
+                    <button 
+                      onClick={() => { setActiveTab('Mon Profil'); setProfileOpen(false); }}
+                      className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-slate-600 hover:bg-orange-50 hover:text-orange-600 transition-all group"
+                    >
                       <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center group-hover:bg-white shadow-sm transition-all text-slate-400 group-hover:text-orange-500">
                         <User size={16} />
                       </div>
                       <span className="text-sm font-bold">Mon Profil</span>
                     </button>
 
-                    <button className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-slate-600 hover:bg-orange-50 hover:text-orange-600 transition-all group">
+                    <button 
+                      onClick={() => { setActiveTab('Paramètres'); setProfileOpen(false); }}
+                      className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-slate-600 hover:bg-orange-50 hover:text-orange-600 transition-all group cursor-pointer"
+                    >
                       <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center group-hover:bg-white shadow-sm transition-all text-slate-400 group-hover:text-orange-500">
                         <PlusSquare size={16} />
                       </div>
@@ -248,7 +260,7 @@ const OrganizerDashboard = () => {
                   </div>
 
                   <div className="p-2 border-t border-slate-50">
-                    <button className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-red-500 hover:bg-red-50 transition-all group">
+                    <button onClick={() => navigate('/auth/login')} className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-red-500 hover:bg-red-50 transition-all group cursor-pointer">
                       <div className="w-8 h-8 rounded-xl bg-red-50 flex items-center justify-center group-hover:bg-white shadow-sm transition-all text-red-400 group-hover:text-red-500">
                         <LogOut size={16} />
                       </div>
