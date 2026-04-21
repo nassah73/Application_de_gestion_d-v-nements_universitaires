@@ -1,10 +1,11 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import {useNavigate, NavLink } from 'react-router-dom';
 import { Mail, Lock, ArrowRight } from 'lucide-react';// pour les icons 
 import Icon_image from "../../assets/Masters_et_Masters_Spécialisés_à_la_FP_Taroudant_2020-2021-removebg-preview.png";
 import style from './style.module.css';
 
 export default function Login() {
+     const Navigate= useNavigate()
     return (
       <div className={style.content}>
         <div className={style.container}>

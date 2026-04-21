@@ -56,7 +56,7 @@ export default function Main() {
         <>
             <Navbar />
             <div className="bg-[#28374e] mt-4 min-h-screen w-screen relative pb-10">
-                {/* الجزء العلوي (Header) */}
+               
                 <nav className="flex justify-between bg-[#0f172a] h-24 text-white items-center px-10 shadow-xl">
                     <div>
                         <h1 className="text-3xl font-bold italic tracking-tight text-blue-400">Student Schedule</h1>
@@ -71,7 +71,7 @@ export default function Main() {
 
                 <section className="max-w-[1300px] flex justify-between mx-auto mt-10 gap-10 px-5">
                     
-                    {/* جهة التقويم (Left Side) */}
+                   
                     <div className="w-fit">
                         <div className="bg-[#0f172a] p-6 rounded-2xl shadow-2xl border border-white/5">
                             <Calendar 
@@ -87,7 +87,7 @@ export default function Main() {
                         </div>
                     </div>
 
-                    {/* جهة الـ Agenda (Right Side) */}
+                    
                     <div className="flex-1 bg-[#0f172a] rounded-2xl p-8 shadow-2xl border border-white/5 min-h-[600px]">
                         <div className="border-b border-white/10 pb-5 mb-8">
                             <h1 className="text-3xl text-white font-bold">Daily Agenda</h1>

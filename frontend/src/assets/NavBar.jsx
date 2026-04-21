@@ -4,6 +4,7 @@ import { Bell, UserCircle } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useEffect ,useRef} from 'react';
 import Profile from'./bg.jpg'
+
 import { 
   Mail, 
   Phone, 
@@ -45,6 +46,7 @@ useEffect(() => {
   { name: 'Announcements', path: '/app/Annencement' },
   { name: 'analytics', path: '/app/Analityc' }
 ];
+
 
     return(
 <nav className=' main bg-white h-15 flex justify-between relative top-5 capitalize items-center font-[600] '>
