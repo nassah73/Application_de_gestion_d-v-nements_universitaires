@@ -39,7 +39,7 @@ export default function Login() {
                         </div>
                     </div>
 
-                    <button type="submit" className={style.submitBtn}>
+                    <button type="button" className={style.submitBtn} onClick={()=>{Navigate('/app/Home')}}>
                         Se Connecter <ArrowRight size={20} strokeWidth={2.5} />
                     </button>
                 </form>
