@@ -24,13 +24,12 @@ ChartJS.register(
   Legend
 );
 
-// 2. مكون الـ StatCard (عرفو برا باش تقدر تخدم بيه)
 const StatCard = ({ title, value, sub, icon }) => (
-  <div className="bg-[#0d1425] p-6 rounded-2xl border border-gray-800 relative overflow-hidden">
-    <div className="text-blue-500 text-2xl mb-4">{icon}</div>
-    <div className="text-4xl font-bold mb-1">{value}</div>
-    <div className="text-gray-400 text-sm">{title}</div>
-    <div className="mt-4 text-green-500 text-xs flex items-center">
+  <div className="bg-white/5 backdrop-blur-xl p-6 rounded-2xl border border-white/10 shadow-lg relative overflow-hidden group hover:bg-white/10 transition-all">
+    <div className="text-[#cd7329] text-2xl mb-4 opacity-80">{icon}</div>
+    <div className="text-4xl font-bold mb-1 group-hover:scale-105 origin-left transition-transform duration-300">{value}</div>
+    <div className="text-slate-400 text-sm">{title}</div>
+    <div className="mt-4 text-emerald-400 text-xs flex items-center font-bold">
       <span>{sub}</span>
     </div>
   </div>
@@ -39,9 +38,9 @@ const StatCard = ({ title, value, sub, icon }) => (
 export default function Main() {
   // --- الداتا الـ Dynamic ---
   const interestsData = [
-    { label: 'Academic', value: 40, color: '#3b82f6' },
-    { label: 'Sports', value: 30, color: '#f59e0b' },
-    { label: 'Cultural', value: 30, color: '#a855f7' },
+    { label: 'Academic', value: 40, color: '#cd7329' },
+    { label: 'Sports', value: 30, color: '#eb8232' },
+    { label: 'Cultural', value: 30, color: '#fba76b' },
   ];
 
   const monthlyData = [
@@ -70,7 +69,7 @@ export default function Main() {
     datasets: [{
       label: 'Events',
       data: monthlyData.map(d => d.count),
-      backgroundColor: '#3b82f6',
+      backgroundColor: '#cd7329',
       borderRadius: 5,
     }]
   };
@@ -78,39 +77,40 @@ export default function Main() {
   return (
     <>
       <Navbar />
-      <div className="bg-[#050b18] min-h-screen p-8 text-white font-sans">
+      <div className="bg-slate-900 min-h-screen p-8 pt-[100px] text-white font-sans relative">
+        <div className="absolute inset-0 bg-gradient-to-br from-black/80 to-slate-900/90 pointer-events-none z-0"></div>
         {/* Header */}
-        <div className="flex items-center mb-8">
-          <div className="bg-blue-600 p-3 rounded-xl mr-4">
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="flex items-center mb-8 relative z-10">
+          <div className="bg-white/10 backdrop-blur-md border border-white/10 p-3 rounded-xl mr-4 shadow-lg">
+            <svg className="w-8 h-8 text-[#cd7329]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
             </svg>
           </div>
           <div>
-            <h1 className="text-3xl font-bold">Student Analytics</h1>
-            <p className="text-gray-400">Track your event participation and achievements</p>
+            <h1 className="text-3xl font-bold text-[#cd7329]">Student Analytics</h1>
+            <p className="text-slate-400">Track your event participation and achievements</p>
           </div>
         </div>
 
        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 relative z-10">
           <StatCard title="Events Attended" value="24" sub="+12% from last semester" icon="✅" />
-          <div className="bg-[#0d1425] p-6 rounded-2xl border border-gray-800 flex flex-col items-center">
+          <div className="bg-white/5 backdrop-blur-xl p-6 rounded-2xl border border-white/10 shadow-lg flex flex-col items-center">
             <div className="relative w-32 h-32 flex items-center justify-center">
-              <div className="absolute inset-0 rounded-full border-8 border-blue-500 opacity-20"></div>
-              <div className="absolute inset-0 rounded-full border-8 border-blue-500 border-t-transparent animate-spin-slow"></div>
-              <span className="text-2xl font-bold">92%</span>
+              <div className="absolute inset-0 rounded-full border-8 border-[#cd7329] opacity-20"></div>
+              <div className="absolute inset-0 rounded-full border-8 border-[#cd7329] border-t-transparent animate-[spin_3s_linear_infinite]"></div>
+              <span className="text-2xl font-bold text-white">92%</span>
             </div>
-            <p className="mt-4 text-gray-400 text-sm">Presence Rate</p>
-            <p className="text-yellow-500 font-bold">Excellent Performance!</p>
+            <p className="mt-4 text-slate-400 text-sm">Presence Rate</p>
+            <p className="text-[#cd7329] font-bold">Excellent Performance!</p>
           </div>
           <StatCard title="Total Points Earned" value="1840" sub="Top 15% of students" icon="🏆" />
         </div>
 
        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <div className="bg-[#0d1425] p-6 rounded-2xl border border-gray-800">
-            <h2 className="text-xl font-semibold mb-6">Interests Distribution</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 relative z-10">
+          <div className="bg-white/5 backdrop-blur-xl p-6 rounded-2xl border border-white/10 shadow-lg">
+            <h2 className="text-xl font-bold text-white mb-6">Interests Distribution</h2>
             <div className="h-64 flex justify-center">
               <Doughnut data={doughnutConfig} options={{ plugins: { legend: { display: false } } ,   animation: {
                       duration: 2000, 
@@ -118,19 +118,19 @@ export default function Main() {
             </div>
             <div className="mt-6 space-y-2">
               {interestsData.map(item => (
-                <div key={item.label} className="flex justify-between text-sm">
+                <div key={item.label} className="flex justify-between text-sm text-slate-300 font-medium">
                   <span className="flex items-center">
-                    <span className="w-3 h-3 rounded-full mr-2" style={{ backgroundColor: item.color }}></span>
+                    <span className="w-3 h-3 rounded-full mr-2 shadow-sm" style={{ backgroundColor: item.color }}></span>
                     {item.label}
                   </span>
-                  <span>{item.value}%</span>
+                  <span className="font-bold text-white">{item.value}%</span>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="bg-[#0d1425] p-6 rounded-2xl border border-gray-800">
-            <h2 className="text-xl font-semibold mb-6">Monthly Participation</h2>
+          <div className="bg-white/5 backdrop-blur-xl p-6 rounded-2xl border border-white/10 shadow-lg">
+            <h2 className="text-xl font-bold text-white mb-6">Monthly Participation</h2>
             <div className="h-64">
               <Bar data={barConfig} options={{
                 animation: {
@@ -139,7 +139,7 @@ export default function Main() {
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: {
-                  y: { grid: { color: '#1e293b' }, ticks: { color: '#94a3b8' } },
+                  y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
                   x: { grid: { display: false }, ticks: { color: '#94a3b8' } }
                 }
               }} />

@@ -55,17 +55,17 @@ export default function Main() {
     return (
         <>
             <Navbar />
-            <div className="bg-[#28374e] mt-4 min-h-screen w-screen relative pb-10">
+            <div className="bg-slate-900 min-h-screen w-screen relative pb-10 pt-[60px]">
                
-                <nav className="flex justify-between bg-[#0f172a] h-24 text-white items-center px-10 shadow-xl">
+                <nav className="flex justify-between bg-white/5 backdrop-blur-md border-b border-white/10 h-24 text-white items-center px-10 shadow-xl">
                     <div>
-                        <h1 className="text-3xl font-bold italic tracking-tight text-blue-400">Student Schedule</h1>
-                        <p className="text-gray-400">Manage your time and track registered events</p>
+                        <h1 className="text-3xl font-bold italic tracking-tight text-[#cd7329]">Student Schedule</h1>
+                        <p className="text-slate-400">Manage your time and track registered events</p>
                     </div>
                     
-                    <div className="flex items-center bg-blue-500/20 border border-blue-500/50 px-4 py-2 rounded-lg gap-3">
-                        <CalendarCheckIcon className="text-blue-400" />
-                        <span className="font-bold">{events.length} Total Events</span>
+                    <div className="flex items-center bg-[#cd7329]/10 border border-[#cd7329]/30 px-4 py-2 rounded-lg gap-3">
+                        <CalendarCheckIcon className="text-[#cd7329]" />
+                        <span className="font-bold text-[#cd7329]">{events.length} Total Events</span>
                     </div>
                 </nav>
 
@@ -73,45 +73,45 @@ export default function Main() {
                     
                    
                     <div className="w-fit">
-                        <div className="bg-[#0f172a] p-6 rounded-2xl shadow-2xl border border-white/5">
+                        <div className="bg-white/10 backdrop-blur-xl p-6 rounded-2xl shadow-lg border border-white/20 text-white">
                             <Calendar 
                                 className="custom-calendar" 
                                 onChange={handleDateChange} 
                                 value={value} 
                             />
                         </div>
-                        <div className="mt-5 p-4 bg-white/5 rounded-xl border border-white/10">
-                             <h1 className="text-gray-300 font-medium">
-                                📅 Selected: <span className="text-blue-400">{value.toDateString()}</span>
+                        <div className="mt-5 p-4 bg-white/5 backdrop-blur-md rounded-xl border border-white/10 shadow-lg text-white">
+                             <h1 className="text-slate-300 font-medium">
+                                📅 Selected: <span className="text-[#cd7329] font-bold">{value.toDateString()}</span>
                              </h1>
                         </div>
                     </div>
 
                     
-                    <div className="flex-1 bg-[#0f172a] rounded-2xl p-8 shadow-2xl border border-white/5 min-h-[600px]">
+                    <div className="flex-1 bg-white/10 backdrop-blur-xl rounded-2xl p-8 shadow-lg border border-white/20 min-h-[600px] text-white">
                         <div className="border-b border-white/10 pb-5 mb-8">
-                            <h1 className="text-3xl text-white font-bold">Daily Agenda</h1>
-                            <p className="text-blue-400 font-medium mt-1">{value.toDateString()}</p>
+                            <h1 className="text-3xl font-bold text-white">Daily Agenda</h1>
+                            <p className="text-[#cd7329] font-bold mt-1">{value.toDateString()}</p>
                         </div>
 
                         <div className="flex flex-col gap-6">
                             {filteredEvents.length > 0 ? (
                                 filteredEvents.map((event) => (
-                                    <div key={event.id} className="bg-[#162c5e] p-6 rounded-2xl border-l-4 border-blue-500 hover:bg-[#1d3a7a] transition-all group shadow-lg">
+                                    <div key={event.id} className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border-l-4 border-[#cd7329] hover:bg-white/10 transition-all group shadow-md border-y border-r border-[#cd7329]/10">
                                         <div className="flex justify-between items-start">
                                             <div className="leading-relaxed">
-                                                <p className="flex items-center gap-2 text-blue-300 font-medium mb-2">
+                                                <p className="flex items-center gap-2 text-[#cd7329] font-bold mb-2">
                                                     <Clock size={18} /> {event.time}
                                                 </p>
-                                                <h2 className="text-2xl font-bold group-hover:text-blue-400 transition-colors">
+                                                <h2 className="text-2xl font-bold text-white group-hover:text-[#cd7329] transition-colors">
                                                     {event.title}
                                                 </h2>
                                                 
                                                 <div className="flex items-center gap-4 mt-4">
-                                                    <div className="flex bg-amber-400 text-black px-3 py-1 rounded-md text-xs font-black uppercase tracking-wider items-center gap-1">
+                                                    <div className="flex bg-[#cd7329] text-white px-3 py-1 rounded-md text-xs font-black uppercase tracking-wider items-center gap-1">
                                                         <GraduationCap size={16} /> {event.type}
                                                     </div>
-                                                    <p className="flex items-center gap-2 text-gray-400 text-sm">
+                                                    <p className="flex items-center gap-2 text-slate-300 text-sm">
                                                         <MapPin size={16} className="text-red-400" /> {event.location}
                                                     </p>
                                                 </div>

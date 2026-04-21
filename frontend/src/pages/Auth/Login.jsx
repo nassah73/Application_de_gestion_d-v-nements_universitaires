@@ -1,11 +1,19 @@
-import React from 'react';
-import {useNavigate, NavLink } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, NavLink } from 'react-router-dom';
 import { Mail, Lock, ArrowRight } from 'lucide-react';// pour les icons 
 import Icon_image from "../../assets/Masters_et_Masters_Spécialisés_à_la_FP_Taroudant_2020-2021-removebg-preview.png";
 import style from './style.module.css';
 
 export default function Login() {
-     const Navigate= useNavigate()
+    const Navigate = useNavigate();
+    const [role, setRole] = useState('student');
+
+    const handleLogin = () => {
+        if (role === 'student') Navigate('/app/Home');
+        else if (role === 'organizer') Navigate('/organisateur');
+        else if (role === 'admin') Navigate('/responsable');
+    };
+
     return (
       <div className={style.content}>
         <div className={style.container}>
@@ -39,7 +47,22 @@ export default function Login() {
                         </div>
                     </div>
 
-                    <button type="button" className={style.submitBtn} onClick={()=>{Navigate('/app/Home')}}>
+                    <div className={style.inputGroup}>
+                        <label htmlFor="role">Connexion en tant que</label>
+                        <div className={style.inputWrapper}>
+                            <select 
+                                name="role" 
+                                id="role" 
+                                value={role} 
+                                onChange={(e) => setRole(e.target.value)}
+                            >
+                                <option value="student">Étudiant</option>
+                                <option value="organizer">Organisateur</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <button type="button" className={style.submitBtn} onClick={handleLogin}>
                         Se Connecter <ArrowRight size={20} strokeWidth={2.5} />
                     </button>
                 </form>
