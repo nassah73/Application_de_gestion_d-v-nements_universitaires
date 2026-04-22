@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   LineChart, Line, PieChart, Pie, Cell,
@@ -6,7 +6,7 @@ import {
 } from 'recharts';
 import {
   LayoutDashboard, CalendarCheck, Users, Bell, Settings, LogOut, Search,
-  CheckCircle, UserPlus, XCircle, TrendingUp, Tag
+  CheckCircle, UserPlus, XCircle, TrendingUp, Tag, CheckCheck, X, AlertCircle
 } from 'lucide-react';
 
 const lineData = [
@@ -26,7 +26,36 @@ const pieData = [
 const ORANGE = '#cd7329';
 const ORANGE_LIGHT = '#eb8232';
 
-const Dashboard = () => (
+const ADMIN_NOTIFS = [
+  { id: 1, icon: <UserPlus size={16} />, iconBg: 'rgba(205,115,41,0.18)', iconColor: '#cd7329', title: 'Nouvelle demande organisateur', desc: 'Le Club Informatique a demandé le statut organisateur.', time: 'Il y a 2 min', read: false },
+  { id: 2, icon: <CalendarCheck size={16} />, iconBg: 'rgba(99,102,241,0.18)', iconColor: '#6366F1', title: 'Événement en attente', desc: '"Science Fair 2026" attend votre validation.', time: 'Il y a 30 min', read: false },
+  { id: 3, icon: <AlertCircle size={16} />, iconBg: 'rgba(245,158,11,0.18)', iconColor: '#F59E0B', title: 'Capacité critique', desc: 'Hackathon 2025 — seulement 2 places restantes.', time: 'Il y a 1h', read: false },
+  { id: 4, icon: <CheckCircle size={16} />, iconBg: 'rgba(16,185,129,0.18)', iconColor: '#10B981', title: 'Événement validé', desc: '"Cultural Night 2026" est maintenant en ligne.', time: 'Hier', read: true },
+  { id: 5, icon: <XCircle size={16} />, iconBg: 'rgba(239,68,68,0.18)', iconColor: '#ef4444', title: 'Événement annulé', desc: 'Basketball Tournament a été annulé.', time: 'Hier', read: true },
+];
+
+const Dashboard = () => {
+  const navigate = useNavigate();
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [notifications, setNotifications] = useState(ADMIN_NOTIFS);
+  const notifRef = useRef(null);
+  const profileRef = useRef(null);
+
+  const unreadCount = notifications.filter(n => !n.read).length;
+  const markAllRead = () => setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  const dismiss = (id) => setNotifications(prev => prev.filter(n => n.id !== id));
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (notifRef.current && !notifRef.current.contains(e.target)) setNotifOpen(false);
+      if (profileRef.current && !profileRef.current.contains(e.target)) setProfileOpen(false);
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  return (
   <div className="flex h-screen overflow-hidden font-sans" style={{ background: '#0f172a' }}>
 
     {/* ── Sidebar ── */}
@@ -65,17 +94,137 @@ const Dashboard = () => (
           />
         </div>
         <div className="flex items-center gap-4">
-          <div className="relative p-2 rounded-full cursor-pointer text-white/50 hover:text-white transition-colors" style={{ background: 'rgba(255,255,255,0.06)' }}>
-            <Bell size={18} />
-            <span className="absolute top-2 right-2 w-1.5 h-1.5 bg-orange-400 rounded-full" />
+
+          {/* ── Notification Bell ── */}
+          <div className="relative" ref={notifRef}>
+            <button
+              onClick={() => setNotifOpen(o => !o)}
+              className="relative p-2 rounded-full cursor-pointer transition-all"
+              style={{ background: notifOpen ? 'rgba(205,115,41,0.2)' : 'rgba(255,255,255,0.06)', color: notifOpen ? '#cd7329' : 'rgba(255,255,255,0.5)' }}
+            >
+              <Bell size={18} />
+              {unreadCount > 0 && (
+                <span
+                  className="absolute top-1 right-1 min-w-[16px] h-[16px] text-white text-[9px] font-black rounded-full border border-slate-900 flex items-center justify-center px-[2px]"
+                  style={{ background: '#cd7329' }}
+                >
+                  {unreadCount}
+                </span>
+              )}
+            </button>
+
+            {/* Dropdown */}
+            {notifOpen && (
+              <div className="absolute right-0 top-[calc(100%+10px)] w-[360px] rounded-2xl shadow-2xl border overflow-hidden z-50"
+                style={{ background: '#1e293b', borderColor: 'rgba(255,255,255,0.1)' }}>
+
+                {/* Header */}
+                <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                  <div>
+                    <h5 className="text-sm font-black text-white">Notifications</h5>
+                    <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>{unreadCount} non lues</p>
+                  </div>
+                  {unreadCount > 0 && (
+                    <button
+                      onClick={markAllRead}
+                      className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest transition-colors hover:opacity-80"
+                      style={{ color: '#cd7329' }}
+                    >
+                      <CheckCheck size={13} /> Tout marquer
+                    </button>
+                  )}
+                </div>
+
+                {/* List */}
+                <div className="max-h-[320px] overflow-y-auto divide-y" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
+                  {notifications.length === 0 ? (
+                    <div className="py-10 text-center">
+                      <Bell size={28} className="mx-auto mb-3" style={{ color: 'rgba(255,255,255,0.15)' }} />
+                      <p className="text-sm font-bold" style={{ color: 'rgba(255,255,255,0.3)' }}>Aucune notification</p>
+                    </div>
+                  ) : notifications.map(n => (
+                    <div
+                      key={n.id}
+                      className="flex items-start gap-3 px-4 py-3 transition-colors"
+                      style={{ background: n.read ? 'transparent' : 'rgba(205,115,41,0.06)' }}
+                      onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
+                      onMouseLeave={e => e.currentTarget.style.background = n.read ? 'transparent' : 'rgba(205,115,41,0.06)'}
+                    >
+                      <div className="shrink-0 w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: n.iconBg, color: n.iconColor }}>
+                        {n.icon}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2">
+                          <p className="text-[13px] font-bold leading-tight" style={{ color: n.read ? 'rgba(255,255,255,0.6)' : '#fff' }}>{n.title}</p>
+                          {!n.read && <span className="shrink-0 w-2 h-2 rounded-full" style={{ background: '#cd7329' }} />}
+                        </div>
+                        <p className="text-[11px] mt-0.5 leading-snug" style={{ color: 'rgba(255,255,255,0.4)' }}>{n.desc}</p>
+                        <p className="text-[10px] font-bold uppercase tracking-wider mt-1" style={{ color: 'rgba(255,255,255,0.25)' }}>{n.time}</p>
+                      </div>
+                      <button
+                        onClick={(e) => { e.stopPropagation(); dismiss(n.id); }}
+                        className="shrink-0 p-1 rounded-lg transition-all"
+                        style={{ color: 'rgba(255,255,255,0.25)' }}
+                        onMouseEnter={e => { e.currentTarget.style.color = '#fff'; e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.25)'; e.currentTarget.style.background = 'transparent'; }}
+                      >
+                        <X size={12} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Footer */}
+                <div className="px-5 py-3 border-t" style={{ borderColor: 'rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.02)' }}>
+                  <p className="text-[10px] text-center font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.25)' }}>Fin des notifications</p>
+                </div>
+              </div>
+            )}
           </div>
-          <div className="flex items-center gap-3 border-l pl-4" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
-            <div className="text-right">
-              <p className="text-sm font-semibold text-white">Admin User</p>
-              <p className="text-[10px] text-white/40">Super Administrator</p>
-            </div>
-            <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-black text-sm"
-              style={{ background: 'linear-gradient(135deg,#cd7329,#eb8232)' }}>A</div>
+
+          <div className="relative" ref={profileRef}>
+            <button 
+              onClick={() => setProfileOpen(o => !o)}
+              className="flex items-center gap-3 border-l pl-4 hover:opacity-80 transition-all cursor-pointer outline-none" 
+              style={{ borderColor: 'rgba(255,255,255,0.1)' }}
+            >
+              <div className="text-right hidden sm:block">
+                <p className="text-sm font-semibold text-white">Admin User</p>
+                <p className="text-[10px] text-white/40 uppercase tracking-widest font-bold">Super Administrateur</p>
+              </div>
+              <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-black text-sm shadow-lg transform transition-transform"
+                style={{ 
+                  background: 'linear-gradient(135deg,#cd7329,#eb8232)',
+                  transform: profileOpen ? 'scale(1.1)' : 'scale(1)'
+                }}>A</div>
+            </button>
+
+            {/* Profile Dropdown */}
+            {profileOpen && (
+              <div className="absolute right-0 top-[calc(100%+10px)] w-56 rounded-2xl shadow-2xl border overflow-hidden z-50 animate-in fade-in zoom-in duration-200"
+                style={{ background: '#1e293b', borderColor: 'rgba(255,255,255,0.1)' }}>
+                
+                <div className="px-5 py-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                  <p className="text-xs font-bold text-white/40 uppercase tracking-widest">Compte Admin</p>
+                  <p className="text-sm font-bold text-white mt-1">Super Administrateur</p>
+                </div>
+
+                <div className="p-2">
+                  <button 
+                    onClick={() => { setProfileOpen(false); navigate('/responsable/settings'); }}
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-bold text-white/70 hover:text-white hover:bg-white/5 transition-all"
+                  >
+                    <Settings size={16} /> Paramètres
+                  </button>
+                  <button 
+                    onClick={() => { setProfileOpen(false); navigate('/auth/login'); }}
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-bold text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all"
+                  >
+                    <LogOut size={16} /> Se déconnecter
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </header>
@@ -147,7 +296,8 @@ const Dashboard = () => (
       </div>
     </main>
   </div>
-);
+  );
+};
 
 /* ── Sub-components ── */
 const NavItem = ({ icon, label, path, active = false }) => {
