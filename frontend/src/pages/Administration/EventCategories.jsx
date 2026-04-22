@@ -1,132 +1,114 @@
-import React, { useState } from 'react';
-import { 
-  Plus, Edit2, Trash2, Tag, Search, Bell, Settings, LogOut, 
-  LayoutDashboard, CalendarCheck, Users, Save, X 
+import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  Plus, Edit2, Trash2, Tag, Search, Bell, Settings, LogOut,
+  LayoutDashboard, CalendarCheck, Users, Save, X,
+  CheckCircle2, AlertTriangle, CheckCheck
 } from 'lucide-react';
 
+const GLASS       = { background: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.08)' };
+const GLASS_INPUT = { background: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.12)' };
+
+const PRESET_COLORS = [
+  '#cd7329', '#6366F1', '#10B981', '#F59E0B',
+  '#EC4899', '#06B6D4', '#8B5CF6', '#ef4444',
+];
+
+const ADMIN_NOTIFS = [
+  { id: 1, icon: <Users size={16} />, iconBg: 'rgba(205,115,41,0.18)', iconColor: '#cd7329', title: 'Nouvelle demande organisateur', desc: 'Le Club Informatique a demandé le statut organisateur.', time: 'Il y a 2 min', read: false },
+  { id: 2, icon: <CalendarCheck size={16} />, iconBg: 'rgba(99,102,241,0.18)', iconColor: '#6366F1', title: 'Événement en attente', desc: '"Science Fair 2026" attend votre validation.', time: 'Il y a 30 min', read: false },
+  { id: 3, icon: <AlertTriangle size={16} />, iconBg: 'rgba(245,158,11,0.18)', iconColor: '#F59E0B', title: 'Capacité critique', desc: 'Hackathon 2025 — seulement 2 places restantes.', time: 'Il y a 1h', read: false },
+  { id: 4, icon: <CheckCircle2 size={16} />, iconBg: 'rgba(16,185,129,0.18)', iconColor: '#10B981', title: 'Événement validé', desc: '"Cultural Night 2026" est maintenant en ligne.', time: 'Hier', read: true },
+];
+
 const EventCategories = () => {
-  // بيانات الأصناف الموجودة
+  const navigate = useNavigate();
   const [categories, setCategories] = useState([
-    { id: 1, name: 'Science & Technology', count: 42, color: '#1E3A8A' },
-    { id: 2, name: 'Academic', count: 52, color: '#6366F1' },
-    { id: 3, name: 'Sports', count: 28, color: '#10B981' },
-    { id: 4, name: 'Cultural', count: 35, color: '#F59E0B' },
+    { id: 1, name: 'Sociale',    count: 42, color: '#cd7329' },
+    { id: 2, name: 'Académique', count: 52, color: '#6366F1' },
+    { id: 3, name: 'Sports',     count: 28, color: '#10B981' },
+    { id: 4, name: 'Culturel',   count: 35, color: '#F59E0B' },
   ]);
 
+  /* Dropdown States */
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [notifications, setNotifications] = useState(ADMIN_NOTIFS);
+  const notifRef = useRef(null);
+  const profileRef = useRef(null);
+
+  const unreadCount = notifications.filter(n => !n.read).length;
+  const markAllRead = () => setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+  const dismiss = (id) => setNotifications(prev => prev.filter(n => n.id !== id));
+
+  useEffect(() => {
+    const h = (e) => {
+      if (notifRef.current && !notifRef.current.contains(e.target)) setNotifOpen(false);
+      if (profileRef.current && !profileRef.current.contains(e.target)) setProfileOpen(false);
+    };
+    document.addEventListener('mousedown', h);
+    return () => document.removeEventListener('mousedown', h);
+  }, []);
+
+  /* Category Handlers */
   const [isAdding, setIsAdding] = useState(false);
+  const [newName, setNewName] = useState('');
+  const [newColor, setNewColor] = useState('#cd7329');
+  const [editId, setEditId] = useState(null);
+  const [editName, setEditName] = useState('');
+  const [editColor, setEditColor] = useState('');
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [toast, setToast] = useState(null);
+  const showToast = (msg, type = 'success') => { setToast({ msg, type }); setTimeout(() => setToast(null), 3000); };
+
+  const handleAdd = () => { if (!newName.trim()) return; setCategories(prev => [...prev, { id: Date.now(), name: newName.trim(), count: 0, color: newColor }]); showToast(`Catégorie ajoutée.`); setNewName(''); setIsAdding(false); };
+  const startEdit = (cat) => { setEditId(cat.id); setEditName(cat.name); setEditColor(cat.color); };
+  const saveEdit = () => { if (!editName.trim()) return; setCategories(prev => prev.map(c => c.id === editId ? { ...c, name: editName.trim(), color: editColor } : c)); showToast(`Mise à jour.`); setEditId(null); };
+  const confirmDelete = () => { setCategories(prev => prev.filter(c => c.id !== deleteTarget.id)); showToast(`Supprimée.`, 'error'); setDeleteTarget(null); };
 
   return (
-    <div className="flex h-screen bg-slate-50 font-sans text-slate-900 overflow-hidden">
-      
-      {/* Sidebar - Reusable */}
-      <aside className="w-64 bg-[#1E3A8A] text-white flex flex-col shrink-0">
-        <div className="p-6">
-          <h1 className="text-xl font-bold uppercase tracking-wider">UIZ University</h1>
-          <p className="text-xs text-blue-200">Event Management</p>
-        </div>
-        <nav className="flex-1 px-4 space-y-2 mt-4">
-          <NavItem icon={<LayoutDashboard size={20} />} label="Dashboard" />
-          <NavItem icon={<CalendarCheck size={20} />} label="Event Validation" />
-          <NavItem icon={<Users size={20} />} label="User Management" />
-          <NavItem icon={<Bell size={20} />} label="Notifications" />
-          {/* هاد الصفحة نقدرو نعتبروها جزء من الإعدادات أو الإدارة */}
-          <NavItem icon={<Tag size={20} />} label="Categories" active />
-        </nav>
-        <div className="p-4 border-t border-blue-800 space-y-2">
-          <NavItem icon={<Settings size={20} />} label="Settings" />
-          <NavItem icon={<LogOut size={20} />} label="Logout" />
-        </div>
+    <div className="flex h-screen overflow-hidden font-sans" style={{ background: '#0f172a' }}>
+      {toast && (<div className="fixed top-6 right-6 z-[100] flex items-center gap-3 px-5 py-3 rounded-2xl shadow-2xl text-sm font-bold animate-in fade-in" style={{ background: toast.type === 'success' ? '#10B981' : '#ef4444', color: '#fff' }}>{toast.type === 'success' ? <CheckCircle2 size={18}/>:<Trash2 size={16}/>}{toast.msg}</div>)}
+      <aside className="w-64 flex flex-col shrink-0" style={{ background: 'linear-gradient(145deg,rgba(205,115,41,0.95),rgba(168,85,20,0.9))' }}>
+        <div className="p-6 border-b border-white/10"><h1 className="text-xl font-black uppercase tracking-wider text-white">UIZ University</h1><p className="text-xs text-white/60 mt-1">Administration</p></div>
+        <nav className="flex-1 px-4 space-y-1 mt-4 overflow-y-auto"><NavItem path="/responsable" icon={<LayoutDashboard size={20}/>} label="Dashboard" /><NavItem path="/responsable/events" icon={<CalendarCheck size={20}/>} label="Event Validation" /><NavItem path="/responsable/users" icon={<Users size={20}/>} label="User Management" /><NavItem path="/responsable/notifications" icon={<Bell size={20}/>} label="Notifications" /><NavItem path="/responsable/categories" icon={<Tag size={20}/>} label="Categories" active /></nav>
+        <div className="mt-auto p-4 border-t border-white/10 space-y-1 shrink-0"><NavItem path="/responsable/settings" icon={<Settings size={20}/>} label="Settings" /><NavItem path="/auth/login" icon={<LogOut size={20}/>} label="Logout" /></div>
       </aside>
 
-      {/* Main Content */}
       <div className="flex-1 flex flex-col min-w-0">
-        
-        {/* Header */}
-        <header className="bg-white h-16 border-b flex items-center justify-between px-8 shrink-0 z-10">
-          <div className="relative w-96">
-            <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
-              <Search size={18} />
-            </span>
-            <input className="block w-full pl-10 pr-3 py-2 border border-slate-200 rounded-lg bg-slate-50 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Search categories..." />
-          </div>
+        <header className="h-16 border-b flex items-center justify-between px-8 sticky top-0 z-10 shrink-0" style={{ background: 'rgba(15,23,42,0.85)', backdropFilter: 'blur(12px)', borderColor: 'rgba(255,255,255,0.08)' }}>
+          <div className="relative w-80"><Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30"/><input className="w-full pl-9 pr-3 py-2 rounded-lg text-sm text-white border-none outline-none focus:ring-1 focus:ring-orange-500 transition-all" style={{ background: 'rgba(255,255,255,0.06)' }} placeholder="Search categories..." /></div>
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 bg-blue-900 rounded-full flex items-center justify-center text-white font-bold">U</div>
+            <div className="relative" ref={notifRef}><button onClick={() => setNotifOpen(o => !o)} className="relative p-2 rounded-full cursor-pointer transition-all" style={{ background: notifOpen ? 'rgba(205,115,41,0.2)' : 'rgba(255,255,255,0.06)', color: notifOpen ? '#cd7329' : 'rgba(255,255,255,0.5)' }}><Bell size={18} />{unreadCount > 0 && (<span className="absolute top-1 right-1 min-w-[16px] h-[16px] rounded-full text-white text-[9px] flex items-center justify-center font-bold" style={{ background: '#cd7329' }}>{unreadCount}</span>)}</button>{notifOpen && (<div className="absolute right-0 top-[calc(100%+10px)] w-[360px] rounded-2xl shadow-2xl border border-white/10 overflow-hidden z-50 animate-in fade-in" style={{ background: '#1e293b' }}><div className="px-5 py-3 border-b border-white/5 font-bold text-white flex justify-between items-center text-sm">Notifications {unreadCount > 0 && <button onClick={markAllRead} className="text-[10px] text-orange-400">Tout marquer</button>}</div><div className="max-h-[320px] overflow-y-auto divide-y divide-white/5">{notifications.length === 0 ? <p className="py-10 text-center text-white/20 text-sm">Aucune notification</p> : notifications.map(n => <div key={n.id} className="p-4" style={{ background: n.read ? 'transparent' : 'rgba(205,115,41,0.06)' }}><p className="font-bold text-white text-[13px]">{n.title}</p><p className="text-[11px] text-white/40">{n.desc}</p></div>)}</div></div>)}</div>
+            <div className="relative" ref={profileRef}><button onClick={() => setProfileOpen(o => !o)} className="flex items-center gap-3 border-l pl-4 hover:opacity-80 transition-all outline-none" style={{ borderColor: 'rgba(255,255,255,0.1)' }}><div className="text-right hidden sm:block"><p className="text-sm font-semibold text-white">Admin User</p><p className="text-[10px] text-white/40 uppercase font-bold tracking-widest">Admin</p></div><div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-black text-sm shadow-xl" style={{ background: 'linear-gradient(135deg,#cd7329,#eb8232)', transform: profileOpen ? 'scale(1.1)' : 'scale(1)' }}>A</div></button>{profileOpen && (<div className="absolute right-0 top-[calc(100%+10px)] w-56 rounded-2xl shadow-2xl border border-white/10 overflow-hidden z-50 animate-in fade-in" style={{ background: '#1e293b' }}><div className="px-5 py-4 border-b border-white/5"><p className="text-xs font-bold text-white/40 uppercase">Compte</p><p className="text-sm font-bold text-white mt-1">Super Admin</p></div><div className="p-2"><button onClick={() => { setProfileOpen(false); navigate('/responsable/settings'); }} className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-bold text-white/70 hover:bg-white/5 transition-all focus:outline-none"><Settings size={16}/> Paramètres</button><button onClick={() => { setProfileOpen(false); navigate('/auth/login'); }} className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-bold text-red-500 hover:bg-red-500/10 transition-all focus:outline-none"><LogOut size={16}/> Déconnexion</button></div></div>)}</div>
           </div>
         </header>
 
-        {/* Content Area */}
-        <div className="flex-1 overflow-y-auto p-8">
+        <div className="flex-1 overflow-y-auto p-8" style={{ background: '#0f172a' }}>
           <div className="max-w-5xl mx-auto space-y-6">
-            
-            <div className="flex justify-between items-center">
-              <div>
-                <h2 className="text-2xl font-bold text-slate-800">Event Categories</h2>
-                <p className="text-sm text-slate-500">Manage classification for university events</p>
-              </div>
-              <button 
-                onClick={() => setIsAdding(true)}
-                className="flex items-center gap-2 bg-[#1E3A8A] text-white px-4 py-2 rounded-lg font-bold hover:bg-blue-900 transition-all shadow-md"
-              >
-                <Plus size={20} />
-                Add New Category
-              </button>
-            </div>
-
-            {/* Form لإضافة صنف جديد (كيبان غير فاش كتكليكي على الزر) */}
-            {isAdding && (
-              <div className="bg-white border-2 border-blue-100 rounded-xl p-6 shadow-lg animate-in fade-in slide-in-from-top-4">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="font-bold text-slate-700">Add New Category</h3>
-                  <button onClick={() => setIsAdding(false)} className="text-slate-400 hover:text-red-500"><X size={20} /></button>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <input className="col-span-1 md:col-span-2 px-4 py-2 border border-slate-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500" placeholder="Category Name (e.g. Workshop)" />
-                  <input type="color" className="w-full h-10 p-1 border border-slate-200 rounded-lg cursor-pointer" defaultValue="#1E3A8A" />
-                </div>
-                <div className="mt-4 flex justify-end gap-2">
-                  <button className="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm font-bold" onClick={() => setIsAdding(false)}>Cancel</button>
-                  <button className="px-6 py-2 bg-emerald-500 text-white rounded-lg text-sm font-bold hover:bg-emerald-600 flex items-center gap-2">
-                    <Save size={16} /> Save Category
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {/* List of Categories */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="flex justify-between items-center"><div><h2 className="text-2xl font-bold text-white">Event Categories</h2><p className="text-sm text-white/40 mt-1">Classification des événements</p></div><button onClick={() => { setIsAdding(true); setEditId(null); }} className="flex items-center gap-2 text-white px-5 py-2.5 rounded-xl font-bold hover:opacity-90 shadow-lg" style={{ background: '#cd7329' }}><Plus size={18}/> Add Category</button></div>
+            {isAdding && (<div className="rounded-2xl border p-6 bg-white/5 border-white/10 animate-in zoom-in"><div className="flex justify-between items-center mb-5"><h3 className="font-bold text-white">New Category</h3><button onClick={() => setIsAdding(false)} className="text-white/40 hover:text-red-400"><X size={20}/></button></div><div className="grid grid-cols-1 md:grid-cols-2 gap-4"><input className="px-4 py-2.5 rounded-lg text-sm bg-white/5 text-white border border-white/10 outline-none focus:border-orange-500" placeholder="Nom..." value={newName} onChange={e => setNewName(e.target.value)} /><div className="flex gap-2 flex-wrap">{PRESET_COLORS.map(c => <button key={c} onClick={() => setNewColor(c)} className={`w-6 h-6 rounded-full border-2 ${newColor === c ? 'border-white' : 'border-transparent'}`} style={{ background: c }} />)}</div></div><div className="mt-4 flex justify-end gap-3"><button onClick={() => setIsAdding(false)} className="px-4 py-2 rounded-lg font-bold text-white/40">Cancel</button><button onClick={handleAdd} className="px-6 py-2 rounded-lg font-bold text-white bg-orange-500">Save</button></div></div>)}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {categories.map((cat) => (
-                <div key={cat.id} className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-all group">
-                  <div className="flex justify-between items-start">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-xl flex items-center justify-center text-white" style={{ backgroundColor: cat.color }}>
-                        <Tag size={24} />
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-slate-800">{cat.name}</h4>
-                        <p className="text-xs text-slate-400">{cat.count} Events linked</p>
-                      </div>
+                <div key={cat.id} className="rounded-2xl border p-6 bg-white/5 border-white/10 group transition-all">
+                  {editId === cat.id ? (<div className="space-y-4"><input className="w-full px-3 py-2 rounded-lg text-sm bg-white/5 text-white border border-white/10 outline-none focus:border-orange-500" value={editName} onChange={e => setEditName(e.target.value)} autoFocus /><div className="flex gap-2 flex-wrap">{PRESET_COLORS.map(c => <button key={c} onClick={() => setEditColor(c)} className={`w-6 h-6 rounded-full border-2 ${editColor === c ? 'border-white' : 'border-transparent'}`} style={{ background: c }} />)}</div><div className="flex gap-2"><button onClick={saveEdit} className="flex-1 py-2 font-bold bg-emerald-500 text-white rounded-lg">Save</button><button onClick={() => setEditId(null)} className="flex-1 py-2 font-bold bg-white/5 text-white/40 rounded-lg">Cancel</button></div></div>) : (
+                    <div className="flex justify-between items-start">
+                      <div className="flex items-center gap-4"><div className="w-12 h-12 rounded-xl flex items-center justify-center text-white shadow-xl font-bold" style={{ background: cat.color }}><Tag size={22}/></div><div><h4 className="font-bold text-white">{cat.name}</h4><p className="text-xs text-white/35 mt-0.5">{cat.count} événements</p></div></div>
+                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity"><button onClick={() => startEdit(cat)} className="p-2 text-white/40 hover:text-white"><Edit2 size={15}/></button><button onClick={() => setDeleteTarget(cat)} className="p-2 text-white/40 hover:text-red-400"><Trash2 size={15} /></button></div>
                     </div>
-                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button className="p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg"><Edit2 size={16} /></button>
-                      <button className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg"><Trash2 size={16} /></button>
-                    </div>
-                  </div>
+                  )}
                 </div>
               ))}
             </div>
-
           </div>
         </div>
       </div>
+
+      {deleteTarget && (<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 overflow-hidden" onClick={() => setDeleteTarget(null)}><div className="bg-white rounded-3xl p-7 w-full max-w-sm animate-in zoom-in" onClick={e => e.stopPropagation()}><h3 className="text-lg font-bold mb-4 flex items-center gap-2"><AlertTriangle className="text-red-500" size={24}/> Supprimer ?</h3><p className="text-slate-500 text-sm mb-6">Confirmer la suppression de «{deleteTarget.name}» ?</p><div className="flex gap-3"><button onClick={() => setDeleteTarget(null)} className="flex-1 py-3 font-bold bg-slate-100">Annuler</button><button onClick={confirmDelete} className="flex-1 py-3 font-bold bg-red-500 text-white">Supprimer</button></div></div></div>)}
     </div>
   );
 };
 
-// Reusable NavItem
-const NavItem = ({ icon, label, active = false }) => (
-  <div className={`flex items-center gap-3 px-4 py-3 rounded-lg cursor-pointer transition-colors ${active ? 'bg-white text-[#1E3A8A]' : 'hover:bg-blue-800 text-blue-100'}`}>
-    {icon} <span className="text-sm font-medium">{label}</span>
-  </div>
-);
+const NavItem = ({ icon, label, path, active = false }) => { const navigate = useNavigate(); return ( <div onClick={() => navigate(path)} className={`flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all ${active ? 'bg-white/20 text-white font-bold' : 'text-white/70 hover:bg-white/10'}`}>{icon} <span className="text-sm">{label}</span> </div> ); };
 
 export default EventCategories;
