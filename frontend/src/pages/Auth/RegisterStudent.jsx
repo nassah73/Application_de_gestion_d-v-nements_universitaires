@@ -5,6 +5,16 @@ import Icon_image from "../../assets/Masters_et_Masters_Spécialisés_à_la_FP_T
 import style from './style.module.css';
 
 export default function RegisterStudent() {
+    const handelForm=(formData)=>{
+       const FullName =formData.get('FullName')
+       const CNE=formData.get('CNE')
+       const Email=formData.get('Email')
+       const telephone= formData.get('tel')
+       const filier=formData.get('filier')
+       const nevaux=formData.get('Niveau')
+       const password=formData.get('password')
+       console.log(FullName + ' / '+CNE+' / '+Email +' / '+nevaux + ' / '+password+' / '+filier)
+    }
     return (
       <div className={style.content}>
         <div className={style.container} >
@@ -19,49 +29,49 @@ export default function RegisterStudent() {
                 <h1>Inscription</h1>
                 <p className={style.subtitle} style={{ marginBottom: '15px' }}>Créez votre compte étudiant</p>
 
-                <form>
+                <form action={handelForm}>
                    
                     <div className={style.inputRow} style={{ marginBottom: '12px', gap: '15px' }}>
                         <div className={style.inputGroup} style={{ marginBottom: '0' }}>
                             <label>Nom et Prénom</label>
                             <div className={style.inputWrapper}>
-                                <input type="text" placeholder="Ahmed Karim" required />
+                                <input name='FullName' type="text" placeholder="Ahmed Karim" required />
                                 <User className={style.inputIcon} size={16} />
                             </div>
                         </div>
                         <div className={style.inputGroup} style={{ marginBottom: '0' }}>
                             <label>CNE</label>
                             <div className={style.inputWrapper}>
-                                <input type="text" placeholder="D123456789" required />
+                                <input name='CNE' type="text" placeholder="D123456789" required />
                                 <Hash className={style.inputIcon} size={16} />
                             </div>
                         </div>
                     </div>
 
-                    {/* Row 2: Email & Tel */}
+                    
                     <div className={style.inputRow} style={{ marginBottom: '12px', gap: '15px' }}>
                         <div className={style.inputGroup} style={{ marginBottom: '0' }}>
                             <label>Email</label>
                             <div className={style.inputWrapper}>
-                                <input type="email" placeholder="hassan@edu.uiz.ac.ma" required />
+                                <input name='Email' type="email" placeholder="hassan@edu.uiz.ac.ma" required />
                                 <Mail className={style.inputIcon} size={16} />
                             </div>
                         </div>
                         <div className={style.inputGroup} style={{ marginBottom: '0' }}>
                             <label>Téléphone</label>
                             <div className={style.inputWrapper}>
-                                <input type="tel" placeholder="+212 6..." required />
+                                <input name="tel" type="tel" placeholder="+212 6..." required />
                                 <Phone className={style.inputIcon} size={16} />
                             </div>
                         </div>
                     </div>
 
-                    {/* Row 3: Filière & Niveau */}
+                    
                     <div className={style.inputRow} style={{ marginBottom: '12px', gap: '15px' }}>
                         <div className={style.inputGroup} style={{ marginBottom: '0' }}>
                             <label>Filière</label>
                             <div className={style.inputWrapper}>
-                                <select required defaultValue="">
+                                <select required defaultValue="" name='filier'>
                                     <option value="" disabled>Filière</option>
                                     <option value="SMI">SMI</option>
                                     <option value="SMA">SMA</option>
@@ -73,30 +83,24 @@ export default function RegisterStudent() {
                         <div className={style.inputGroup} style={{ marginBottom: '0' }}>
                             <label>Niveau</label>
                             <div className={style.inputWrapper}>
-                                <select required defaultValue="">
+                                <select required defaultValue="" name='Niveau'>
                                     <option value="" disabled>Niveau</option>
-                                    <option value="1">1ère Année</option>
-                                    <option value="2">2ème Année</option>
-                                    <option value="3">3ème Année</option>
+                                    <option value="1ère Année">1ère Année</option>
+                                    <option value="2ème Année">2ème Année</option>
+                                    <option value="3ème Année">3ème Année</option>
                                 </select> 
                                 <GraduationCap className={style.inputIcon} size={16} />
                             </div>
                         </div>
                     </div>
 
-                    {/* Row 4: Année Univ & Password */}
+                    
                     <div className={style.inputRow} style={{ marginBottom: '12px', gap: '15px' }}>
-                        <div className={style.inputGroup} style={{ marginBottom: '0' }}>
-                            <label>Année Univ</label>
-                            <div className={style.inputWrapper}>
-                                <input type="text" placeholder="2023-2024" required />
-                                <Calendar className={style.inputIcon} size={16} />
-                            </div>
-                        </div>
+                        
                         <div className={style.inputGroup} style={{ marginBottom: '0' }}>
                             <label>Mot de passe</label>
                             <div className={style.inputWrapper}>
-                                <input type="password" placeholder="********" required />
+                                <input name='password' type="password" placeholder="********" required />
                                 <Lock className={style.inputIcon} size={16} />
                             </div>
                         </div>
