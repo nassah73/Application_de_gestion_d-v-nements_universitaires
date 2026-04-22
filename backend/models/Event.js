@@ -1,12 +1,14 @@
-/*const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-const EventSchema = new mongoose.Schema({
-    title: { type: String, required: true },
-    description: String,
-    date: Date,
-    location: String,
-    category: String, // مثلا: Sport, Culture, Science
-    organizer: String
+const studentSchema = new mongoose.Schema({
+  fullName: { type: String, required: true },
+  cne: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
+  phone: String,
+  filiere: String,
+  niveau: String,
+  anneeUniv: String,
+  role: { type: String, default: 'student' } 
 });
 
-module.exports = mongoose.model('Event', EventSchema);*/
+module.exports = mongoose.model('Student', studentSchema);
