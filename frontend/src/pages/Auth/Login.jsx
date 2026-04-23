@@ -3,16 +3,36 @@ import { useNavigate, NavLink } from 'react-router-dom';
 import { Mail, Lock, ArrowRight } from 'lucide-react';// pour les icons 
 import Icon_image from "../../assets/Masters_et_Masters_Spécialisés_à_la_FP_Taroudant_2020-2021-removebg-preview.png";
 import style from './style.module.css';
-
+import axios from 'axios';
 export default function Login() {
     const Navigate = useNavigate();
-    const [role, setRole] = useState('student');
+   
+   
 
-    const handleLogin = () => {
-        if (role === 'student') Navigate('/app/Home');
-        else if (role === 'organizer') Navigate('/organisateur');
-        else if (role === 'administration') Navigate('/responsable');
-    };
+
+    const handform =async(e)=>{
+        e.preventDefault(); 
+        try{
+
+            const formData = new  FormData(e.target)
+            const data = Object.fromEntries(formData.entries())
+          const res =await axios.post('http://localhost:5000/api/signin',data)
+          console.log("Connexion réussie ✅", res.data);
+        
+        
+        if (data.role === 'student') Navigate('/app/Home');
+        else if (data.role === 'organizer') Navigate('/organisateur');
+        else if (data.role === 'administration') Navigate('/responsable');
+
+
+        }catch(err){
+             console.log("Erreur de connexion ❌", err.response?.data || err.message);
+             alert(err.response?.data?.message || "Email ou mot de passe incorrect");
+        }
+          
+           
+    }
+
 
     return (
         <div className={style.content}>
@@ -30,7 +50,7 @@ export default function Login() {
                     <h1>Connexion</h1>
                     <p className={style.subtitle}>Accédez à votre espace événementiel</p>
 
-                    <form >
+                    <form  onSubmit={handform}>
                         <div className={style.inputGroup}>
                             <label htmlFor="email">Adresse Email</label>
                             <div className={style.inputWrapper}>
@@ -47,23 +67,9 @@ export default function Login() {
                             </div>
                         </div>
 
-                        <div className={style.inputGroup}>
-                            <label htmlFor="role">Connexion en tant que</label>
-                            <div className={style.inputWrapper}>
-                                <select
-                                    name="role"
-                                    id="role"
-                                    value={role}
-                                    onChange={(e) => setRole(e.target.value)}
-                                >
-                                    <option value="student">Étudiant</option>
-                                    <option value="organizer">Organisateur</option>
-                                    <option value="administration">Administration</option>
-                                </select>
-                            </div>
-                        </div>
+                        
 
-                        <button type="button" className={style.submitBtn} onClick={handleLogin}>
+                        <button type="submit" className={style.submitBtn} >
                             Se Connecter <ArrowRight size={20} strokeWidth={2.5} />
                         </button>
                     </form>

@@ -1,20 +1,31 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { User, Mail, BookOpen, Lock, UserPlus, Phone, Hash, GraduationCap, Calendar } from 'lucide-react';
+import { User, Mail, BookOpen, Lock, UserPlus, Phone, Hash, GraduationCap } from 'lucide-react';
 import Icon_image from "../../assets/Masters_et_Masters_Spécialisés_à_la_FP_Taroudant_2020-2021-removebg-preview.png";
 import style from './style.module.css';
+import axios from 'axios';
 
 export default function RegisterStudent() {
-    const handelForm=(formData)=>{
-       const FullName =formData.get('FullName')
-       const CNE=formData.get('CNE')
-       const Email=formData.get('Email')
-       const telephone= formData.get('tel')
-       const filier=formData.get('filier')
-       const nevaux=formData.get('Niveau')
-       const password=formData.get('password')
-       console.log(FullName + ' / '+CNE+' / '+Email +' / '+nevaux + ' / '+password+' / '+filier)
+     
+    const handelForm = async (e) => {
+        e.preventDefault(); 
+        
+        const formData = new FormData(e.target); 
+        const data = Object.fromEntries(formData.entries());
+        
+        console.log("Data being sent:", data); 
+
+        try {
+          
+            const reponse = await axios.post('http://localhost:5000/api/register', data);
+            console.log('Response:', reponse.data);
+            alert("Success! 🎉 Student registered.");
+        } catch (err) {
+            console.error('Error detail:', err.response?.data || err.message);
+            alert("Error sending data ❌: " + (err.response?.data?.error || "Check console"));
+        }
     }
+
     return (
       <div className={style.content}>
         <div className={style.container} >
@@ -29,49 +40,53 @@ export default function RegisterStudent() {
                 <h1>Inscription</h1>
                 <p className={style.subtitle} style={{ marginBottom: '15px' }}>Créez votre compte étudiant</p>
 
-                <form action={handelForm}>
+                {/* استعملنا onSubmit باش نتحكمو فـ Axios */}
+                <form onSubmit={handelForm}>
                    
                     <div className={style.inputRow} style={{ marginBottom: '12px', gap: '15px' }}>
                         <div className={style.inputGroup} style={{ marginBottom: '0' }}>
                             <label>Nom et Prénom</label>
                             <div className={style.inputWrapper}>
-                                <input name='FullName' type="text" placeholder="Ahmed Karim" required />
+                                {/* بدلت name لـ fullName باش يطابق الـ Schema */}
+                                <input name='fullName' type="text" placeholder="Ahmed Karim" required />
                                 <User className={style.inputIcon} size={16} />
                             </div>
                         </div>
                         <div className={style.inputGroup} style={{ marginBottom: '0' }}>
                             <label>CNE</label>
                             <div className={style.inputWrapper}>
-                                <input name='CNE' type="text" placeholder="D123456789" required />
+                                {/* بدلت name لـ cne */}
+                                <input name='cne' type="text" placeholder="D123456789" required />
                                 <Hash className={style.inputIcon} size={16} />
                             </div>
                         </div>
                     </div>
 
-                    
                     <div className={style.inputRow} style={{ marginBottom: '12px', gap: '15px' }}>
                         <div className={style.inputGroup} style={{ marginBottom: '0' }}>
                             <label>Email</label>
                             <div className={style.inputWrapper}>
-                                <input name='Email' type="email" placeholder="hassan@edu.uiz.ac.ma" required />
+                                {/* بدلت name لـ email */}
+                                <input name='email' type="email" placeholder="hassan@edu.uiz.ac.ma" required />
                                 <Mail className={style.inputIcon} size={16} />
                             </div>
                         </div>
                         <div className={style.inputGroup} style={{ marginBottom: '0' }}>
                             <label>Téléphone</label>
                             <div className={style.inputWrapper}>
+                                {/* بدلت name لـ tel باش يطابق الـ Model */}
                                 <input name="tel" type="tel" placeholder="+212 6..." required />
                                 <Phone className={style.inputIcon} size={16} />
                             </div>
                         </div>
                     </div>
 
-                    
                     <div className={style.inputRow} style={{ marginBottom: '12px', gap: '15px' }}>
                         <div className={style.inputGroup} style={{ marginBottom: '0' }}>
                             <label>Filière</label>
                             <div className={style.inputWrapper}>
-                                <select required defaultValue="" name='filier'>
+                                {/* بدلت name لـ filiere */}
+                                <select required defaultValue="" name='filiere'>
                                     <option value="" disabled>Filière</option>
                                     <option value="SMI">SMI</option>
                                     <option value="SMA">SMA</option>
@@ -83,7 +98,8 @@ export default function RegisterStudent() {
                         <div className={style.inputGroup} style={{ marginBottom: '0' }}>
                             <label>Niveau</label>
                             <div className={style.inputWrapper}>
-                                <select required defaultValue="" name='Niveau'>
+                                {/* بدلت name لـ niveau */}
+                                <select required defaultValue="" name='niveau'>
                                     <option value="" disabled>Niveau</option>
                                     <option value="1ère Année">1ère Année</option>
                                     <option value="2ème Année">2ème Année</option>
@@ -94,9 +110,7 @@ export default function RegisterStudent() {
                         </div>
                     </div>
 
-                    
                     <div className={style.inputRow} style={{ marginBottom: '12px', gap: '15px' }}>
-                        
                         <div className={style.inputGroup} style={{ marginBottom: '0' }}>
                             <label>Mot de passe</label>
                             <div className={style.inputWrapper}>
