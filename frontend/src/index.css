@@ -5,7 +5,7 @@
 @layer components {
   /* الـ Container اللي جامع التقويم */
   .custom-calendar {
-    @apply !bg-transparent !border-none !w-140 text-white relative top-2 left-5;
+    @apply !bg-transparent !border-none !w-140 text-white relative top-1 left-2;
   }
 
   /* تخصيص شكل التقويم من الداخل */

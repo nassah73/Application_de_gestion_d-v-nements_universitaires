@@ -3,6 +3,7 @@ import BgImag from '../../assets/bg.jpg'
 import {MapPin,CalendarCheck,Clock ,Search, UserCircle } from 'lucide-react';
 import Data from './data/objet'
 import { useState } from "react";
+import { motion } from "framer-motion";
 export default function Main(){
  const [category,setcategory]=useState('all')
 const handleCategoryChange = (e) => {
@@ -17,7 +18,7 @@ const filterObjet= category==='all'?Data: Data.filter((items)=>items.category===
             <div className="absolute inset-0 bg-gradient-to-br from-black/80 to-slate-900/90" ></div>
             <nav className=" w-[1300px]  mx-auto text-white relative mt-5">
                 <h1 className="font-[600] uppercase text-4xl italic">Discover Events</h1>
-                <div className="flex justify-around mt-5 gap-4">
+                <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}  transition={{ duration: 1, ease: "easeOut" }} className="flex justify-around mt-5 gap-4">
                     <div className="flex mt-5 gap-2 bg-white/5 backdrop-blur-md border border-white/10 w-[40%] py-2 px-4 rounded-xl relative shadow-lg">
                      <Search className="text-[#cd7329] self-center"/>   
                     <form action="" className="w-full flex">
@@ -38,7 +39,7 @@ const filterObjet= category==='all'?Data: Data.filter((items)=>items.category===
                         
                     </div>
                    
-                </div>
+                </motion.div>
 
 
              <section className=" relative mt-10 shadow-l ">
@@ -47,7 +48,7 @@ const filterObjet= category==='all'?Data: Data.filter((items)=>items.category===
                 {filterObjet.map((item, index)=>{
                     return(
                         
-                      <div key={index} className=" h-70 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 rounded-2xl relative shadow-[0_10px_30px_-5px_rgba(0,0,0,0.6)] overflow-hidden border border-white/10">
+                      <motion.div key={index} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}  transition={{ duration: 1, ease: "easeOut" }}  className=" h-70 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 rounded-2xl relative shadow-[0_10px_30px_-5px_rgba(0,0,0,0.6)] overflow-hidden border border-white/10">
                        <img src={BgImag} alt="" className="w-[100%] h-[100%] bg-cover absolute z-0" />
                        <div className="absolute z-10 bg-gradient-to-t from-slate-900 via-slate-900/80 to-black/40 inset-0"></div>
                        <h1 className="absolute z-20 top-3 right-3 bg-[#cd7329] text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">{item.category}</h1>
@@ -63,7 +64,7 @@ const filterObjet= category==='all'?Data: Data.filter((items)=>items.category===
                          </nav>
                         <button className="bg-white/10 backdrop-blur-md border border-white/20 text-[#cd7329] font-bold w-[90%] mx-[5%] h-10 absolute bottom-0 rounded-xl hover:bg-[#cd7329] hover:text-white transition-all cursor-pointer">Check Details</button>
                        </div>
-                       </div>
+                       </motion.div>
                     )
                     
                 })}

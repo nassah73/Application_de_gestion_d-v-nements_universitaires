@@ -3,7 +3,7 @@ import { MapPin, GraduationCap, Clock, CalendarCheckIcon } from "lucide-react";
 import { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-
+import { motion } from "framer-motion";
 export default function Main() {
     // 1. الـ State باش نعرفو التاريخ اللي عزل المستخدم
     const [value, setvalue] = useState(new Date());
@@ -72,7 +72,7 @@ export default function Main() {
                 <section className="max-w-[1300px] flex justify-between mx-auto mt-10 gap-10 px-5">
                     
                    
-                    <div className="w-fit">
+                    <motion.div className="w-fit" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: "easeOut" }}>
                         <div className="bg-white/10 backdrop-blur-xl p-6 rounded-2xl shadow-lg border border-white/20 text-white">
                             <Calendar 
                                 className="custom-calendar" 
@@ -85,10 +85,10 @@ export default function Main() {
                                 📅 Selected: <span className="text-[#cd7329] font-bold">{value.toDateString()}</span>
                              </h1>
                         </div>
-                    </div>
+                    </motion.div>
 
                     
-                    <div className="flex-1 bg-white/10 backdrop-blur-xl rounded-2xl p-8 shadow-lg border border-white/20 min-h-[600px] text-white">
+                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: "easeOut" }} className="flex-1 bg-white/10 backdrop-blur-xl rounded-2xl p-8 shadow-lg border border-white/20 min-h-[600px] text-white">
                         <div className="border-b border-white/10 pb-5 mb-8">
                             <h1 className="text-3xl font-bold text-white">Daily Agenda</h1>
                             <p className="text-[#cd7329] font-bold mt-1">{value.toDateString()}</p>
@@ -127,7 +127,7 @@ export default function Main() {
                                 </div>
                             )}
                         </div>
-                    </div>
+                    </motion.div>
 
                 </section>
             </div>

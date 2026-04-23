@@ -1,7 +1,7 @@
 import Navbar from "../../assets/NavBar"
 import React from 'react';
 import { Calendar, Clock, Users, Trash2, Ticket, Eye } from 'lucide-react';
-
+import { motion } from "framer-motion";
 const MyEvents = () => {
     
   // داتا تجريبية كتشبه للي عندك ف الصورة

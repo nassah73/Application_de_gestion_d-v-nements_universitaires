@@ -1,12 +1,13 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import {useNavigate, NavLink } from 'react-router-dom';
+
 import { User, Mail, BookOpen, Lock, UserPlus, Phone, Hash, GraduationCap } from 'lucide-react';
 import Icon_image from "../../assets/Masters_et_Masters_Spécialisés_à_la_FP_Taroudant_2020-2021-removebg-preview.png";
 import style from './style.module.css';
 import axios from 'axios';
 
 export default function RegisterStudent() {
-     
+     const Navigate=useNavigate();
     const handelForm = async (e) => {
         e.preventDefault(); 
         
@@ -20,6 +21,9 @@ export default function RegisterStudent() {
             const reponse = await axios.post('http://localhost:5000/api/register', data);
             console.log('Response:', reponse.data);
             alert("Success! 🎉 Student registered.");
+            if(reponse.status===201){
+               Navigate('/auth/login')
+            }
         } catch (err) {
             console.error('Error detail:', err.response?.data || err.message);
             alert("Error sending data ❌: " + (err.response?.data?.error || "Check console"));

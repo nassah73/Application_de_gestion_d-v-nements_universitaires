@@ -29,7 +29,7 @@ function App() {
       <Route path="/auth/login" element={<Login />} />
       <Route path="/register-student" element={<RegisterStudent />} />
       <Route path="/register-organisateur" element={<RegisterOrganisateur />} />
-
+     
       {/* --- Student Routes --- */}
       {/* StudentApp gère ses propres routes comme /Home, /Event etc. On utilise * pour lui laisser la main */}
       <Route path="/app/*" element={<StudentApp />} />

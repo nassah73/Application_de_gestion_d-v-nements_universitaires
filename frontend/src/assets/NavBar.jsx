@@ -20,7 +20,7 @@ export default function Navbar() {
   const [profil, setprofil] = useState(false)
   function pr() {
     setprofil(!profil)
-    console.log('taled')
+    
   }
 
   useEffect(() => {
@@ -68,7 +68,7 @@ export default function Navbar() {
         <Bell className='text-slate-400 hover:text-[#cd7329] hover:cursor-pointer transition-colors' size={24} strokeWidth={1.5} />
         <div className=' leading-5'>
           <button className={`hover:cursor-pointer transition-colors ${profil ? 'text-[#cd7329] ' : 'text-slate-400 hover:text-white'}`} onClick={pr} ref={profileRef}><UserCircle size={24} strokeWidth={1.5} /></button>
-          {profil && (<div className='absolute z-30 justify-self-center right-40 h-100 w-80 bg-[#1e293b] border border-white/10 shadow-2xl rounded-2xl'>
+          {profil && (<div className='absolute z-30 justify-self-center right-40 h-110 w-80 bg-[#1e293b] border border-white/10 shadow-2xl rounded-2xl'>
             <div >
               <nav className='flex justify-center'>
                 <img src={Profile} alt="" className='rounded-[50%] h-30 w-30 object-cover object-bottom  mt-2 border-2 border-white/10' />
