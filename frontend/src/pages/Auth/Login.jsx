@@ -16,13 +16,13 @@ export default function Login() {
 
             const formData = new  FormData(e.target)
             const data = Object.fromEntries(formData.entries())
-          const res =await axios.post('http://localhost:5000/api/signin',data)
-          console.log("Connexion réussie ✅", res.data);
+          const respons =await axios.post('http://localhost:5000/api/signin',data)
+          console.log("Connexion réussie ✅", respons.data);
         
         
-        if (data.role === 'student') Navigate('/app/Home');
-        else if (data.role === 'organizer') Navigate('/organisateur');
-        else if (data.role === 'administration') Navigate('/responsable');
+        if ( respons.data.role === 'student') Navigate('/app/Home');
+        else if (respons.data.role  === 'organizer') Navigate('/organisateur');
+        else if (respons.data.role  === 'admin') Navigate('/responsable');
 
 
         }catch(err){

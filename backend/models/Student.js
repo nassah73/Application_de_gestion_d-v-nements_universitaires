@@ -8,7 +8,8 @@ const studentSchema = new mongoose.Schema({
   filiere: String,
   niveau: String,
   anneeUniv: String,
-  role: { type: String, default: 'student' } 
+  role: { type: String, default: 'student' } ,
+  password: { type: String, required: true },
 });
 
 module.exports = mongoose.model('Student', studentSchema);
