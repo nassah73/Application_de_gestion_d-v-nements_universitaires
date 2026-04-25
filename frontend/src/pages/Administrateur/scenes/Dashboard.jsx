@@ -1,6 +1,6 @@
 import { Box, useTheme } from "@mui/material";
-import { tokens } from "../../theme";
-import StatCard from "../../components/StatCard";
+import { tokens } from "../theme";
+import StatCard from "../components/StatCard";
 import PeopleIcon from "@mui/icons-material/People";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import EventIcon from "@mui/icons-material/Event";
