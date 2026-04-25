@@ -1,4 +1,4 @@
-import { Box, useTheme } from "@mui/material";
+import { Box, useTheme, Typography } from "@mui/material";
 import { tokens } from "../theme";
 import StatCard from "../components/StatCard";
 import PeopleIcon from "@mui/icons-material/People";
@@ -17,18 +17,18 @@ import {
 } from "recharts";
 
 const attendanceData = [
-  { month: "Jan", attendance: 2450 },
-  { month: "Feb", attendance: 3200 },
-  { month: "Mar", attendance: 2750 },
-  { month: "Apr", attendance: 4100 },
-  { month: "May", attendance: 3800 },
-  { month: "Jun", attendance: 4500 },
-  { month: "Jul", attendance: 5250 },
-  { month: "Aug", attendance: 4800 },
-  { month: "Sep", attendance: 5900 },
-  { month: "Oct", attendance: 6300 },
-  { month: "Nov", attendance: 5950 },
-  { month: "Dec", attendance: 6550 },
+  { month: "Jan", attendance: 245 },
+  { month: "Fév", attendance: 320 },
+  { month: "Mar", attendance: 275 },
+  { month: "Avr", attendance: 410 },
+  { month: "Mai", attendance: 380 },
+  { month: "Juin", attendance: 450 },
+  { month: "Juil", attendance: 525 },
+  { month: "Août", attendance: 480 },
+  { month: "Sep", attendance: 590 },
+  { month: "Oct", attendance: 630 },
+  { month: "Nov", attendance: 595 },
+  { month: "Déc", attendance: 655 },
 ];
 
 const Dashboard = () => {
@@ -38,34 +38,33 @@ const Dashboard = () => {
   return (
     <Box
       sx={{
-        backgroundColor: colors.primary[500],
-        minHeight: "100vh",
-        p: "30px",
+        backgroundColor: "#0f172a", // slate-900
+        p: "24px",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        overflow: "hidden"
       }}
     >
       {/* Header */}
-      <Box sx={{ mb: "30px" }}>
-        <Box
-          component="h1"
-          sx={{
-            fontSize: "28px",
-            fontWeight: 700,
-            color: colors.grey[100],
-            m: 0,
-            mb: "4px",
-          }}
+      <Box sx={{ mb: "20px", flexShrink: 0 }}>
+        <Typography
+          variant="h2"
+          color="white"
+          fontWeight="900"
+          sx={{ mb: "4px", letterSpacing: "-0.5px" }}
         >
-          Global Statistics
-        </Box>
+          Statistiques Globales
+        </Typography>
         <Box
           component="p"
           sx={{
             fontSize: "14px",
-            color: colors.grey[400],
+            color: "rgba(255, 255, 255, 0.45)",
             m: 0,
           }}
         >
-          Overview of your university events platform
+          Aperçu complet de la plateforme événementielle universitaire
         </Box>
       </Box>
 
@@ -75,154 +74,140 @@ const Dashboard = () => {
           display: "flex",
           flexDirection: "row",
           flexWrap: "wrap",
-          gap: "20px",
-          mb: "30px",
-          
-          
+          gap: "16px",
+          mb: "20px",
+          flexShrink: 0
         }}
       >
         <StatCard
-          title="Total Users"
-          value="12,458"
-          change="+12.5% vs last month"
-          icon={<PeopleIcon />}
-          color="#3b82f6"
+          title="Total Étudiants"
+          value="4,258"
+          change="+12% ce mois"
+          icon={<PeopleIcon sx={{ fontSize: "24px" }} />}
         />
         <StatCard
-          title="Pending Organizers"
-          value="23"
-          change="+3 vs last month"
-          icon={<PersonAddIcon />}
-          color="#f59e0b"
+          title="Organisateurs en attente"
+          value="12"
+          change="+3 nouveaux"
+          icon={<PersonAddIcon sx={{ fontSize: "24px" }} />}
         />
         <StatCard
-          title="Live Events"
-          value="847"
-          change="+127 vs last month"
-          icon={<EventIcon />}
-          color="#22c55e"
+          title="Événements Actifs"
+          value="45"
+          change="+8 cette semaine"
+          icon={<EventIcon sx={{ fontSize: "24px" }} />}
         />
         <StatCard
-          title="Monthly Revenue"
-          value="$48,329"
-          change="+8.2% vs last month"
-          icon={<AttachMoneyIcon />}
-          color="#a855f7"
+          title="Engagement Moyen"
+          value="85%"
+          change="+5.4% vs l'an dernier"
+          icon={<AttachMoneyIcon sx={{ fontSize: "24px" }} />}
         />
       </Box>
 
       {/* Attendance Chart */}
       <Box
         sx={{
-          backgroundColor: colors.primary[400],
-          borderRadius: "12px",
-          border: `1px solid ${colors.primary[300]}`,
+          backgroundColor: "rgba(255, 255, 255, 0.03)",
+          borderRadius: "20px",
+          border: "1px solid rgba(255, 255, 255, 0.08)",
           p: "24px",
+          backdropFilter: "blur(10px)",
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          minHeight: 0 // Importante para flex-shrink y overflow en flexbox
         }}
       >
         {/* Chart Header */}
-        <Box sx={{ mb: "20px" }}>
-          <Box
-            component="h2"
-            sx={{
-              fontSize: "18px",
-              fontWeight: 700,
-              color: colors.grey[100],
-              m: 0,
-              mb: "4px",
-            }}
-          >
-            Event Attendance Trends
+        <Box sx={{ mb: "20px", display: "flex", justifyContent: "space-between", alignItems: "center", flexShrink: 0 }}>
+          <Box>
+            <Box
+              component="h2"
+              sx={{
+                fontSize: "18px",
+                fontWeight: 800,
+                color: "#fff",
+                m: 0,
+                mb: "4px",
+              }}
+            >
+              Tendances de Participation
+            </Box>
+            <Box
+              component="p"
+              sx={{
+                fontSize: "12px",
+                color: "rgba(255, 255, 255, 0.45)",
+                m: 0,
+              }}
+            >
+              Évolution du nombre de participants sur les 12 derniers mois
+            </Box>
           </Box>
-          <Box
-            component="p"
-            sx={{
-              fontSize: "13px",
-              color: colors.grey[400],
-              m: 0,
-            }}
-          >
-            Total event attendance over the past 12 months
+          
+          <Box sx={{ 
+            backgroundColor: "rgba(205, 115, 41, 0.15)", 
+            px: "12px", 
+            py: "4px", 
+            borderRadius: "100px",
+            border: "1px solid rgba(205, 115, 41, 0.3)"
+          }}>
+            <Typography sx={{ color: "#cd7329", fontSize: "11px", fontWeight: 700 }}>
+              Mise à jour en temps réel
+            </Typography>
           </Box>
         </Box>
 
         {/* Recharts Line Chart */}
-        <Box sx={{ width: "100%", height: 380 }}>
+        <Box sx={{ width: "100%", flex: 1, minWidth: 0, minHeight: 0 }}>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
               data={attendanceData}
-              margin={{ top: 10, right: 20, left: 0, bottom: 0 }}
+              margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
             >
+              <defs>
+                <linearGradient id="colorAttendance" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#cd7329" stopOpacity={0.3}/>
+                  <stop offset="95%" stopColor="#cd7329" stopOpacity={0}/>
+                </linearGradient>
+              </defs>
               <CartesianGrid
-                strokeDasharray="4 4"
-                stroke={
-                  theme.palette.mode === "dark"
-                    ? "rgba(255,255,255,0.08)"
-                    : "rgba(0,0,0,0.08)"
-                }
-                vertical={true}
-                horizontal={true}
+                strokeDasharray="3 3"
+                stroke="rgba(255, 255, 255, 0.05)"
+                vertical={false}
               />
               <XAxis
                 dataKey="month"
                 axisLine={false}
                 tickLine={false}
-                tick={{
-                  fill: colors.grey[400],
-                  fontSize: 12,
-                }}
+                tick={{ fill: "rgba(255, 255, 255, 0.3)", fontSize: 11 }}
                 dy={10}
               />
               <YAxis
                 axisLine={false}
                 tickLine={false}
-                tick={{
-                  fill: colors.grey[400],
-                  fontSize: 12,
-                }}
-                tickFormatter={(v) =>
-                  v === 0 ? "0" : `${(v / 1000).toFixed(0)}000`
-                }
-                domain={[0, 8000]}
-                ticks={[0, 2000, 4000, 6000, 8000]}
-                dx={-10}
+                tick={{ fill: "rgba(255, 255, 255, 0.3)", fontSize: 11 }}
+                tickFormatter={(v) => v}
+                domain={[0, 800]}
               />
               <Tooltip
                 contentStyle={{
-                  backgroundColor:
-                    theme.palette.mode === "dark" ? "#1e2a3a" : "#ffffff",
-                  border: "none",
-                  borderRadius: "8px",
-                  boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
-                  color: colors.grey[100],
-                  fontSize: "13px",
+                  backgroundColor: "#1e293b",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  borderRadius: "12px",
+                  boxShadow: "0 10px 30px rgba(0,0,0,0.5)",
+                  color: "#fff",
                 }}
-                labelStyle={{ fontWeight: 600 }}
-                formatter={(value) => [
-                  value.toLocaleString(),
-                  "Attendees",
-                ]}
+                itemStyle={{ color: "#cd7329", fontWeight: 700 }}
               />
               <Line
                 type="monotone"
                 dataKey="attendance"
-                stroke="#1e3a6e"
-                strokeWidth={2.5}
-                dot={(props) => {
-                  const { cx, cy } = props;
-                  return (
-                    <circle
-                      key={`dot-${cx}-${cy}`}
-                      cx={cx}
-                      cy={cy}
-                      r={4}
-                      fill="#1e3a6e"
-                      stroke="#fff"
-                      strokeWidth={1.5}
-                    />
-                  );
-                }}
-                activeDot={{ r: 6, fill: "#1e3a6e", stroke: "#fff", strokeWidth: 2 }}
+                stroke="#cd7329"
+                strokeWidth={3}
+                dot={{ r: 3, fill: "#cd7329", strokeWidth: 2, stroke: "#0f172a" }}
+                activeDot={{ r: 6, strokeWidth: 0 }}
               />
             </LineChart>
           </ResponsiveContainer>

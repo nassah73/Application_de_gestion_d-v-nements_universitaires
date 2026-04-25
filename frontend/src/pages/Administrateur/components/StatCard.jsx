@@ -8,21 +8,18 @@ const StatCard = ({ title, value, change, icon, color }) => {
   return (
     <Box
       sx={{
-        backgroundColor: colors.primary[400],
+        backgroundColor: "rgba(255, 255, 255, 0.04)",
         borderRadius: "16px",
-        padding: "20px 24px",
-        width: "250px",
-        minWidth: "250px",
-        flexShrink: 0,
-        border: `1px solid ${
-          theme.palette.mode === "dark"
-            ? "rgba(255,255,255,0.06)"
-            : "rgba(0,0,0,0.08)"
-        }`,
-        transition: "transform 0.2s, box-shadow 0.2s",
+        padding: "16px 20px",
+        flex: "1 1 200px",
+        minWidth: "200px",
+        border: "1px solid rgba(255, 255, 255, 0.08)",
+        transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         "&:hover": {
           transform: "translateY(-4px)",
-          boxShadow: "0 8px 24px rgba(0,0,0,0.10)",
+          backgroundColor: "rgba(255, 255, 255, 0.07)",
+          borderColor: "rgba(205, 115, 41, 0.3)",
+          boxShadow: "0 12px 24px rgba(0, 0, 0, 0.2)",
         },
       }}
     >
@@ -38,9 +35,11 @@ const StatCard = ({ title, value, change, icon, color }) => {
       >
         <Typography
           sx={{
-            color: colors.grey[300],
+            color: "rgba(255, 255, 255, 0.5)",
             fontSize: "13px",
-            fontWeight: 500,
+            fontWeight: 600,
+            textTransform: "uppercase",
+            letterSpacing: "0.5px",
           }}
         >
           {title}
@@ -48,7 +47,7 @@ const StatCard = ({ title, value, change, icon, color }) => {
 
         <Box
           sx={{
-            backgroundColor: color,
+            backgroundColor: "rgba(205, 115, 41, 0.18)",
             borderRadius: "12px",
             width: "44px",
             height: "44px",
@@ -56,7 +55,8 @@ const StatCard = ({ title, value, change, icon, color }) => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: "#fff",
+            color: "#cd7329",
+            border: "1px solid rgba(205, 115, 41, 0.2)",
             "& svg": { fontSize: "22px" },
           }}
         >
@@ -68,8 +68,8 @@ const StatCard = ({ title, value, change, icon, color }) => {
       <Typography
         sx={{
           fontSize: "30px",
-          fontWeight: 700,
-          color: colors.grey[100],
+          fontWeight: 800,
+          color: "#fff",
           mb: "10px",
           lineHeight: 1,
         }}
@@ -78,13 +78,19 @@ const StatCard = ({ title, value, change, icon, color }) => {
       </Typography>
 
       {/* Change */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: "4px" }}>
-        <Typography sx={{ color: "#22c55e", fontSize: "16px", lineHeight: 1 }}>
-          ↗
-        </Typography>
-        <Typography sx={{ color: "#22c55e", fontSize: "13px", fontWeight: 500 }}>
-          {change}
-        </Typography>
+      <Box sx={{ display: "flex", alignItems: "center", gap: "6px" }}>
+        <Box sx={{ 
+          display: "flex", 
+          alignItems: "center", 
+          backgroundColor: "rgba(34, 197, 94, 0.12)", 
+          px: "6px", 
+          py: "2px", 
+          borderRadius: "6px" 
+        }}>
+          <Typography sx={{ color: "#22c55e", fontSize: "12px", fontWeight: 700 }}>
+            {change}
+          </Typography>
+        </Box>
       </Box>
     </Box>
   );

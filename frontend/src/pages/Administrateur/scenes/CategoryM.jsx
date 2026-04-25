@@ -17,23 +17,21 @@ const CategoryManagement = () => {
   const colors = tokens(theme.palette.mode);
 
   const categories = [
-    { name: "Academic", events: 234 },
+    { name: "Académique", events: 234 },
     { name: "Sports", events: 156 },
-    { name: "Cultural", events: 189 },
-    { name: "Technology", events: 98 },
-    { name: "Workshops", events: 145 },
+    { name: "Culturel", events: 189 },
+    { name: "Technologie", events: 98 },
+    { name: "Ateliers", events: 145 },
     { name: "Social", events: 267 },
   ];
 
   return (
     <Box
       sx={{
-        p: "30px",
-        backgroundColor: colors.primary[500],
-        minHeight: "100vh",
-        position: "relative",
-        zIndex: 0,
-        overflow: "visible",
+        p: "24px",
+        backgroundColor: "#0f172a",
+        height: "100%",
+        overflow: "auto"
       }}
     >
       {/* Header row */}
@@ -47,35 +45,40 @@ const CategoryManagement = () => {
       >
         <Box>
           <Typography
-            sx={{ fontSize: "28px", fontWeight: 700, color: colors.grey[100], mb: "4px" }}
+            sx={{ fontSize: "28px", fontWeight: 900, color: "white", mb: "4px" }}
           >
-            Category Management
+            Gestion des Catégories
           </Typography>
-          <Typography sx={{ fontSize: "14px", color: colors.grey[400] }}>
-            Organize and manage event categories
+          <Typography sx={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.45)" }}>
+            Organiser et gérer les catégories d'événements
           </Typography>
         </Box>
 
         <Button
           type="button"
           variant="contained"
-          startIcon={<span style={{ fontSize: "18px", fontWeight: 300 }}>+</span>}
+          startIcon={<span>+</span>}
           sx={{
-            backgroundColor: "#1e3a6e",
+            backgroundColor: "#cd7329",
             color: "#fff",
-            borderRadius: "10px",
-            padding: "10px 22px",
-            fontWeight: 600,
+            borderRadius: "12px",
+            padding: "10px 24px",
+            fontWeight: 700,
             fontSize: "14px",
             textTransform: "none",
-            "&:hover": { backgroundColor: "#1a3260" },
+            boxShadow: "0 4px 14px rgba(205, 115, 41, 0.3)",
+            "&:hover": { 
+              backgroundColor: "#b36222",
+              transform: "translateY(-1px)",
+              boxShadow: "0 6px 20px rgba(205, 115, 41, 0.4)",
+            },
           }}
         >
-          New Category
+          Nouvelle Catégorie
         </Button>
       </Box>
 
-      {/* ✅ Grid responsive — s'adapte à la taille de l'écran */}
+      {/* ✅ Grid responsive */}
       <Box
         sx={{
           display: "grid",
@@ -85,7 +88,7 @@ const CategoryManagement = () => {
             md: "repeat(2, 1fr)",
             lg: "repeat(3, 1fr)",
           },
-          gap: "20px",
+          gap: "24px",
           width: "100%",
         }}
       >
@@ -94,112 +97,56 @@ const CategoryManagement = () => {
             key={index}
             elevation={0}
             sx={{
-              backgroundColor: colors.primary[400],
-              borderRadius: "16px",
-              padding: "20px",
-              border: `1px solid ${
-                theme.palette.mode === "dark"
-                  ? "rgba(255,255,255,0.06)"
-                  : "rgba(0,0,0,0.08)"
-              }`,
-              transition: "transform 0.2s, box-shadow 0.2s",
-              // ✅ isole chaque card du form overlay du browser
-              position: "relative",
-              zIndex: 1,
+              backgroundColor: "rgba(255, 255, 255, 0.03)",
+              borderRadius: "20px",
+              padding: "24px",
+              border: "1px solid rgba(255, 255, 255, 0.08)",
+              transition: "all 0.3s ease",
               "&:hover": {
-                transform: "translateY(-4px)",
-                boxShadow: "0 8px 24px rgba(0,0,0,0.10)",
+                backgroundColor: "rgba(255, 255, 255, 0.05)",
+                transform: "translateY(-5px)",
+                borderColor: "rgba(205, 115, 41, 0.3)",
               },
             }}
           >
-            {/* Top: color square + name + events */}
-            <Box sx={{ display: "flex", alignItems: "center", gap: "14px", mb: "20px" }}>
+            <Box sx={{ display: "flex", justifyContent: "space-between", mb: "20px" }}>
               <Box
                 sx={{
-                  width: "52px",
-                  height: "52px",
-                  minWidth: "52px",
-                  borderRadius: "12px",
-                  backgroundColor: categoryColors[index],
+                  backgroundColor: `${categoryColors[index % categoryColors.length]}15`,
+                  color: categoryColors[index % categoryColors.length],
+                  padding: "8px 16px",
+                  borderRadius: "100px",
+                  fontSize: "12px",
+                  fontWeight: 700,
+                  border: `1px solid ${categoryColors[index % categoryColors.length]}30`,
                 }}
-              />
-              <Box>
-                <Typography
-                  sx={{
-                    fontSize: "17px",
-                    fontWeight: 700,
-                    color: colors.grey[100],
-                    lineHeight: 1.2,
-                  }}
-                >
-                  {category.name}
-                </Typography>
-                <Typography sx={{ fontSize: "13px", color: colors.grey[400], mt: "2px" }}>
-                  {category.events} events
-                </Typography>
+              >
+                {category.name}
+              </Box>
+              <Box sx={{ display: "flex", gap: "8px" }}>
+                <IconButton size="small" sx={{ color: "rgba(255, 255, 255, 0.3)", "&:hover": { color: "#fff" } }}>
+                  <EditIcon fontSize="small" />
+                </IconButton>
+                <IconButton size="small" sx={{ color: "rgba(255, 255, 255, 0.3)", "&:hover": { color: "#ef4444" } }}>
+                  <DeleteIcon fontSize="small" />
+                </IconButton>
               </Box>
             </Box>
 
-            {/* Divider */}
-            <Box
-              sx={{
-                height: "1px",
-                backgroundColor:
-                  theme.palette.mode === "dark"
-                    ? "rgba(255,255,255,0.08)"
-                    : "rgba(0,0,0,0.08)",
-                mb: "14px",
-              }}
-            />
+            <Typography sx={{ color: "white", fontSize: "24px", fontWeight: 800, mb: "4px" }}>
+              {category.events}
+            </Typography>
+            <Typography sx={{ color: "rgba(255, 255, 255, 0.45)", fontSize: "13px", fontWeight: 500 }}>
+              Événements enregistrés
+            </Typography>
 
-            {/* Buttons */}
-            <Box sx={{ display: "flex", gap: "10px" }}>
-              <Button
-                type="button"
-                variant="outlined"
-                size="small"
-                startIcon={<EditIcon sx={{ fontSize: "15px !important" }} />}
-                sx={{
-                  flex: 1,
-                  textTransform: "none",
-                  fontWeight: 500,
-                  fontSize: "13px",
-                  borderRadius: "8px",
-                  color: colors.grey[300],
-                  borderColor:
-                    theme.palette.mode === "dark"
-                      ? "rgba(255,255,255,0.15)"
-                      : "rgba(0,0,0,0.15)",
-                  "&:hover": {
-                    borderColor: colors.grey[400],
-                    backgroundColor: "transparent",
-                  },
-                }}
-              >
-                Edit
-              </Button>
-              <Button
-                type="button"
-                variant="outlined"
-                size="small"
-                startIcon={<DeleteIcon sx={{ fontSize: "15px !important", color: "#ef4444" }} />}
-                sx={{
-                  flex: 1,
-                  textTransform: "none",
-                  fontWeight: 500,
-                  fontSize: "13px",
-                  borderRadius: "8px",
-                  color: "#ef4444",
-                  borderColor: "rgba(239,68,68,0.25)",
-                  backgroundColor: "rgba(239,68,68,0.05)",
-                  "&:hover": {
-                    borderColor: "#ef4444",
-                    backgroundColor: "rgba(239,68,68,0.10)",
-                  },
-                }}
-              >
-                Delete
-              </Button>
+            <Box sx={{ mt: "24px", pt: "20px", borderTop: "1px solid rgba(255, 255, 255, 0.05)", display: "flex", alignItems: "center", gap: "8px" }}>
+              <Box sx={{ flex: 1, height: "6px", backgroundColor: "rgba(255, 255, 255, 0.05)", borderRadius: "10px", overflow: "hidden" }}>
+                <Box sx={{ width: "65%", height: "100%", backgroundColor: categoryColors[index % categoryColors.length], borderRadius: "10px" }} />
+              </Box>
+              <Typography sx={{ color: "rgba(255, 255, 255, 0.3)", fontSize: "11px", fontWeight: 700 }}>
+                65%
+              </Typography>
             </Box>
           </Paper>
         ))}

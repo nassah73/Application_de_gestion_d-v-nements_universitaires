@@ -1,15 +1,15 @@
 import { useState, useRef, useEffect } from "react";
 
-const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const DAYS = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
 const MONTHS = [
-  "January","February","March","April","May","June",
-  "July","August","September","October","November","December",
+  "Janvier","Février","Mars","Avril","Mai","Juin",
+  "Juillet","Août","Septembre","Octobre","Novembre","Décembre",
 ];
 
 const EVENT_COLORS = [
-  { bg: "rgba(59,130,246,0.18)", dot: "#3b82f6", border: "rgba(59,130,246,0.35)" },
+  { bg: "rgba(205,115,41,0.18)", dot: "#cd7329", border: "rgba(205,115,41,0.35)" },
   { bg: "rgba(34,197,94,0.15)",  dot: "#22c55e", border: "rgba(34,197,94,0.30)" },
-  { bg: "rgba(249,115,22,0.15)", dot: "#f97316", border: "rgba(249,115,22,0.30)" },
+  { bg: "rgba(59,130,246,0.15)", dot: "#3b82f6", border: "rgba(59,130,246,0.30)" },
   { bg: "rgba(168,85,247,0.15)", dot: "#a855f7", border: "rgba(168,85,247,0.30)" },
   { bg: "rgba(236,72,153,0.15)", dot: "#ec4899", border: "rgba(236,72,153,0.30)" },
 ];
@@ -26,7 +26,7 @@ function isSameDay(a, b) {
     a.getDate() === b.getDate();
 }
 function formatDateLabel(date) {
-  return `${MONTHS[date.getMonth()].slice(0,3)} ${date.getDate()}, ${date.getFullYear()}`;
+  return `${date.getDate()} ${MONTHS[date.getMonth()]}, ${date.getFullYear()}`;
 }
 
 const STORAGE_KEY = "calendar_events_v1";
@@ -51,9 +51,9 @@ function loadEvents(today) {
   }
   // default events seulement si localStorage vide
   return [
-    { id: 1, title: "All-day event", date: new Date(today.getFullYear(), today.getMonth(), 5), colorIdx: 0 },
-    { id: 2, title: "Team meeting", date: new Date(today.getFullYear(), today.getMonth(), 12), colorIdx: 1 },
-    { id: 3, title: "Design review", date: new Date(today.getFullYear(), today.getMonth(), today.getDate()), colorIdx: 2 },
+    { id: 1, title: "Conférence Académique", date: new Date(today.getFullYear(), today.getMonth(), 5), colorIdx: 0 },
+    { id: 2, title: "Réunion de Club", date: new Date(today.getFullYear(), today.getMonth(), 12), colorIdx: 1 },
+    { id: 3, title: "Exposition Culturelle", date: new Date(today.getFullYear(), today.getMonth(), today.getDate()), colorIdx: 2 },
   ];
 }
 
@@ -113,20 +113,20 @@ export default function CalendarCustom() {
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Syne:wght@700;800&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #0f1117; }
-        .cal-day:hover { background: rgba(59,130,246,0.08) !important; cursor: pointer; }
-        .cal-day:hover .day-num { color: #3b82f6 !important; }
-        .nav-btn:hover { background: rgba(59,130,246,0.15) !important; color: #3b82f6 !important; }
-        .today-btn:hover { background: rgba(59,130,246,0.25) !important; }
+        body { background: #0f172a; }
+        .cal-day:hover { background: rgba(255,255,255,0.05) !important; cursor: pointer; }
+        .cal-day:hover .day-num { color: #cd7329 !important; }
+        .nav-btn:hover { background: rgba(255,255,255,0.1) !important; color: #fff !important; }
+        .today-btn:hover { background: rgba(255,255,255,0.15) !important; }
         .evt-item:hover { background: rgba(255,255,255,0.06) !important; }
         .del-btn:hover { color: #ef4444 !important; background: rgba(239,68,68,0.12) !important; }
-        .add-btn:hover { background: #2563eb !important; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(59,130,246,0.35) !important; }
+        .add-btn:hover { background: #b36222 !important; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(205,115,41,0.45) !important; }
         .color-swatch:hover { transform: scale(1.15); }
         .modal-overlay { animation: fadeIn 0.15s ease; }
         .modal-box { animation: slideUp 0.2s ease; }
         @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
         @keyframes slideUp { from { opacity:0; transform: translateY(16px) } to { opacity:1; transform: translateY(0) } }
-        input:focus { outline: none; }
+        input:focus { outline: none; border-color: #cd7329 !important; }
       `}</style>
 
       {/* ── LEFT: Calendar ── */}
@@ -139,7 +139,7 @@ export default function CalendarCustom() {
             <span style={s.yearNum}>{year}</span>
           </div>
           <div style={s.navGroup}>
-            <button className="today-btn" onClick={goToday} style={s.todayBtn}>Today</button>
+            <button className="today-btn" onClick={goToday} style={s.todayBtn}>Aujourd'hui</button>
             <button className="nav-btn" onClick={prevMonth} style={s.navBtn}>‹</button>
             <button className="nav-btn" onClick={nextMonth} style={s.navBtn}>›</button>
           </div>
@@ -160,7 +160,6 @@ export default function CalendarCustom() {
             const isToday = isSameDay(date, today);
             const isSel = isSameDay(date, selected);
             const dayEvts = getEventsForDay(date);
-            const isOtherMonth = false;
 
             return (
               <div
@@ -171,18 +170,18 @@ export default function CalendarCustom() {
                 style={{
                   ...s.dayCell,
                   background: isSel
-                    ? "rgba(59,130,246,0.14)"
+                    ? "rgba(205,115,41,0.14)"
                     : "transparent",
                   border: isSel
-                    ? "1px solid rgba(59,130,246,0.40)"
+                    ? "1px solid rgba(205,115,41,0.40)"
                     : "1px solid transparent",
                 }}
               >
                 {/* Day number */}
                 <div className="day-num" style={{
                   ...s.dayNum,
-                  color: isToday ? "#fff" : isSel ? "#3b82f6" : "rgba(255,255,255,0.65)",
-                  background: isToday ? "#3b82f6" : "transparent",
+                  color: isToday ? "#fff" : isSel ? "#cd7329" : "rgba(255,255,255,0.65)",
+                  background: isToday ? "#cd7329" : "transparent",
                   borderRadius: isToday ? "50%" : "0",
                   width: isToday ? "26px" : "auto",
                   height: isToday ? "26px" : "auto",
@@ -196,18 +195,15 @@ export default function CalendarCustom() {
 
                 {/* Event dots */}
                 <div style={s.dotRow}>
-                  {dayEvts.slice(0, 3).map((ev, i) => (
+                  {dayEvts.slice(0, 3).map((ev) => (
                     <div
                       key={ev.id}
                       style={{
                         ...s.dot,
-                        background: EVENT_COLORS[ev.colorIdx % EVENT_COLORS.length].dot,
+                        backgroundColor: EVENT_COLORS[ev.colorIdx % EVENT_COLORS.length].dot,
                       }}
                     />
                   ))}
-                  {dayEvts.length > 3 && (
-                    <span style={s.moreLabel}>+{dayEvts.length - 3}</span>
-                  )}
                 </div>
               </div>
             );
@@ -216,97 +212,72 @@ export default function CalendarCustom() {
 
         {/* Legend */}
         <div style={s.legend}>
-          <span style={s.legendHint}>Click to select · Double-click to add event</span>
+          <span style={s.legendHint}>Cliquez pour sélectionner · Double-cliquez pour ajouter</span>
         </div>
       </div>
 
-      {/* ── RIGHT: Sidebar ── */}
-      <div style={s.sidebar}>
-
-        {/* Selected date header */}
-        <div style={s.sidebarHeader}>
-          <div>
-            <div style={s.sidebarDateLabel}>{formatDateLabel(selected)}</div>
-            <div style={s.sidebarSubLabel}>
-              {selectedEvents.length === 0
-                ? "No events"
-                : `${selectedEvents.length} event${selectedEvents.length > 1 ? "s" : ""}`}
-            </div>
-          </div>
-          <button
-            className="add-btn"
-            onClick={() => openModal(selected)}
-            style={s.addBtn}
-          >
-            + Add
-          </button>
+      {/* ── RIGHT: Details ── */}
+      <div style={s.detailPanel}>
+        <div style={s.detailHeader}>
+          <div style={s.detailTitle}>Événements du jour</div>
+          <div style={s.detailDate}>{formatDateLabel(selected)}</div>
         </div>
 
-        {/* Accent line */}
-        <div style={s.accentLine} />
-
-        {/* Events list */}
-        <div style={s.eventsList}>
+        <div style={s.eventList}>
           {selectedEvents.length === 0 ? (
-            <div style={s.emptyState}>
-              <div style={s.emptyIcon}>📅</div>
-              <div style={s.emptyText}>Double-click any day<br />to add an event</div>
+            <div style={s.noEvt}>
+              <div style={s.noEvtIcon}>📅</div>
+              <div style={s.noEvtText}>Aucun événement prévu</div>
+              <div style={s.noEvtSub}>Double-cliquez sur un jour pour en ajouter un</div>
             </div>
           ) : (
-            selectedEvents.map(ev => {
-              const c = EVENT_COLORS[ev.colorIdx % EVENT_COLORS.length];
-              return (
-                <div key={ev.id} className="evt-item" style={{ ...s.eventItem, background: c.bg, border: `1px solid ${c.border}` }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "10px", flex: 1 }}>
-                    <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: c.dot, flexShrink: 0 }} />
-                    <span style={s.eventTitle}>{ev.title}</span>
-                  </div>
-                  <button className="del-btn" onClick={() => deleteEvent(ev.id)} style={s.delBtn}>✕</button>
+            selectedEvents.map(ev => (
+              <div key={ev.id} className="evt-item" style={{
+                ...s.evtItem,
+                background: EVENT_COLORS[ev.colorIdx % EVENT_COLORS.length].bg,
+                borderLeft: `4px solid ${EVENT_COLORS[ev.colorIdx % EVENT_COLORS.length].dot}`,
+              }}>
+                <div style={s.evtInfo}>
+                  <div style={s.evtName}>{ev.title}</div>
+                  <div style={s.evtTime}>Journée entière</div>
                 </div>
-              );
-            })
+                <button
+                  className="del-btn"
+                  onClick={() => deleteEvent(ev.id)}
+                  style={s.delBtn}
+                >
+                  Supprimer
+                </button>
+              </div>
+            ))
           )}
         </div>
 
-        {/* All events summary */}
-        {events.length > 0 && (
-          <div style={s.allEventsSummary}>
-            <div style={s.summaryTitle}>All Events ({events.length})</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "6px", maxHeight: "180px", overflowY: "auto" }}>
-              {events.slice().sort((a,b) => a.date - b.date).map(ev => {
-                const c = EVENT_COLORS[ev.colorIdx % EVENT_COLORS.length];
-                return (
-                  <div key={ev.id} style={s.summaryItem}>
-                    <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: c.dot, flexShrink: 0 }} />
-                    <span style={s.summaryEvtTitle}>{ev.title}</span>
-                    <span style={s.summaryDate}>{formatDateLabel(ev.date)}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
+        <button
+          className="add-btn"
+          onClick={() => openModal(selected)}
+          style={s.addBtn}
+        >
+          <span style={{ fontSize: "20px" }}>+</span> Ajouter un événement
+        </button>
       </div>
 
       {/* ── MODAL ── */}
       {modal && (
         <div className="modal-overlay" style={s.overlay} onClick={closeModal}>
-          <div className="modal-box" style={s.modalBox} onClick={e => e.stopPropagation()}>
-            <div style={s.modalHeader}>
-              <div style={s.modalTitle}>New Event</div>
-              <div style={s.modalDate}>{formatDateLabel(modal.date)}</div>
-            </div>
+          <div className="modal-box" style={s.modal} onClick={e => e.stopPropagation()}>
+            <div style={s.modalTitle}>Nouvel événement</div>
+            <div style={s.modalSub}>{formatDateLabel(modal.date)}</div>
 
             <input
               ref={inputRef}
+              style={s.input}
+              placeholder="Titre de l'événement..."
               value={inputVal}
               onChange={e => setInputVal(e.target.value)}
-              onKeyDown={e => { if (e.key === "Enter") addEvent(); if (e.key === "Escape") closeModal(); }}
-              placeholder="Event title..."
-              style={s.modalInput}
+              onKeyDown={e => e.key === "Enter" && addEvent()}
             />
 
-            {/* Color picker */}
             <div style={s.colorRow}>
               {EVENT_COLORS.map((c, i) => (
                 <div
@@ -315,17 +286,17 @@ export default function CalendarCustom() {
                   onClick={() => setColorIdx(i)}
                   style={{
                     ...s.colorSwatch,
-                    background: c.dot,
-                    boxShadow: colorIdx === i ? `0 0 0 2px #0f1117, 0 0 0 4px ${c.dot}` : "none",
-                    transform: colorIdx === i ? "scale(1.2)" : "scale(1)",
+                    backgroundColor: c.dot,
+                    border: colorIdx === i ? "3px solid #fff" : "none",
+                    boxShadow: colorIdx === i ? "0 0 12px rgba(255,255,255,0.4)" : "none",
                   }}
                 />
               ))}
             </div>
 
             <div style={s.modalActions}>
-              <button onClick={closeModal} style={s.cancelBtn}>Cancel</button>
-              <button onClick={addEvent} style={s.confirmBtn}>Add Event</button>
+              <button onClick={closeModal} style={s.cancelBtn}>Annuler</button>
+              <button onClick={addEvent} style={s.confirmBtn}>Confirmer</button>
             </div>
           </div>
         </div>
@@ -334,347 +305,241 @@ export default function CalendarCustom() {
   );
 }
 
-// ── Styles ──
 const s = {
   root: {
     display: "flex",
-    gap: "20px",
-    padding: "28px",
-    minHeight: "100vh",
-    background: "#0f1117",
+    flexDirection: "row",
+    height: "calc(100vh - 64px)",
     fontFamily: "'DM Sans', sans-serif",
+    background: "#0f172a",
     color: "#fff",
-  },
-  // Calendar panel
-  calPanel: {
-    flex: "1 1 0",
-    background: "#161b27",
-    borderRadius: "20px",
-    border: "1px solid rgba(255,255,255,0.07)",
     padding: "24px",
+    gap: "24px",
+    overflow: "hidden",
+  },
+  calPanel: {
+    flex: 1,
+    background: "rgba(255,255,255,0.03)",
+    borderRadius: "24px",
+    border: "1px solid rgba(255,255,255,0.08)",
     display: "flex",
     flexDirection: "column",
-    gap: "0",
+    padding: "24px",
   },
   calHeader: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: "20px",
+    marginBottom: "32px",
   },
-  monthTitle: { display: "flex", alignItems: "baseline", gap: "8px" },
-  monthName: { fontFamily: "'Syne', sans-serif", fontSize: "22px", fontWeight: 800, color: "#fff" },
-  yearNum: { fontSize: "14px", fontWeight: 600, color: "rgba(255,255,255,0.35)" },
-  navGroup: { display: "flex", gap: "6px", alignItems: "center" },
+  monthTitle: { display: "flex", flexDirection: "column" },
+  monthName: {
+    fontFamily: "'Syne', sans-serif",
+    fontSize: "32px",
+    fontWeight: 800,
+    color: "#fff",
+  },
+  yearNum: {
+    fontSize: "14px",
+    fontWeight: 500,
+    color: "rgba(255,255,255,0.4)",
+    marginTop: "-4px",
+  },
+  navGroup: { display: "flex", gap: "8px", alignItems: "center" },
   todayBtn: {
-    background: "rgba(59,130,246,0.12)",
-    border: "1px solid rgba(59,130,246,0.25)",
-    color: "#3b82f6",
-    borderRadius: "8px",
-    padding: "5px 12px",
-    fontSize: "12px",
-    fontWeight: 700,
+    background: "rgba(255,255,255,0.08)",
+    border: "none",
+    color: "#fff",
+    padding: "8px 16px",
+    borderRadius: "10px",
+    fontSize: "13px",
+    fontWeight: 600,
     cursor: "pointer",
-    fontFamily: "'DM Sans', sans-serif",
-    transition: "all 0.18s",
-    letterSpacing: "0.3px",
+    transition: "all 0.2s",
   },
   navBtn: {
-    background: "rgba(255,255,255,0.06)",
-    border: "1px solid rgba(255,255,255,0.10)",
+    background: "rgba(255,255,255,0.05)",
+    border: "none",
     color: "rgba(255,255,255,0.6)",
-    borderRadius: "8px",
-    width: "32px",
-    height: "32px",
-    fontSize: "18px",
-    cursor: "pointer",
+    width: "34px",
+    height: "34px",
+    borderRadius: "10px",
+    fontSize: "20px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    transition: "all 0.18s",
-    fontFamily: "'DM Sans', sans-serif",
+    cursor: "pointer",
+    transition: "all 0.2s",
   },
-  // Day labels
   dayLabels: {
     display: "grid",
-    gridTemplateColumns: "repeat(7,1fr)",
-    marginBottom: "6px",
+    gridTemplateColumns: "repeat(7, 1fr)",
+    marginBottom: "16px",
   },
   dayLabel: {
     textAlign: "center",
-    fontSize: "11px",
+    fontSize: "12px",
     fontWeight: 700,
-    color: "rgba(255,255,255,0.30)",
+    color: "rgba(255,255,255,0.3)",
     textTransform: "uppercase",
-    letterSpacing: "0.8px",
-    padding: "4px 0",
+    letterSpacing: "0.1em",
   },
-  // Grid
   grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(7,1fr)",
-    gap: "3px",
     flex: 1,
+    display: "grid",
+    gridTemplateColumns: "repeat(7, 1fr)",
+    gridTemplateRows: "repeat(6, 1fr)",
+    gap: "4px",
   },
-  emptyCell: { minHeight: "64px" },
   dayCell: {
-    minHeight: "64px",
-    borderRadius: "10px",
-    padding: "7px 8px",
+    borderRadius: "14px",
     display: "flex",
     flexDirection: "column",
-    gap: "5px",
-    transition: "background 0.15s, border 0.15s",
-    cursor: "pointer",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+    transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
   },
+  emptyCell: { opacity: 0 },
   dayNum: {
-    fontSize: "13px",
-    lineHeight: 1,
-    transition: "color 0.15s",
+    fontSize: "15px",
+    transition: "all 0.2s",
   },
   dotRow: {
     display: "flex",
     gap: "3px",
-    flexWrap: "wrap",
-    alignItems: "center",
+    marginTop: "4px",
+    height: "5px",
   },
   dot: {
     width: "5px",
     height: "5px",
     borderRadius: "50%",
-    flexShrink: 0,
   },
-  moreLabel: {
-    fontSize: "9px",
-    color: "rgba(255,255,255,0.40)",
-    fontWeight: 700,
-  },
-  legend: {
-    marginTop: "12px",
-    textAlign: "center",
-  },
-  legendHint: {
-    fontSize: "11px",
-    color: "rgba(255,255,255,0.22)",
-    letterSpacing: "0.2px",
-  },
-  // Sidebar
-  sidebar: {
-    width: "280px",
-    flexShrink: 0,
-    background: "#161b27",
-    borderRadius: "20px",
-    border: "1px solid rgba(255,255,255,0.07)",
-    padding: "22px",
+
+  detailPanel: {
+    width: "360px",
+    background: "rgba(255,255,255,0.03)",
+    borderRadius: "24px",
+    border: "1px solid rgba(255,255,255,0.08)",
     display: "flex",
     flexDirection: "column",
-    gap: "0",
+    padding: "24px",
   },
-  sidebarHeader: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    marginBottom: "14px",
-  },
-  sidebarDateLabel: {
-    fontSize: "15px",
-    fontWeight: 700,
-    color: "#fff",
-    lineHeight: 1.3,
-  },
-  sidebarSubLabel: {
-    fontSize: "12px",
-    color: "rgba(255,255,255,0.35)",
-    marginTop: "3px",
-  },
-  addBtn: {
-    background: "#3b82f6",
-    border: "none",
-    color: "#fff",
-    borderRadius: "9px",
-    padding: "7px 14px",
-    fontSize: "12px",
-    fontWeight: 700,
-    cursor: "pointer",
-    fontFamily: "'DM Sans', sans-serif",
-    transition: "all 0.18s",
-    whiteSpace: "nowrap",
-    boxShadow: "0 4px 14px rgba(59,130,246,0.25)",
-  },
-  accentLine: {
-    height: "2px",
-    width: "36px",
-    borderRadius: "2px",
-    background: "linear-gradient(90deg,#1e3a6e,#3b82f6)",
-    marginBottom: "16px",
-  },
-  eventsList: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "8px",
+  detailHeader: { marginBottom: "24px" },
+  detailTitle: { fontSize: "18px", fontWeight: 700, marginBottom: "4px" },
+  detailDate: { fontSize: "14px", color: "rgba(255,255,255,0.4)" },
+
+  eventList: { flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: "12px" },
+  noEvt: {
     flex: 1,
-  },
-  emptyState: {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    gap: "10px",
-    padding: "24px 0",
-  },
-  emptyIcon: { fontSize: "28px", opacity: 0.4 },
-  emptyText: {
-    fontSize: "12px",
-    color: "rgba(255,255,255,0.30)",
+    justifyContent: "center",
+    color: "rgba(255,255,255,0.3)",
     textAlign: "center",
-    lineHeight: 1.6,
+    padding: "20px",
   },
-  eventItem: {
+  noEvtIcon: { fontSize: "40px", marginBottom: "12px", opacity: 0.5 },
+  noEvtText: { fontSize: "16px", fontWeight: 600, color: "rgba(255,255,255,0.5)" },
+  noEvtSub: { fontSize: "13px", marginTop: "4px" },
+
+  evtItem: {
     display: "flex",
-    alignItems: "center",
     justifyContent: "space-between",
-    padding: "10px 12px",
-    borderRadius: "10px",
-    transition: "background 0.15s",
-    cursor: "default",
+    alignItems: "center",
+    padding: "16px",
+    borderRadius: "16px",
+    transition: "all 0.2s",
   },
-  eventTitle: {
-    fontSize: "13px",
-    fontWeight: 600,
-    color: "rgba(255,255,255,0.88)",
-  },
+  evtInfo: { display: "flex", flexDirection: "column", gap: "2px" },
+  evtName: { fontSize: "15px", fontWeight: 600, color: "#fff" },
+  evtTime: { fontSize: "12px", color: "rgba(255,255,255,0.5)" },
   delBtn: {
     background: "transparent",
     border: "none",
-    color: "rgba(255,255,255,0.25)",
-    fontSize: "11px",
+    color: "rgba(255,255,255,0.3)",
+    fontSize: "12px",
+    fontWeight: 600,
     cursor: "pointer",
-    width: "22px",
-    height: "22px",
-    borderRadius: "6px",
+    padding: "6px 10px",
+    borderRadius: "8px",
+    transition: "all 0.2s",
+  },
+
+  addBtn: {
+    marginTop: "24px",
+    background: "#cd7329",
+    color: "#fff",
+    border: "none",
+    borderRadius: "16px",
+    padding: "16px",
+    fontSize: "15px",
+    fontWeight: 700,
+    cursor: "pointer",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    transition: "all 0.15s",
-    fontFamily: "'DM Sans', sans-serif",
-    flexShrink: 0,
-  },
-  // All events summary
-  allEventsSummary: {
-    marginTop: "20px",
-    paddingTop: "16px",
-    borderTop: "1px solid rgba(255,255,255,0.06)",
-  },
-  summaryTitle: {
-    fontSize: "11px",
-    fontWeight: 700,
-    color: "rgba(255,255,255,0.30)",
-    textTransform: "uppercase",
-    letterSpacing: "0.8px",
-    marginBottom: "10px",
-  },
-  summaryItem: {
-    display: "flex",
-    alignItems: "center",
     gap: "8px",
-    padding: "4px 0",
+    boxShadow: "0 4px 14px rgba(205,115,41,0.3)",
+    transition: "all 0.2s",
   },
-  summaryEvtTitle: {
-    fontSize: "12px",
-    color: "rgba(255,255,255,0.65)",
-    fontWeight: 500,
-    flex: 1,
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-  },
-  summaryDate: {
-    fontSize: "10px",
-    color: "rgba(255,255,255,0.25)",
-    whiteSpace: "nowrap",
-  },
-  // Modal
+
   overlay: {
     position: "fixed",
-    inset: 0,
-    background: "rgba(0,0,0,0.65)",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    background: "rgba(0,0,0,0.8)",
+    backdropFilter: "blur(8px)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     zIndex: 1000,
-    backdropFilter: "blur(4px)",
   },
-  modalBox: {
-    background: "#1a2035",
-    border: "1px solid rgba(255,255,255,0.10)",
-    borderRadius: "18px",
-    padding: "26px",
-    width: "340px",
-    boxShadow: "0 24px 60px rgba(0,0,0,0.55)",
+  modal: {
+    background: "#1e293b",
+    width: "400px",
+    borderRadius: "24px",
+    padding: "32px",
+    border: "1px solid rgba(255,255,255,0.1)",
+    boxShadow: "0 24px 48px rgba(0,0,0,0.5)",
   },
-  modalHeader: { marginBottom: "18px" },
-  modalTitle: {
-    fontFamily: "'Syne', sans-serif",
-    fontSize: "18px",
-    fontWeight: 800,
-    color: "#fff",
-  },
-  modalDate: {
-    fontSize: "12px",
-    color: "rgba(255,255,255,0.35)",
-    marginTop: "3px",
-  },
-  modalInput: {
+  modalTitle: { fontSize: "20px", fontWeight: 700, marginBottom: "4px" },
+  modalSub: { fontSize: "14px", color: "rgba(255,255,255,0.4)", marginBottom: "24px" },
+  input: {
     width: "100%",
-    background: "rgba(255,255,255,0.06)",
-    border: "1px solid rgba(255,255,255,0.12)",
-    borderRadius: "10px",
-    padding: "11px 14px",
+    background: "rgba(255,255,255,0.05)",
+    border: "1px solid rgba(255,255,255,0.1)",
+    borderRadius: "12px",
+    padding: "14px 16px",
     color: "#fff",
-    fontSize: "14px",
-    fontFamily: "'DM Sans', sans-serif",
-    marginBottom: "14px",
-    transition: "border 0.15s",
-  },
-  colorRow: {
-    display: "flex",
-    gap: "10px",
+    fontSize: "15px",
     marginBottom: "20px",
-    alignItems: "center",
   },
-  colorSwatch: {
-    width: "18px",
-    height: "18px",
-    borderRadius: "50%",
-    cursor: "pointer",
-    transition: "all 0.15s",
-    flexShrink: 0,
-  },
-  modalActions: {
-    display: "flex",
-    gap: "10px",
-    justifyContent: "flex-end",
-  },
+  colorRow: { display: "flex", gap: "10px", marginBottom: "32px" },
+  colorSwatch: { width: "32px", height: "32px", borderRadius: "50%", cursor: "pointer", transition: "all 0.2s" },
+  modalActions: { display: "flex", gap: "12px" },
   cancelBtn: {
-    background: "rgba(255,255,255,0.06)",
-    border: "1px solid rgba(255,255,255,0.10)",
-    color: "rgba(255,255,255,0.55)",
-    borderRadius: "9px",
-    padding: "8px 18px",
-    fontSize: "13px",
-    fontWeight: 600,
-    cursor: "pointer",
-    fontFamily: "'DM Sans', sans-serif",
-  },
-  confirmBtn: {
-    background: "#3b82f6",
+    flex: 1,
+    background: "rgba(255,255,255,0.05)",
     border: "none",
     color: "#fff",
-    borderRadius: "9px",
-    padding: "8px 18px",
-    fontSize: "13px",
-    fontWeight: 700,
+    padding: "12px",
+    borderRadius: "12px",
+    fontWeight: 600,
     cursor: "pointer",
-    fontFamily: "'DM Sans', sans-serif",
-    boxShadow: "0 4px 14px rgba(59,130,246,0.30)",
+  },
+  confirmBtn: {
+    flex: 2,
+    background: "#cd7329",
+    color: "#fff",
+    border: "none",
+    padding: "12px",
+    borderRadius: "12px",
+    fontWeight: 600,
+    cursor: "pointer",
   },
 };

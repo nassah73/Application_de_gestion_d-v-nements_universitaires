@@ -4,7 +4,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Auth/Login';
 import RegisterStudent from './pages/Auth/RegisterStudent';
 import RegisterOrganisateur from './pages/Auth/registerOrganisateur';
-
+import AdministrateurApp from './pages/Administrateur/App';
 // Student Component (which contains its own routes)
 import StudentApp from './pages/student/App';
 
@@ -24,7 +24,7 @@ function App() {
     <Routes>
       {/* Redirection par défaut vers Login */}
       <Route path="/" element={<Navigate to="/auth/login" />} />
-
+      <Route path="/administrateur/*" element={<AdministrateurApp />} />
       {/* --- Auth Routes --- */}
       <Route path="/auth/login" element={<Login />} />
       <Route path="/register-student" element={<RegisterStudent />} />
