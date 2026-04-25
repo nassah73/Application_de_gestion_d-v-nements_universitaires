@@ -4,12 +4,41 @@ import {MapPin,CalendarCheck,Clock ,Search, UserCircle } from 'lucide-react';
 import Data from './data/objet'
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useEffect, useRef } from 'react';
+
+
 export default function Main(){
- const [category,setcategory]=useState('all')
+    const profileRef = useRef(null);
+    const [form ,setform]=useState(false)
+    const [selectedEvent, setSelectedEvent] = useState(null);
+   const [category,setcategory]=useState('all')
 const handleCategoryChange = (e) => {
     setcategory(e.target.value);
   };
 const filterObjet= category==='all'?Data: Data.filter((items)=>items.category===category)
+
+ const handelForm=(item)=>{
+    setSelectedEvent(item)
+    setform(!form) 
+ }
+
+   useEffect(() => {
+    
+      function handleClickOutside(event) {
+  
+        if (profileRef.current && !profileRef.current.contains(event.target)) {
+          setform(false);
+        }
+      }
+  
+      
+      document.addEventListener("mousedown", handleClickOutside);
+  
+      
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, [form]);
 
     return(
         <>
@@ -62,12 +91,29 @@ const filterObjet= category==='all'?Data: Data.filter((items)=>items.category===
                             <p className="flex gap-3"><UserCircle size={18} className="text-[#cd7329]"/>{item.Organisateur}</p>
                         </div>
                          </nav>
-                        <button className="bg-white/10 backdrop-blur-md border border-white/20 text-[#cd7329] font-bold w-[90%] mx-[5%] h-10 absolute bottom-0 rounded-xl hover:bg-[#cd7329] hover:text-white transition-all cursor-pointer">Check Details</button>
+                        <button  className="bg-white/10 backdrop-blur-md border border-white/20 text-[#cd7329] font-bold w-[90%] mx-[5%] h-10 absolute bottom-0 rounded-xl hover:bg-[#cd7329] hover:text-white transition-all cursor-pointer" onClick={() => handelForm(item)}  ref={profileRef}>Check Details</button>
+                       
                        </div>
                        </motion.div>
                     )
                     
                 })}
+                 {form && <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-[500px] h-auto p-8 bg-[#1e293b] border border-white/20 rounded-3xl shadow-2xl text-white">
+                    <h2 className="text-3xl font-bold text-[#cd7329] mb-4">{selectedEvent.title}</h2>
+                 <div className="space-y-4">
+                    <p className="flex gap-3"><CalendarCheck className="text-[#cd7329]"/> {selectedEvent.date}</p>
+                    <p className="flex gap-3"><MapPin className="text-[#cd7329]"/> {selectedEvent.lieu}</p>
+                    <p className="text-slate-300">هنا تقدر تزيد الوصف (Description) أو أي معلومة أخرى كاين في الـ Object ديالك.</p>
+                 </div>
+               <button 
+               onClick={() => setform(false)} 
+               className="mt-8 w-full py-2 bg-[#cd7329] rounded-xl font-bold"
+                >
+                 Close
+               </button>
+                  </div>
+                           
+                   }
                  
                        
                  
