@@ -7,7 +7,7 @@ const StudentSchema = new mongoose.Schema({
   phone: { type: String, required: true },
   filiere: { type: String, required: true },
   niveau:  { type: String, required: true },
-  anneeUniv: { type: String, required: true },
+  
   role: { type: String, default: 'student' } ,
   password: { type: String, required: true },
 });

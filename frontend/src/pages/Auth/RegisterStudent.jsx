@@ -15,7 +15,7 @@ export default function RegisterStudent() {
         phone: '',
         filiere: '',
         niveau: '',
-        anneeUniv: '',
+        
         password: ''
     });
 
@@ -120,12 +120,7 @@ export default function RegisterStudent() {
                     </div>
 
                     <div className={style.inputRow} style={{ marginBottom: '12px', gap: '15px' }}>
-                        <div className={style.inputGroup} style={{ marginBottom: '0' }}>
-                            <label>Année Universitaire</label>
-                            <div className={style.inputWrapper}>
-                                <input name='anneeUniv' value={formData.anneeUniv} onChange={handleChange} type="text" placeholder="2025-2026" required />
-                            </div>
-                        </div>
+                       
                         <div className={style.inputGroup} style={{ marginBottom: '0' }}>
                             <label>Mot de passe</label>
                             <div className={style.inputWrapper}>

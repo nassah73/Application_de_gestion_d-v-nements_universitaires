@@ -1,29 +1,53 @@
 import React from 'react';
 import Navbar from "../../assets/NavBar";
 import { Bell, AlertTriangle, Info, MapPin, Calendar, FileText, Download, ExternalLink } from 'lucide-react';
+import { motion } from 'framer-motion'; // زدنا Framer Motion
 
-// 1. المكونات الصغيرة خاصها تكون معرفة برا المكون الكبير Main
+// إعدادات التحريك العامة
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+};
+
+const itemVariants = {
+  hidden: { y: 20, opacity: 0 },
+  visible: { y: 0, opacity: 1, transition: { duration: 0.5 } }
+};
+
+// 1. المكونات الصغيرة
 const FilterItem = ({ label, count, color }) => (
-  <button className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-white/10 transition-colors group">
+  <motion.button 
+    variants={itemVariants}
+    whileHover={{ x: 5 }}
+    className="w-full flex items-center justify-between p-3 rounded-2xl hover:bg-white/10 transition-colors group">
     <div className="flex items-center gap-3">
       <div className={`w-2 h-2 rounded-full ${color}`}></div>
       <span className="font-medium text-slate-300 group-hover:text-[#cd7329]">{label}</span>
     </div>
     <span className="text-white font-bold text-sm bg-white/10 px-2 py-0.5 rounded-lg">{count}</span>
-  </button>
+  </motion.button>
 );
 
 const ActionButton = ({ icon, label, variant = "primary" }) => (
-  <button className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold transition-all shadow-sm ${
+  <motion.button 
+    whileHover={{ scale: 1.05 }}
+    whileTap={{ scale: 0.95 }}
+    className={`flex items-center gap-2 px-6 py-3 rounded-2xl font-bold transition-all shadow-sm ${
     variant === "primary" ? "bg-gradient-to-r from-[#cd7329] to-[#eb8232] text-white hover:opacity-90" : "bg-white/5 text-white hover:bg-white/10 border border-white/20"
   }`}>
     {icon}
     {label}
-  </button>
+  </motion.button>
 );
 
 const AnnouncementCard = ({ tag, tagColor, date, title, description, type, primaryAction, secondaryAction }) => (
-  <div className="bg-white/5 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-sm border border-white/10 hover:shadow-lg transition-all relative text-left">
+  <motion.div 
+    variants={itemVariants}
+    whileHover={{ y: -5 }}
+    className="bg-white/5 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-sm border border-white/10 hover:shadow-lg transition-all relative text-left">
     <div className="absolute right-8 top-8">
       <div className={`p-2 rounded-full ${type === 'warning' ? 'bg-orange-500/20 text-orange-400' : 'bg-[#cd7329]/20 text-[#cd7329]'}`}>
         {type === 'warning' ? <Bell className="w-5 h-5" /> : <Info className="w-5 h-5" />}
@@ -41,7 +65,7 @@ const AnnouncementCard = ({ tag, tagColor, date, title, description, type, prima
         {secondaryAction}
       </div>
     </div>
-  </div>
+  </motion.div>
 );
 
 // 2. المكون الأساسي
@@ -49,39 +73,54 @@ export default function Main() {
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-slate-900 p-4 md:p-8 pt-[100px] font-sans">
+      <motion.div 
+        initial="hidden"
+        animate="visible"
+        variants={containerVariants}
+        className="min-h-screen bg-slate-900 p-4 md:p-8 pt-[100px] font-sans"
+      >
         {/* Header */}
-        <div className="flex items-center gap-4 mb-8">
-          <div className="bg-white/10 backdrop-blur-md p-3 rounded-2xl shadow-lg border border-white/10">
+        <motion.div variants={itemVariants} className="mt-10 flex items-center gap-4 mb-8">
+          <motion.div 
+            animate={{ rotate: [0, -10, 10, 0] }}
+            transition={{ repeat: Infinity, duration: 2, delay: 1 }}
+            className="bg-white/10 backdrop-blur-md p-3 rounded-2xl shadow-lg border border-white/10"
+          >
             <Bell className="text-[#cd7329] w-8 h-8" />
-          </div>
+          </motion.div>
           <div>
             <h1 className="text-3xl font-bold text-[#cd7329] ">News Hub</h1>
             <p className="text-slate-400 ">Stay updated with campus announcements and event news</p>
           </div>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
           <div className="lg:col-span-3 space-y-6">
-            <div className="bg-white/5 backdrop-blur-xl rounded-3xl p-6 shadow-lg border border-white/10">
+            <motion.div variants={itemVariants} className="bg-white/5 backdrop-blur-xl rounded-3xl p-6 shadow-lg border border-white/10">
               <h3 className="font-bold text-white mb-6 px-2 text-left">Filter Announcements</h3>
               <nav className="space-y-2">
-                <button className="w-full flex items-center justify-between p-3 rounded-2xl bg-[#cd7329] text-white shadow-md transition-all">
+                <motion.button 
+                  whileHover={{ scale: 1.02 }}
+                  className="w-full flex items-center justify-between p-3 rounded-2xl bg-[#cd7329] text-white shadow-md transition-all">
                   <div className="flex items-center gap-3">
                     <Bell className="w-5 h-5" />
                     <span className="font-medium">All Alerts</span>
                   </div>
                   <span className="bg-white/20 px-2 py-0.5 rounded-lg text-xs font-bold">10</span>
-                </button>
+                </motion.button>
                 <FilterItem label="Important" count="3" color="bg-rose-500" />
                 <FilterItem label="New" count="3" color="bg-[#cd7329]" />
                 <FilterItem label="Reminders" count="1" color="bg-amber-500" />
               </nav>
-            </div>
+            </motion.div>
 
             {/* Campus Map Card */}
-            <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 text-white shadow-xl overflow-hidden relative group text-left">
+            <motion.div 
+              variants={itemVariants}
+              whileHover={{ scale: 1.02 }}
+              className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-6 text-white shadow-xl overflow-hidden relative group text-left"
+            >
               <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-4">
                   <MapPin className="w-6 h-6 text-[#cd7329]" />
@@ -90,22 +129,34 @@ export default function Main() {
                 <p className="text-slate-300 text-sm mb-6 leading-relaxed">
                   Explore campus venues and find your way to events
                 </p>
-                <button className="w-full bg-gradient-to-r from-[#cd7329] to-[#eb8232] text-white font-bold py-3 rounded-2xl flex items-center justify-center gap-2 hover:opacity-90 transition-all shadow-lg shadow-[#cd7329]/20">
+                <motion.button 
+                  whileHover={{ gap: "12px" }}
+                  className="w-full bg-gradient-to-r from-[#cd7329] to-[#eb8232] text-white font-bold py-3 rounded-2xl flex items-center justify-center gap-2 hover:opacity-90 transition-all shadow-lg shadow-[#cd7329]/20"
+                >
                   <MapPin className="w-4 h-4" />
                   Explore Venues
-                </button>
+                </motion.button>
               </div>
-            </div>
+            </motion.div>
           </div>
 
           {/* Main Content */}
           <div className="lg:col-span-9 space-y-6 text-left">
             {/* Urgent Alert */}
-            <div className="bg-red-500/10 backdrop-blur-md border border-red-500/20 rounded-[2.5rem] p-8 shadow-lg relative overflow-hidden text-white">
+            <motion.div 
+              variants={itemVariants}
+              initial={{ x: -50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              className="bg-red-500/10 backdrop-blur-md border border-red-500/20 rounded-[2.5rem] p-8 shadow-lg relative overflow-hidden text-white"
+            >
               <div className="flex flex-col md:flex-row gap-6 relative z-10">
-                <div className="bg-red-500 p-4 rounded-2xl self-start shadow-lg shadow-red-500/20">
+                <motion.div 
+                  animate={{ scale: [1, 1.1, 1] }}
+                  transition={{ repeat: Infinity, duration: 1.5 }}
+                  className="bg-red-500 p-4 rounded-2xl self-start shadow-lg shadow-red-500/20"
+                >
                   <AlertTriangle className="text-white w-8 h-8" />
-                </div>
+                </motion.div>
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
                     <span className="bg-red-600 text-white text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider">Urgent Alert</span>
@@ -115,14 +166,10 @@ export default function Main() {
                   <p className="text-slate-300 leading-relaxed mb-6 max-w-3xl text-lg">
                     Due to severe weather conditions, the Inter-University Basketball Championship scheduled for today has been postponed.
                   </p>
-                  <button className="bg-gradient-to-r from-[#cd7329] to-[#eb8232] text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-3 hover:opacity-90 transition-all shadow-lg shadow-[#cd7329]/20">
-                    <Calendar className="w-5 h-5" />
-                    View Event Details
-                    <ExternalLink className="w-4 h-4 opacity-70" />
-                  </button>
+                  <ActionButton icon={<Calendar className="w-5 h-5" />} label="View Event Details" />
                 </div>
               </div>
-            </div>
+            </motion.div>
 
             {/* Normal Announcements */}
             <AnnouncementCard 
@@ -148,11 +195,7 @@ export default function Main() {
             />
           </div>
         </div>
-      </div>
+      </motion.div>
     </>
   );
 }
-
-// --- Sub-components to keep code clean ---
-
-
