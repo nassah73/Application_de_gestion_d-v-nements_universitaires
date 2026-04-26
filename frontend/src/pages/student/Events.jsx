@@ -1,10 +1,11 @@
 import Navbar from "../../assets/NavBar"
 import BgImag from '../../assets/bg.jpg'
-import {MapPin,CalendarCheck,Clock ,Search, UserCircle } from 'lucide-react';
+import {X,MapPin,CalendarCheck,Clock ,Search, UserCircle } from 'lucide-react';
 import Data from './data/objet'
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { useEffect, useRef } from 'react';
+import axios from 'axios'
 
 
 export default function Main(){
@@ -40,6 +41,12 @@ const filterObjet= category==='all'?Data: Data.filter((items)=>items.category===
       };
     }, [form]);
 
+   
+ const requestEvent=async(item)=>{
+
+    await axios.post('http://localhost:5000/api/requestEvent',item)
+ }
+   
     return(
         <>
         <Navbar/>
@@ -98,20 +105,59 @@ const filterObjet= category==='all'?Data: Data.filter((items)=>items.category===
                     )
                     
                 })}
-                 {form && <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 w-[500px] h-auto p-8 bg-[#1e293b] border border-white/20 rounded-3xl shadow-2xl text-white">
-                    <h2 className="text-3xl font-bold text-[#cd7329] mb-4">{selectedEvent.title}</h2>
-                 <div className="space-y-4">
-                    <p className="flex gap-3"><CalendarCheck className="text-[#cd7329]"/> {selectedEvent.date}</p>
-                    <p className="flex gap-3"><MapPin className="text-[#cd7329]"/> {selectedEvent.lieu}</p>
-                    <p className="text-slate-300">هنا تقدر تزيد الوصف (Description) أو أي معلومة أخرى كاين في الـ Object ديالك.</p>
-                 </div>
-               <button 
-               onClick={() => setform(false)} 
-               className="mt-8 w-full py-2 bg-[#cd7329] rounded-xl font-bold"
-                >
-                 Close
-               </button>
-                  </div>
+                 {form && <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <motion.div 
+      initial={{ scale: 0.9, opacity: 0 }} 
+      animate={{ scale: 1, opacity: 1 }}
+      className="bg-slate-900 border border-white/10 w-full max-w-2xl rounded-3xl overflow-hidden shadow-2xl relative"
+      ref={profileRef}
+    >
+      {/* 1. Cover Image Header */}
+      <div className="h-60 w-full relative ">
+        <img src={BgImag} alt="event cover" className=" h-full w-full object-container bg-bottom" />
+        
+        <button 
+          onClick={() => setform(false)}
+          className="absolute top-4 right-4 bg-black/50 p-2 rounded-full hover:bg-[#cd7329] transition-colors"
+        >
+          <X size={20} className="text-white"/>
+          
+        </button>
+      </div>
+
+      {/* 2. Content Body */}
+      <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-8 ">
+        
+        {/* Info Side (Left) */}
+        <div className="md:col-span-2 space-y-4">
+          <h2 className="text-3xl font-bold text-white uppercase italic">{selectedEvent.title}</h2>
+          <div className="flex flex-wrap gap-4 text-slate-300 text-sm">
+            <span className="flex items-center gap-2"><CalendarCheck size={16} className="text-[#cd7329]"/> {selectedEvent.date}</span>
+            <span className="flex items-center gap-2"><MapPin size={16} className="text-[#cd7329]"/> {selectedEvent.lieu}</span>
+          </div>
+          <hr className="border-white/5" />
+          <p className="text-slate-400 text-sm leading-relaxed">
+            {selectedEvent.description || "هاد ليفينمون غايكون فيه بزاف ديال المفاجآت والأنشطة المتميزة، متنساوش تجيو في الوقت المحدد!"}
+          </p>
+          
+          <button onClick={()=>{requestEvent(selectedEvent)}} className="w-full py-3 bg-gradient-to-r from-[#cd7329] to-[#eb8232] text-white font-bold rounded-xl shadow-lg shadow-[#cd7329]/20 hover:scale-[1.02] transition-transform">
+            S'inscrire Maintenant
+          </button>
+        </div>
+
+        {/* QR Code Side (Right) */}
+        <div className="flex flex-col items-center justify-center space-y-4 bg-white/5 p-4 rounded-2xl border border-white/10">
+          <p className="text-xs text-slate-400 font-bold uppercase">Pass Ticket</p>
+          <div className="bg-white p-2 rounded-lg">
+            {/* هنا غاتستعمل شي مكتبة بحال qrcode.react */}
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=HassanEvent" alt="QR Code" className="w-24 h-24" />
+          </div>
+          <p className="text-[10px] text-center text-slate-500">Scannez pour valider votre entrée</p>
+        </div>
+
+      </div>
+    </motion.div>
+  </div>
                            
                    }
                  
