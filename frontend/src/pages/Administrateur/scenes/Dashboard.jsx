@@ -47,26 +47,30 @@ const Dashboard = () => {
       }}
     >
       {/* Header */}
-      <Box sx={{ mb: "20px", flexShrink: 0 }}>
-        <Typography
-          variant="h2"
-          color="white"
-          fontWeight="900"
-          sx={{ mb: "4px", letterSpacing: "-0.5px" }}
+      <Box
+          component="h1"
+          sx={{
+            fontSize: "36px",
+            fontWeight: 900,
+            color: "#fff",
+            m: 0,
+            mb: "12px",
+            letterSpacing: "-1px",
+          }}
         >
           Statistiques Globales
-        </Typography>
+        </Box>
         <Box
           component="p"
           sx={{
-            fontSize: "14px",
-            color: "rgba(255, 255, 255, 0.45)",
+            fontSize: "15px",
+            color: "rgba(255,255,255,0.45)",
             m: 0,
+            mb: "30px",
           }}
         >
           Aperçu complet de la plateforme événementielle universitaire
         </Box>
-      </Box>
 
       {/* Stat Cards Row */}
       <Box

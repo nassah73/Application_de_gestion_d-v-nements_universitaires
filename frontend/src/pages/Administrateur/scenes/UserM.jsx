@@ -5,6 +5,10 @@ import { mockDataTeam } from "../data/mockData";
 import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
 import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
 import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import ComputerIcon from "@mui/icons-material/Computer";
+import CodeIcon from "@mui/icons-material/Code";
+
 
 const Team = () => {
   const theme = useTheme();
@@ -36,8 +40,10 @@ const Team = () => {
         return (
           <Box
             sx={{
-              width: "80%",
+              width: "60px",
               m: "0 auto",
+              mt: "10px",
+              ml: "20%",
               p: "5px",
               display: "flex",
               justifyContent: "center",
@@ -51,11 +57,11 @@ const Team = () => {
             }}
           >
 
-            {access === "admin" && <AdminPanelSettingsOutlinedIcon sx={{ fontSize: "18px" }} />}
-            {access === "manager" && <SecurityOutlinedIcon sx={{ fontSize: "18px" }} />}
-            {access === "user" && <LockOpenOutlinedIcon sx={{ fontSize: "18px" }} />}
-            <Typography color={colors.grey[100]} sx={{ ml: "5px", fontSize: "13px" }}>
-              {access === "admin" ? "Administrateur" : access === "manager" ? "Manager" : "Utilisateur"}
+            {access === "admin" && <AdminPanelSettingsIcon sx={{ fontSize: "18px" }} />}
+            {access === "manager" && <ComputerIcon sx={{ fontSize: "18px" }} />}
+            {access === "user" && <CodeIcon sx={{ fontSize: "18px" }} />}
+            <Typography color={colors.grey[100]} sx={{ ml: "px", fontSize: "13px"}}>
+              {access === "admin" ? "" : access === "manager" ? "" : ""}
             </Typography>
           </Box>
         );
@@ -65,16 +71,32 @@ const Team = () => {
 
   return (
     <Box sx={{ p: "24px", height: "100%", display: "flex", flexDirection: "column" }}>
-      <Box mb="5px">
-        <Typography variant="h2" color="white" fontWeight="900">
+      {/* Header */}
+      <Box
+          component="h1"
+          sx={{
+            fontSize: "36px",
+            fontWeight: 900,
+            color: "#fff",
+            m: 0,
+            mb: "12px",
+            letterSpacing: "-1px",
+          }}
+        >
           UTILISATEURS
-        </Typography>
-      </Box>
-      <Box mb="20px">
-        <Typography variant="h5" color="rgba(255, 255, 255, 0.45)">
+        </Box>
+        <Box
+          component="p"
+          sx={{
+            fontSize: "15px",
+            color: "rgba(255,255,255,0.45)",
+            m: 0,
+            mb: "25px",
+          }}
+        >
           Gestion des membres de l'équipe et des utilisateurs
-        </Typography>
-      </Box>
+        </Box>
+
 
       <Box
         sx={{

@@ -2,6 +2,16 @@ import { Box, Button, TextField } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { MenuItem, InputAdornment } from "@mui/material";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import ComputerIcon from "@mui/icons-material/Computer";
+import CodeIcon from "@mui/icons-material/Code";
+
+const roles = [
+  { value: "admin", label: "Administration", icon: <AdminPanelSettingsIcon /> },
+  { value: "it", label: "IT", icon: <ComputerIcon /> },
+  { value: "dev", label: "Developer", icon: <CodeIcon /> },
+];
 
 const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
@@ -122,7 +132,7 @@ const Form = () => {
                   name="firstName"
                   error={!!touched.firstName && !!errors.firstName}
                   helperText={touched.firstName && errors.firstName}
-                  sx={{ gridColumn: "span 2", ...inputStyles }}
+                  sx={{ gridColumn: "span 2", ...inputStyles, pb: "10px" }}
                 />
                 <TextField
                   fullWidth
@@ -135,7 +145,7 @@ const Form = () => {
                   name="lastName"
                   error={!!touched.lastName && !!errors.lastName}
                   helperText={touched.lastName && errors.lastName}
-                  sx={{ gridColumn: "span 2", ...inputStyles }}
+                  sx={{ gridColumn: "span 2", ...inputStyles ,pb: "10px"}}
                 />
                 <TextField
                   fullWidth
@@ -148,7 +158,7 @@ const Form = () => {
                   name="email"
                   error={!!touched.email && !!errors.email}
                   helperText={touched.email && errors.email}
-                  sx={{ gridColumn: "span 4", ...inputStyles }}
+                  sx={{ gridColumn: "span 4", ...inputStyles ,pb: "10px"}}
                 />
                 <TextField
                   fullWidth
@@ -161,40 +171,37 @@ const Form = () => {
                   name="contact"
                   error={!!touched.contact && !!errors.contact}
                   helperText={touched.contact && errors.contact}
-                  sx={{ gridColumn: "span 4", ...inputStyles }}
+                  sx={{ gridColumn: "span 4", ...inputStyles ,pb: "10px"}}
                 />
                 <TextField
                   fullWidth
                   variant="filled"
-                  type="text"
-                  label="Adresse 1"
+                  select
+                  label="Role"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.address1}
-                  name="address1"
-                  error={!!touched.address1 && !!errors.address1}
-                  helperText={touched.address1 && errors.address1}
-                  sx={{ gridColumn: "span 4", ...inputStyles }}
-                />
-                <TextField
-                  fullWidth
-                  variant="filled"
-                  type="text"
-                  label="Adresse 2"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.address2}
-                  name="address2"
-                  error={!!touched.address2 && !!errors.address2}
-                  helperText={touched.address2 && errors.address2}
-                  sx={{ gridColumn: "span 4", ...inputStyles }}
-                />
+                  value={values.role}
+                  name="role"
+                  error={!!touched.role && !!errors.role}
+                  helperText={touched.role && errors.role}
+                  sx={{ gridColumn: "span 4", ...inputStyles, pb: "10px" }}
+                >
+                  {roles.map((role) => (
+                    <MenuItem key={role.value} value={role.value}>
+                      <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                        {role.icon}
+                        {role.label}
+                      </span>
+                    </MenuItem>
+                  ))}
+                </TextField>
               </Box>
               <Box display="flex" justifyContent="end" mt="40px">
                 <Button
                   type="submit"
                   variant="contained"
                   sx={{
+                    mt: "10px", ml: "30%",
                     backgroundColor: "#cd7329",
                     color: "white",
                     fontWeight: 700,

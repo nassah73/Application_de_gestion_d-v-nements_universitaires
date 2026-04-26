@@ -20,14 +20,31 @@ const Settings = () => {
 
   return (
     <Box sx={{ p: "24px", height: "100%", overflow: "auto" }}>
-      <Box mb="20px">
-        <Typography variant="h2" color="white" fontWeight="900">
+      {/* Header */}
+      <Box
+          component="h1"
+          sx={{
+            fontSize: "36px",
+            fontWeight: 900,
+            color: "#fff",
+            m: 0,
+            mb: "12px",
+            letterSpacing: "-1px",
+          }}
+        >
           PARAMÈTRES SYSTÈME
-        </Typography>
-        <Typography variant="h5" color="rgba(255, 255, 255, 0.45)">
+        </Box>
+        <Box
+          component="p"
+          sx={{
+            fontSize: "15px",
+            color: "rgba(255,255,255,0.45)",
+            m: 0,
+            mb: "25px",
+          }}
+        >
           Configuration globale de la plateforme
-        </Typography>
-      </Box>
+        </Box>
 
       <Stack spacing={3}>
         {/* General Settings */}

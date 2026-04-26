@@ -94,11 +94,28 @@ const Sidebar = ({ isSidebar, isCollapsed, setIsCollapsed }) => {
           >
             {!isCollapsed ? (
               <Box display="flex" justifyContent="space-between" alignItems="center">
+                      
                 <Box>
-                  <Typography variant="h5" color="white" fontWeight="900" sx={{ letterSpacing: "1px", textTransform: "uppercase" }}>
+                  <Typography
+                    variant="h4"
+                    sx={{
+                      color: "#ffffff",
+                      fontWeight: 900,
+                      letterSpacing: "1px",
+                      textTransform: "uppercase",
+                    }}
+                  >
                     UIZ University
                   </Typography>
-                  <Typography variant="caption" color="rgba(255,255,255,0.6)" sx={{ display: "block", mt: "-2px" }}>
+
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: "rgba(255,255,255,0.6)",
+                      display: "block",
+                      mt: "2px",
+                    }}
+                  >
                     Administration
                   </Typography>
                 </Box>
@@ -121,11 +138,11 @@ const Sidebar = ({ isSidebar, isCollapsed, setIsCollapsed }) => {
               <Item title={t("Statistiques Globales")} to="/administrateur" icon={<FaChartBar size={20} />} selected={selected} setSelected={setSelected} />
             </Box>
             <Item title={t("Gestion Utilisateurs")} to="/administrateur/UserM" icon={<FaUsers size={22} />} selected={selected} setSelected={setSelected} />
-            <Item title={t("Ajouter Admin")} to="/administrateur/form" icon={<FaUserPlus size={21} />} selected={selected} setSelected={setSelected} />
-            <Item title={t("Gestion Catégories")} to="/administrateur/pie" icon={<FaLayerGroup size={18}/>} selected={selected} setSelected={setSelected} />
-            <Item title={t("Modération")} to="/administrateur/moderation" icon={<FaShieldAlt size={18}/>} selected={selected} setSelected={setSelected} />
+            <Item title={t("Ajouter Admin")} to="/administrateur/create" icon={<FaUserPlus size={21} />} selected={selected} setSelected={setSelected} />
+            <Item title={t("Gestion Catégories")} to="/administrateur/categorie" icon={<FaLayerGroup size={18}/>} selected={selected} setSelected={setSelected} />
+            {/*<Item title={t("Modération")} to="/administrateur/moderation" icon={<FaShieldAlt size={18}/>} selected={selected} setSelected={setSelected} />*/}
             <Item title={t("Paramètres")} to="/administrateur/settings" icon={<FaCogs size={18}/>} selected={selected} setSelected={setSelected} />
-            <Item title={t("Journal d'activité")} to="/administrateur/activity" icon={<FaListUl size={18}/>} selected={selected} setSelected={setSelected} />
+            {/*<Item title={t("Journal d'activité")} to="/administrateur/activity" icon={<FaListUl size={18}/>} selected={selected} setSelected={setSelected} />*/}
             <Item title={t("Calendrier")} to="/administrateur/calendar" icon={<MdCalendarMonth size={26} />} selected={selected} setSelected={setSelected} />
           </Box>
         </Menu>
