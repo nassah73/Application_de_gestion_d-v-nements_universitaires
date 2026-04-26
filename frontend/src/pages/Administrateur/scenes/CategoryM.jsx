@@ -1,5 +1,7 @@
-import { Box, Typography, Button, useTheme, Paper } from "@mui/material";
+import { Box, Typography, Button, useTheme, Paper, IconButton, Dialog, DialogTitle, DialogContent, TextField, DialogActions } from "@mui/material";
 import { tokens } from "../theme";
+import { useTranslation } from "react-i18next";
+import { useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
@@ -15,14 +17,23 @@ const categoryColors = [
 const CategoryManagement = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const { t } = useTranslation();
+  const [open, setOpen] = useState(false);
+  const [newCategory, setNewCategory] = useState("");
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => {
+    setOpen(false);
+    setNewCategory("");
+  };
 
   const categories = [
-    { name: "Académique", events: 234 },
-    { name: "Sports", events: 156 },
-    { name: "Culturel", events: 189 },
-    { name: "Technologie", events: 98 },
-    { name: "Ateliers", events: 145 },
-    { name: "Social", events: 267 },
+    { name: t("Académique"), events: 234, progress: 75 },
+    { name: t("Sports"), events: 156, progress: 45 },
+    { name: t("Culturel"), events: 189, progress: 60 },
+    { name: t("Technologie"), events: 98, progress: 30 },
+    { name: t("Ateliers"), events: 145, progress: 50 },
+    { name: t("Social"), events: 267, progress: 85 },
   ];
 
   return (
@@ -47,16 +58,17 @@ const CategoryManagement = () => {
           <Typography
             sx={{ fontSize: "28px", fontWeight: 900, color: "white", mb: "4px" }}
           >
-            Gestion des Catégories
+            {t("Gestion des Catégories")}
           </Typography>
           <Typography sx={{ fontSize: "14px", color: "rgba(255, 255, 255, 0.45)" }}>
-            Organiser et gérer les catégories d'événements
+            {t("Organiser et gérer les catégories d'événements")}
           </Typography>
         </Box>
 
         <Button
           type="button"
           variant="contained"
+          onClick={handleOpen}
           startIcon={<span>+</span>}
           sx={{
             backgroundColor: "#cd7329",
@@ -74,7 +86,7 @@ const CategoryManagement = () => {
             },
           }}
         >
-          Nouvelle Catégorie
+          {t("Nouvelle Catégorie")}
         </Button>
       </Box>
 
@@ -137,20 +149,72 @@ const CategoryManagement = () => {
               {category.events}
             </Typography>
             <Typography sx={{ color: "rgba(255, 255, 255, 0.45)", fontSize: "13px", fontWeight: 500 }}>
-              Événements enregistrés
+              {t("Événements enregistrés")}
             </Typography>
 
             <Box sx={{ mt: "24px", pt: "20px", borderTop: "1px solid rgba(255, 255, 255, 0.05)", display: "flex", alignItems: "center", gap: "8px" }}>
               <Box sx={{ flex: 1, height: "6px", backgroundColor: "rgba(255, 255, 255, 0.05)", borderRadius: "10px", overflow: "hidden" }}>
-                <Box sx={{ width: "65%", height: "100%", backgroundColor: categoryColors[index % categoryColors.length], borderRadius: "10px" }} />
+                <Box sx={{ width: `${category.progress}%`, height: "100%", backgroundColor: categoryColors[index % categoryColors.length], borderRadius: "10px" }} />
               </Box>
               <Typography sx={{ color: "rgba(255, 255, 255, 0.3)", fontSize: "11px", fontWeight: 700 }}>
-                65%
+                {category.progress}%
               </Typography>
             </Box>
           </Paper>
         ))}
       </Box>
+
+      {/* ✅ Add Category Dialog */}
+      <Dialog 
+        open={open} 
+        onClose={handleClose}
+        PaperProps={{
+          sx: {
+            backgroundColor: "#1e293b",
+            borderRadius: "16px",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            color: "white",
+            minWidth: "400px"
+          }
+        }}
+      >
+        <DialogTitle sx={{ fontWeight: 800, fontSize: "20px" }}>{t("Nouvelle Catégorie")}</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label={t("Nom de la catégorie")}
+            fullWidth
+            variant="filled"
+            value={newCategory}
+            onChange={(e) => setNewCategory(e.target.value)}
+            sx={{ 
+              mt: 2,
+              "& .MuiFilledInput-root": { backgroundColor: "rgba(255, 255, 255, 0.05)", color: "white" },
+              "& .MuiInputLabel-root": { color: "rgba(255, 255, 255, 0.5)" }
+            }}
+          />
+        </DialogContent>
+        <DialogActions sx={{ p: 3 }}>
+          <Button onClick={handleClose} sx={{ color: "rgba(255, 255, 255, 0.5)", textTransform: "none", fontWeight: 600 }}>
+            {t("Annuler")}
+          </Button>
+          <Button 
+            onClick={handleClose} 
+            variant="contained"
+            sx={{ 
+              backgroundColor: "#cd7329", 
+              color: "white", 
+              textTransform: "none", 
+              fontWeight: 700,
+              borderRadius: "8px",
+              "&:hover": { backgroundColor: "#b36222" }
+            }}
+          >
+            {t("Ajouter")}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

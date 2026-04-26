@@ -1,11 +1,21 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const csrf = require('csurf');
 
 const app = express();
 
-app.use(cors());
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json());
+app.use(cookieParser());
+
+const csrfProtection = csrf({ cookie: true });
+// app.use(csrfProtection); // Disabled for now to not break existing frontend without token management
+
+app.get('/api/csrf-token', csrfProtection, (req, res) => {
+    res.json({ csrfToken: req.csrfToken() });
+});
 
 const studentRoutes = require('./Routes/studentRoutes');
 const organisateurRoutes = require('./Routes/organisateurRoutes');

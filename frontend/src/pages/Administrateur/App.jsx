@@ -6,9 +6,13 @@ import Dashboard from "./scenes/Dashboard";
 import Team from "./scenes/UserM";
 import CategoryManagement from "./scenes/CategoryM";
 import Form from "./scenes/CreateAdmin";
+import Moderation from "./scenes/Moderation";
+import Settings from "./scenes/Settings";
+import ActivityLog from "./scenes/ActivityLog";
 import { CssBaseline, ThemeProvider, Box } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import Calendar from "./scenes/Calendar";
+import "./i18n";
 
 function App() {
     const [theme, colorMode] = useMode();
@@ -41,6 +45,9 @@ function App() {
                 <Route path="/UserM" element={<Team />} />
                 <Route path="/form" element={<Form />} />
                 <Route path="/pie" element={<CategoryManagement />} />
+                <Route path="/moderation" element={<Moderation />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="/activity" element={<ActivityLog />} />
                 <Route path="/calendar" element={<Calendar />} />
               </Routes>
             </Box>

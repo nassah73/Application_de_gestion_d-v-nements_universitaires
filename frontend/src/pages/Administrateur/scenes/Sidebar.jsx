@@ -4,10 +4,8 @@ import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import { FaLayerGroup } from "react-icons/fa";
-import { FaUserPlus } from "react-icons/fa";
-import { FaChartBar } from "react-icons/fa";
-import { FaUsers } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
+import { FaLayerGroup, FaUserPlus, FaChartBar, FaUsers, FaShieldAlt, FaCogs, FaListUl } from "react-icons/fa";
 import { MdCalendarMonth } from "react-icons/md";
 
 
@@ -33,6 +31,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
 
 const Sidebar = ({ isSidebar, isCollapsed, setIsCollapsed }) => {
   const theme = useTheme();
+  const { t } = useTranslation();
   const [selected, setSelected] = useState("Statistiques Globales");
 
   return (
@@ -119,12 +118,15 @@ const Sidebar = ({ isSidebar, isCollapsed, setIsCollapsed }) => {
           {/* ✅ MENU ITEMS */}
           <Box mt="10px">
             <Box sx={{pt: "20px"}}>
-              <Item title="Statistiques Globales" to="/administrateur" icon={<FaChartBar size={20} />} selected={selected} setSelected={setSelected} />
+              <Item title={t("Statistiques Globales")} to="/administrateur" icon={<FaChartBar size={20} />} selected={selected} setSelected={setSelected} />
             </Box>
-            <Item title="Gestion Utilisateurs" to="/administrateur/UserM" icon={<FaUsers size={22} />} selected={selected} setSelected={setSelected} />
-            <Item title="Ajouter Admin" to="/administrateur/form" icon={<FaUserPlus size={21} />} selected={selected} setSelected={setSelected} />
-            <Item title="Gestion Catégories" to="/administrateur/pie" icon={<FaLayerGroup size={18}/>} selected={selected} setSelected={setSelected} />
-            <Item title="Calendrier" to="/administrateur/calendar" icon={<MdCalendarMonth size={26} />} selected={selected} setSelected={setSelected} />
+            <Item title={t("Gestion Utilisateurs")} to="/administrateur/UserM" icon={<FaUsers size={22} />} selected={selected} setSelected={setSelected} />
+            <Item title={t("Ajouter Admin")} to="/administrateur/form" icon={<FaUserPlus size={21} />} selected={selected} setSelected={setSelected} />
+            <Item title={t("Gestion Catégories")} to="/administrateur/pie" icon={<FaLayerGroup size={18}/>} selected={selected} setSelected={setSelected} />
+            <Item title={t("Modération")} to="/administrateur/moderation" icon={<FaShieldAlt size={18}/>} selected={selected} setSelected={setSelected} />
+            <Item title={t("Paramètres")} to="/administrateur/settings" icon={<FaCogs size={18}/>} selected={selected} setSelected={setSelected} />
+            <Item title={t("Journal d'activité")} to="/administrateur/activity" icon={<FaListUl size={18}/>} selected={selected} setSelected={setSelected} />
+            <Item title={t("Calendrier")} to="/administrateur/calendar" icon={<MdCalendarMonth size={26} />} selected={selected} setSelected={setSelected} />
           </Box>
         </Menu>
 
