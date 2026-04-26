@@ -22,12 +22,13 @@ const organisateurRoutes = require('./Routes/organisateurRoutes');
 const administrationRoutes = require('./Routes/AdministrationRoutes');
 const administrateurRoutes = require('./Routes/AdministrateurRoutes');
 const authRoutes = require('./Routes/authRoutes');  
-
+const CreateEvent=require('./Routes/CreateEvent')
 app.use('/api/students', studentRoutes);
 app.use('/api/organisateurs', organisateurRoutes);
 app.use('/api/administration', administrationRoutes); 
 app.use('/api/administrateur', administrateurRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/Event', CreateEvent);
 
 mongoose.connect('mongodb://127.0.0.1:27017/pfe_fpt')
     .then(() => console.log('Connexion à MongoDB réussie'))
