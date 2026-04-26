@@ -1,27 +1,15 @@
 const mongoose = require('mongoose');
 
-const OrganisateurSchema = mongoose.Schema({
-   
-    orgName: { type: String, required: true },
-    
-   
-    orgType: { type: String, required: true },
-
-   
-    responsibleName: { type: String, required: true },
-
+const organisateurSchema = new mongoose.Schema({
+    prenom: { type: String, required: true },
+    nom: { type: String, required: true },
+    telephone: { type: String, required: true },
+    nomClub: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    
-    
-    document: { type: String, required: true },
-
-    
-    status: { 
-        type: String, 
-        enum: ['pending', 'approved', 'rejected'], 
-        default: 'pending' 
-    }
+    justificatif: { type: String }, 
+    status: { type: String, default: 'En attente' }, 
+    role: { type: String, default: 'organizer' }
 });
 
-module.exports = mongoose.model('Organisateur', OrganisateurSchema);
+module.exports = mongoose.model('Organisateur', organisateurSchema);

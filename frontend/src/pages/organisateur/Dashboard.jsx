@@ -45,7 +45,7 @@ const Dashboard = ({ setActiveTab }) => {
                     <p className="text-slate-400 mt-2 font-medium max-w-md">Découvrez les dernières performances de vos événements et gérez vos participants en toute simplicité.</p>
                 </div>
                 <button
-                    onClick={() => setActiveTab('Créer Événement')}
+                    onClick={() => setActiveTab('create_event')}
                     className="relative z-10 btn-primary flex items-center justify-center gap-3 px-8 group"
                 >
                     <CalendarIcon size={18} className="group-hover:scale-110 transition-transform" />
@@ -95,7 +95,7 @@ const Dashboard = ({ setActiveTab }) => {
                     </div>
                     <div className="space-y-4">
                         {[1, 2, 3, 4].map((_, i) => (
-                            <div key={i} onClick={() => setActiveTab('Mes Événements')} className="flex items-center gap-5 p-5 hover:bg-slate-50 rounded-[24px] transition-all duration-300 cursor-pointer group border border-transparent hover:border-slate-100">
+                            <div key={i} onClick={() => setActiveTab('my_events')} className="flex items-center gap-5 p-5 hover:bg-slate-50 rounded-[24px] transition-all duration-300 cursor-pointer group border border-transparent hover:border-slate-100">
                                 <div className="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-500 font-black text-lg group-hover:bg-slate-900 group-hover:text-white transition-all duration-500">
                                     0{i + 1}
                                 </div>
@@ -126,7 +126,7 @@ const Dashboard = ({ setActiveTab }) => {
                             Découvrez comment des centaines de clubs optimisent leurs événements grâce à nos outils de gestion avancés.
                         </p>
                         
-                        <button onClick={() => setActiveTab('Guide')} className="inline-block w-fit bg-orange-500 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-orange-600 transition-all shadow-xl shadow-orange-900/20 active:scale-95">
+                        <button onClick={() => setActiveTab('guide')} className="inline-block w-fit bg-orange-500 text-white px-8 py-4 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-orange-600 transition-all shadow-xl shadow-orange-900/20 active:scale-95">
                             Guide Organisateur
                         </button>
                     </div>

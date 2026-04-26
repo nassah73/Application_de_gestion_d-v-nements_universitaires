@@ -6,38 +6,31 @@ import style from './style.module.css';
 import axios from 'axios';
 export default function Login() {
     const Navigate = useNavigate();
-   
-   
+    const [formData, setFormData] = useState({ email: '', password: '' });
 
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
-    const handform =async(e)=>{
-        e.preventDefault(); 
-        try{
-
-            const formData = new  FormData(e.target)
-            const data = Object.fromEntries(formData.entries())
-          const respons =await axios.post('http://localhost:5000/api/signin',data)
-          console.log("Connexion réussie ✅", respons.data);
-        
-        
-        if ( respons.data.role === 'student') Navigate('/app/Home');
-        else if (respons.data.role  === 'organizer') Navigate('/organisateur');
-        else if (respons.data.role  === 'admin') Navigate('/responsable');
-
-
-        }catch(err){
-             console.log("Erreur de connexion ❌", err.response?.data || err.message);
-             alert(err.response?.data?.message || "Email ou mot de passe incorrect");
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await axios.post('http://localhost:5000/api/auth/login', formData);
+            console.log("Connexion réussie ✅", response.data);
+            
+            if (response.data.role === 'student') Navigate('/app/Home');
+            else if (response.data.role === 'organizer') Navigate('/organisateur');
+            else if (response.data.role === 'admin') Navigate('/responsable');
+            else if (response.data.role === 'administration') Navigate('/responsable/users');
+        } catch (error) {
+            console.log("Erreur de connexion ❌", error.response?.data || error.message);
+            alert(error.response?.data?.message || "Email ou mot de passe incorrect");
         }
-          
-           
-    }
-
+    };
 
     return (
         <div className={style.content}>
             <div className={style.container}>
-
 
                 <div className={style.bgLogin}>
                     <img src={Icon_image} alt="Logo FP Taroudant" />
@@ -45,16 +38,15 @@ export default function Login() {
                     <p>Le portail  pour gérer tous les evenement à l'université de taroudant .</p>
                 </div>
 
-
                 <div className={style.formSection}>
                     <h1>Connexion</h1>
                     <p className={style.subtitle}>Accédez à votre espace événementiel</p>
 
-                    <form  onSubmit={handform}>
+                    <form onSubmit={handleSubmit}>
                         <div className={style.inputGroup}>
                             <label htmlFor="email">Adresse Email</label>
                             <div className={style.inputWrapper}>
-                                <input type="email" name="email" id="email" placeholder="etudiant@edu.uiz.ac.ma" />
+                                <input type="email" name="email" id="email" value={formData.email} onChange={handleChange} placeholder="etudiant@edu.uiz.ac.ma" />
                                 <Mail className={style.inputIcon} size={20} strokeWidth={2.5} />
                             </div>
                         </div>
@@ -62,12 +54,10 @@ export default function Login() {
                         <div className={style.inputGroup}>
                             <label htmlFor="password">Mot de passe</label>
                             <div className={style.inputWrapper}>
-                                <input type="password" name="password" id="password" placeholder="Votre mot de passe secret" />
+                                <input type="password" name="password" id="password" value={formData.password} onChange={handleChange} placeholder="Votre mot de passe secret" />
                                 <Lock className={style.inputIcon} size={20} strokeWidth={2.5} />
                             </div>
                         </div>
-
-                        
 
                         <button type="submit" className={style.submitBtn} >
                             Se Connecter <ArrowRight size={20} strokeWidth={2.5} />
