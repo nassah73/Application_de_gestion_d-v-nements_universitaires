@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import { useTranslation } from "react-i18next";
-import { FaLayerGroup, FaUserPlus, FaChartBar, FaUsers, FaShieldAlt, FaCogs, FaListUl } from "react-icons/fa";
+import { FaLayerGroup, FaUserPlus, FaChartBar, FaUsers, FaCogs } from "react-icons/fa";
 import { MdCalendarMonth } from "react-icons/md";
 
 
@@ -13,15 +13,12 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   const isActive = selected === title;
   return (
     <MenuItem
-      
       active={isActive}
       style={{ color: "white" }}
       onClick={() => setSelected(title)}
       icon={icon}
-      
     >
-      
-      <Typography fontSize="15px" fontWeight={isActive ? "600" : "400"}>
+      <Typography sx={{ fontSize: "15px", fontWeight: isActive ? "600" : "400" }}>
         {title}
       </Typography>
       <Link to={to} />
@@ -72,7 +69,6 @@ const Sidebar = ({ isSidebar, isCollapsed, setIsCollapsed }) => {
           backgroundColor: "rgba(255,255,255,0.1) !important",
           color: "white !important",
         },
-        // ✅ Active: fond blanc transparent, texte blanc
         "& .pro-menu-item.active .pro-inner-item": {
           backgroundColor: "rgba(255,255,255,0.2) !important",
           borderRadius: "10px !important",
@@ -86,19 +82,30 @@ const Sidebar = ({ isSidebar, isCollapsed, setIsCollapsed }) => {
       <ProSidebar collapsed={isCollapsed}>
         <Menu iconShape="square">
 
-          {/* ✅ HEADER */}
-          <Box
-            px="20px"
-            py="20px"
-            sx={{ borderBottom: "1px solid rgba(255,255,255,0.12)", p: "20px" }}
-          >
+          {/* HEADER */}
+          <Box sx={{ borderBottom: "1px solid rgba(255,255,255,0.12)", p: "20px" }}>
             {!isCollapsed ? (
-              <Box display="flex" justifyContent="space-between" alignItems="center">
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <Box>
-                  <Typography variant="h5" color="white" fontWeight="900" sx={{ letterSpacing: "1px", textTransform: "uppercase" }}>
+                  <Typography
+                    variant="h4"
+                    sx={{
+                      color: "#ffffff",
+                      fontWeight: 900,
+                      letterSpacing: "1px",
+                      textTransform: "uppercase",
+                    }}
+                  >
                     UIZ University
                   </Typography>
-                  <Typography variant="caption" color="rgba(255,255,255,0.6)" sx={{ display: "block", mt: "-2px" }}>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      color: "rgba(255,255,255,0.6)",
+                      display: "block",
+                      mt: "2px",
+                    }}
+                  >
                     Administration
                   </Typography>
                 </Box>
@@ -107,7 +114,7 @@ const Sidebar = ({ isSidebar, isCollapsed, setIsCollapsed }) => {
                 </IconButton>
               </Box>
             ) : (
-              <Box display="flex" justifyContent="center">
+              <Box sx={{ display: "flex", justifyContent: "center" }}>
                 <IconButton onClick={() => setIsCollapsed(false)} sx={{ color: "white" }}>
                   <MenuOutlinedIcon />
                 </IconButton>
@@ -115,37 +122,31 @@ const Sidebar = ({ isSidebar, isCollapsed, setIsCollapsed }) => {
             )}
           </Box>
 
-          {/* ✅ MENU ITEMS */}
-          <Box mt="10px">
-            <Box sx={{pt: "20px"}}>
+          {/* MENU ITEMS */}
+          <Box sx={{ mt: "10px" }}>
+            <Box sx={{ pt: "20px" }}>
               <Item title={t("Statistiques Globales")} to="/administrateur" icon={<FaChartBar size={20} />} selected={selected} setSelected={setSelected} />
             </Box>
             <Item title={t("Gestion Utilisateurs")} to="/administrateur/UserM" icon={<FaUsers size={22} />} selected={selected} setSelected={setSelected} />
-            <Item title={t("Ajouter Admin")} to="/administrateur/form" icon={<FaUserPlus size={21} />} selected={selected} setSelected={setSelected} />
-            <Item title={t("Gestion Catégories")} to="/administrateur/pie" icon={<FaLayerGroup size={18}/>} selected={selected} setSelected={setSelected} />
-            <Item title={t("Modération")} to="/administrateur/moderation" icon={<FaShieldAlt size={18}/>} selected={selected} setSelected={setSelected} />
-            <Item title={t("Paramètres")} to="/administrateur/settings" icon={<FaCogs size={18}/>} selected={selected} setSelected={setSelected} />
-            <Item title={t("Journal d'activité")} to="/administrateur/activity" icon={<FaListUl size={18}/>} selected={selected} setSelected={setSelected} />
+            <Item title={t("Ajouter Admin")} to="/administrateur/create" icon={<FaUserPlus size={21} />} selected={selected} setSelected={setSelected} />
+            <Item title={t("Gestion Catégories")} to="/administrateur/categorie" icon={<FaLayerGroup size={18} />} selected={selected} setSelected={setSelected} />
+            <Item title={t("Paramètres")} to="/administrateur/settings" icon={<FaCogs size={18} />} selected={selected} setSelected={setSelected} />
             <Item title={t("Calendrier")} to="/administrateur/calendar" icon={<MdCalendarMonth size={26} />} selected={selected} setSelected={setSelected} />
           </Box>
         </Menu>
 
-        {/* ✅ USER PROFILE - horizontal f bas bhal screenshot */}
+        {/* USER PROFILE */}
         <Box
-          display="flex"
-          alignItems="center"
-          gap="12px"
-          px="16px"
-          py="16px"
           sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            px: "16px",
+            py: "16px",
             borderTop: "1px solid rgba(255,255,255,0.12)",
             mt: "auto",
           }}
-        >
-          
-
-          
-        </Box>
+        />
       </ProSidebar>
     </Box>
   );

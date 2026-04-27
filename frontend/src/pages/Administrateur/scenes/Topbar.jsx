@@ -1,99 +1,180 @@
-import { Box, IconButton, useTheme, InputBase, Menu, MenuItem } from "@mui/material";
-import { useContext, useState } from "react";
-import { ColorModeContext, tokens } from "../theme";
-import { useTranslation } from "react-i18next";
-import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
-import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
-import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import SearchIcon from "@mui/icons-material/Search";
-import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
+import { Box, Typography } from "@mui/material";
 
-const Topbar = () => {
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const colorMode = useContext(ColorModeContext);
-  const { i18n, t } = useTranslation();
-  const [anchorEl, setAnchorEl] = useState(null);
+// ─── Icons ────────────────────────────────────────────────────────────────────
 
-  const handleLangClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
+const IconSearch = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2">
+    <circle cx="11" cy="11" r="8"/>
+    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+  </svg>
+);
 
-  const handleLangClose = (lang) => {
-    if (lang) i18n.changeLanguage(lang);
-    setAnchorEl(null);
-  };
+const IconBell = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+    <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+  </svg>
+);
 
-  return (
-    <Box sx={{ 
-      display: "flex", 
-      justifyContent: "space-between", 
-      p: 2,
-      height: "64px",
+const IconMenu = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="2">
+    <line x1="3" y1="6" x2="21" y2="6"/>
+    <line x1="3" y1="12" x2="21" y2="12"/>
+    <line x1="3" y1="18" x2="21" y2="18"/>
+  </svg>
+);
+
+// ─── Topbar ───────────────────────────────────────────────────────────────────
+
+const Topbar = ({ isMobile }) => (
+  <Box
+    sx={{
+      display: "flex",
       alignItems: "center",
-      position: "sticky",
-      top: 0,
-      zIndex: 10,
-      backgroundColor: "rgba(15, 23, 42, 0.85)", // slate-900 with alpha
-      backdropFilter: "blur(12px)",
-      borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
-    }}>
-      {/* SEARCH BAR */}
+      gap: isMobile ? "10px" : "14px",
+      p: isMobile ? "12px 14px" : "14px 24px",
+      borderBottom: "1px solid rgba(255,255,255,0.06)",
+      background: "#0d1526",
+    }}
+  >
+    {/* Logo — mobile only */}
+    {isMobile && (
+      <Typography sx={{ fontWeight: 800, fontSize: "16px", color: "#cd7329", letterSpacing: "1px", flexShrink: 0 }}>
+        UIZ
+      </Typography>
+    )}
+
+    {/* Search box */}
+    <Box
+      sx={{
+        flex: 1,
+        display: "flex",
+        alignItems: "center",
+        gap: "8px",
+        background: "#111c35",
+        border: "1px solid rgba(255,255,255,0.08)",
+        borderRadius: "10px",
+        p: isMobile ? "8px 12px" : "9px 14px",
+      }}
+    >
+      <IconSearch />
+      <Typography
+        component="input"
+        placeholder={isMobile ? "Rechercher..." : "Search events, organizers, students..."}
+        readOnly
+        sx={{
+          background: "none",
+          border: "none",
+          outline: "none",
+          color: "rgba(255,255,255,0.5)",
+          fontSize: "13px",
+          width: "100%",
+          fontFamily: "inherit",
+          cursor: "default",
+        }}
+      />
+    </Box>
+
+    {/* Right actions */}
+    <Box sx={{ display: "flex", alignItems: "center", gap: "10px" }}>
+      {/* Notification bell */}
       <Box
         sx={{
-          display: { xs: "none", sm: "flex" },
-          backgroundColor: "rgba(255, 255, 255, 0.06)",
+          position: "relative",
+          width: isMobile ? 34 : 36,
+          height: isMobile ? 34 : 36,
+          background: "#111c35",
+          border: "1px solid rgba(255,255,255,0.08)",
           borderRadius: "10px",
+          display: "flex",
           alignItems: "center",
-          px: 2,
-          border: "1px solid rgba(255, 255, 255, 0.12)",
-          width: "320px",
-          transition: "all 0.2s",
-          "&:focus-within": {
-            borderColor: "#cd7329",
-            backgroundColor: "rgba(255, 255, 255, 0.08)",
-          }
+          justifyContent: "center",
+          cursor: "pointer",
+          color: "rgba(255,255,255,0.6)",
         }}
       >
-        <SearchIcon sx={{ color: "rgba(255, 255, 255, 0.3)", fontSize: "20px" }} />
-        <InputBase sx={{ ml: 1, flex: 1, color: "white", fontSize: "14px" }} placeholder={t("Rechercher...")} />
+        <IconBell />
+        <Box
+          sx={{
+            position: "absolute",
+            top: -4,
+            right: -4,
+            width: 16,
+            height: 16,
+            background: "#cd7329",
+            borderRadius: "50%",
+            fontSize: "9px",
+            fontWeight: 700,
+            color: "#fff",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          3
+        </Box>
       </Box>
 
-      {/* ICONS */}
-      <Box display="flex" gap="10px">
-        <IconButton onClick={handleLangClick} sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
-          <LanguageOutlinedIcon />
-        </IconButton>
-        <Menu
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={() => handleLangClose()}
+      {/* Admin info — desktop only */}
+      {!isMobile && (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: "10px",
+            background: "#111c35",
+            border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: "10px",
+            p: "7px 12px 7px 10px",
+          }}
         >
-          <MenuItem onClick={() => handleLangClose("fr")}>Français</MenuItem>
-          <MenuItem onClick={() => handleLangClose("en")}>English</MenuItem>
-        </Menu>
-        
-        <IconButton onClick={colorMode.toggleColorMode} sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
-          {theme.palette.mode === "dark" ? (
-            <DarkModeOutlinedIcon />
-          ) : (
-            <LightModeOutlinedIcon />
-          )}
-        </IconButton>
-        <IconButton sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
-          <NotificationsOutlinedIcon />
-        </IconButton>
-        <IconButton sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
-          <SettingsOutlinedIcon />
-        </IconButton>
-        <IconButton sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
-          <PersonOutlinedIcon />
-        </IconButton>
-      </Box>
+          <Box
+            sx={{
+              width: 28,
+              height: 28,
+              borderRadius: "8px",
+              background: "#cd7329",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "12px",
+              fontWeight: 700,
+              color: "#fff",
+            }}
+          >
+            A
+          </Box>
+          <Box>
+            <Typography sx={{ fontSize: "12px", fontWeight: 600, color: "#fff", lineHeight: 1.2 }}>
+              Admin User
+            </Typography>
+            <Typography sx={{ fontSize: "10px", color: "rgba(255,255,255,0.45)" }}>
+              SUPER ADMINISTRATEUR
+            </Typography>
+          </Box>
+        </Box>
+      )}
+
+      {/* Hamburger — mobile only */}
+      {isMobile && (
+        <Box
+          sx={{
+            width: 34,
+            height: 34,
+            background: "#111c35",
+            border: "1px solid rgba(255,255,255,0.08)",
+            borderRadius: "10px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+          }}
+        >
+          <IconMenu />
+        </Box>
+      )}
     </Box>
-  );
-};
+  </Box>
+);
 
 export default Topbar;
