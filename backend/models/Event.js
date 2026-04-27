@@ -17,8 +17,10 @@ const EventSchema = new mongoose.Schema({
         default: 'pending' 
     },
     
-  //  organizer: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, 
+    //organizer: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, 
    // createdAt: { type: Date, default: Date.now }
 });
 
-module.exports = mongoose.model('Event', EventSchema);
+const Event = mongoose.models.Event || mongoose.model('Event', EventSchema);
+
+module.exports = Event;

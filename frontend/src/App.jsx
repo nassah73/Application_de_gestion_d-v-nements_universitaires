@@ -7,7 +7,7 @@ import RegisterOrganisateur from './pages/Auth/registerOrganisateur';
 import AdministrateurApp from './pages/Administrateur/App';
 // Student Component (which contains its own routes)
 import StudentApp from './pages/student/App';
-
+import Administration from './pages/Administration/index'
 // Organizer Component 
 import OrganizerDashboard from './pages/organisateur/OrganizerDashboard';
 
@@ -28,6 +28,7 @@ function App() {
       {/* --- Auth Routes --- */}
       <Route path="/auth/login" element={<Login />} />
       <Route path="/register-student" element={<RegisterStudent />} />
+      <Route path="/Administration" element={<Administration />} />
       <Route path="/register-organisateur" element={<RegisterOrganisateur />} />
      
       {/* --- Student Routes --- */}
