@@ -6,7 +6,6 @@ import {
   TextField, 
   Button, 
   Paper, 
-  Divider, 
   Stack, 
   useTheme,
   Alert,
@@ -48,12 +47,10 @@ const Settings = () => {
   };
 
   const handleSave = () => {
-    // Simuler une sauvegarde
     setOpenSnackbar(true);
   };
 
   return (
-<<<<<<< HEAD
     <Box sx={{ p: "24px", minHeight: "100%", backgroundColor: colors.primary[500], overflow: "auto" }}>
       {/* Header */}
       <Box sx={{ mb: "30px" }}>
@@ -63,42 +60,15 @@ const Settings = () => {
             fontWeight: 900,
             color: colors.grey[100],
             mb: "8px",
-=======
-    <Box sx={{ p: "24px", height: "100%", overflow: "auto" }}>
-      {/* Header */}
-      <Box
-          component="h1"
-          sx={{
-            fontSize: "36px",
-            fontWeight: 900,
-            color: "#fff",
-            m: 0,
-            mb: "12px",
->>>>>>> f0a424694f8cd146775b89c1aadb9a9e3c0558a6
             letterSpacing: "-1px",
           }}
         >
           PARAMÈTRES SYSTÈME
-<<<<<<< HEAD
         </Typography>
         <Typography variant="h5" sx={{ color: colors.grey[400] }}>
           Configuration globale et sécurité de la plateforme
         </Typography>
       </Box>
-=======
-        </Box>
-        <Box
-          component="p"
-          sx={{
-            fontSize: "15px",
-            color: "rgba(255,255,255,0.45)",
-            m: 0,
-            mb: "25px",
-          }}
-        >
-          Configuration globale de la plateforme
-        </Box>
->>>>>>> f0a424694f8cd146775b89c1aadb9a9e3c0558a6
 
       <Box
         sx={{
@@ -336,9 +306,7 @@ const Settings = () => {
             px: "35px",
             py: "12px",
             borderRadius: "12px",
-            "&:hover": {
-              backgroundColor: colors.greenAccent[700],
-            },
+            "&:hover": { backgroundColor: colors.greenAccent[700] },
           }}
         >
           Sauvegarder les configurations
@@ -350,13 +318,13 @@ const Settings = () => {
         open={openSnackbar} 
         autoHideDuration={4000} 
         onClose={() => setOpenSnackbar(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       >
         <Alert 
           onClose={() => setOpenSnackbar(false)} 
           severity="success" 
           variant="filled"
-          sx={{ width: '100%', borderRadius: "10px" }}
+          sx={{ width: "100%", borderRadius: "10px" }}
         >
           Paramètres mis à jour avec succès !
         </Alert>

@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import { useTranslation } from "react-i18next";
-import { FaLayerGroup, FaUserPlus, FaChartBar, FaUsers, FaShieldAlt, FaCogs, FaListUl } from "react-icons/fa";
+import { FaLayerGroup, FaUserPlus, FaChartBar, FaUsers, FaCogs } from "react-icons/fa";
 import { MdCalendarMonth } from "react-icons/md";
 
 
@@ -13,14 +13,11 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   const isActive = selected === title;
   return (
     <MenuItem
-      
       active={isActive}
       style={{ color: "white" }}
       onClick={() => setSelected(title)}
       icon={icon}
-      
     >
-      
       <Typography sx={{ fontSize: "15px", fontWeight: isActive ? "600" : "400" }}>
         {title}
       </Typography>
@@ -72,7 +69,6 @@ const Sidebar = ({ isSidebar, isCollapsed, setIsCollapsed }) => {
           backgroundColor: "rgba(255,255,255,0.1) !important",
           color: "white !important",
         },
-        // ✅ Active: fond blanc transparent, texte blanc
         "& .pro-menu-item.active .pro-inner-item": {
           backgroundColor: "rgba(255,255,255,0.2) !important",
           borderRadius: "10px !important",
@@ -86,17 +82,10 @@ const Sidebar = ({ isSidebar, isCollapsed, setIsCollapsed }) => {
       <ProSidebar collapsed={isCollapsed}>
         <Menu iconShape="square">
 
-          {/* ✅ HEADER */}
-          <Box
-            sx={{ borderBottom: "1px solid rgba(255,255,255,0.12)", p: "20px" }}
-          >
+          {/* HEADER */}
+          <Box sx={{ borderBottom: "1px solid rgba(255,255,255,0.12)", p: "20px" }}>
             {!isCollapsed ? (
-<<<<<<< HEAD
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-=======
-              <Box display="flex" justifyContent="space-between" alignItems="center">
->>>>>>> f0a424694f8cd146775b89c1aadb9a9e3c0558a6
-                      
                 <Box>
                   <Typography
                     variant="h4"
@@ -109,7 +98,6 @@ const Sidebar = ({ isSidebar, isCollapsed, setIsCollapsed }) => {
                   >
                     UIZ University
                   </Typography>
-
                   <Typography
                     variant="caption"
                     sx={{
@@ -134,22 +122,20 @@ const Sidebar = ({ isSidebar, isCollapsed, setIsCollapsed }) => {
             )}
           </Box>
 
-          {/* ✅ MENU ITEMS */}
+          {/* MENU ITEMS */}
           <Box sx={{ mt: "10px" }}>
-            <Box sx={{pt: "20px"}}>
+            <Box sx={{ pt: "20px" }}>
               <Item title={t("Statistiques Globales")} to="/administrateur" icon={<FaChartBar size={20} />} selected={selected} setSelected={setSelected} />
             </Box>
             <Item title={t("Gestion Utilisateurs")} to="/administrateur/UserM" icon={<FaUsers size={22} />} selected={selected} setSelected={setSelected} />
             <Item title={t("Ajouter Admin")} to="/administrateur/create" icon={<FaUserPlus size={21} />} selected={selected} setSelected={setSelected} />
-            <Item title={t("Gestion Catégories")} to="/administrateur/categorie" icon={<FaLayerGroup size={18}/>} selected={selected} setSelected={setSelected} />
-            {/*<Item title={t("Modération")} to="/administrateur/moderation" icon={<FaShieldAlt size={18}/>} selected={selected} setSelected={setSelected} />*/}
-            <Item title={t("Paramètres")} to="/administrateur/settings" icon={<FaCogs size={18}/>} selected={selected} setSelected={setSelected} />
-            {/*<Item title={t("Journal d'activité")} to="/administrateur/activity" icon={<FaListUl size={18}/>} selected={selected} setSelected={setSelected} />*/}
+            <Item title={t("Gestion Catégories")} to="/administrateur/categorie" icon={<FaLayerGroup size={18} />} selected={selected} setSelected={setSelected} />
+            <Item title={t("Paramètres")} to="/administrateur/settings" icon={<FaCogs size={18} />} selected={selected} setSelected={setSelected} />
             <Item title={t("Calendrier")} to="/administrateur/calendar" icon={<MdCalendarMonth size={26} />} selected={selected} setSelected={setSelected} />
           </Box>
         </Menu>
 
-        {/* ✅ USER PROFILE - horizontal f bas bhal screenshot */}
+        {/* USER PROFILE */}
         <Box
           sx={{
             display: "flex",
@@ -160,11 +146,7 @@ const Sidebar = ({ isSidebar, isCollapsed, setIsCollapsed }) => {
             borderTop: "1px solid rgba(255,255,255,0.12)",
             mt: "auto",
           }}
-        >
-          
-
-          
-        </Box>
+        />
       </ProSidebar>
     </Box>
   );
