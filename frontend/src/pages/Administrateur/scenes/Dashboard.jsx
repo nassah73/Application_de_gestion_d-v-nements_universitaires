@@ -60,6 +60,7 @@ const Dashboard = () => {
   return (
     <Box sx={{ p: "24px", minHeight: "100%", backgroundColor: colors.primary[500] }}>
       {/* Header */}
+<<<<<<< HEAD
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: "30px" }}>
         <Box>
           <Typography
@@ -94,6 +95,32 @@ const Dashboard = () => {
           Télécharger Rapports
         </Button>
       </Box>
+=======
+      <Box
+          component="h1"
+          sx={{
+            fontSize: "36px",
+            fontWeight: 900,
+            color: "#fff",
+            m: 0,
+            mb: "12px",
+            letterSpacing: "-1px",
+          }}
+        >
+          Statistiques Globales
+        </Box>
+        <Box
+          component="p"
+          sx={{
+            fontSize: "15px",
+            color: "rgba(255,255,255,0.45)",
+            m: 0,
+            mb: "30px",
+          }}
+        >
+          Aperçu complet de la plateforme événementielle universitaire
+        </Box>
+>>>>>>> f0a424694f8cd146775b89c1aadb9a9e3c0558a6
 
       {/* Stat Cards Row */}
       <Box

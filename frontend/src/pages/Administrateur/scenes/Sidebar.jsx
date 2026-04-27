@@ -91,7 +91,11 @@ const Sidebar = ({ isSidebar, isCollapsed, setIsCollapsed }) => {
             sx={{ borderBottom: "1px solid rgba(255,255,255,0.12)", p: "20px" }}
           >
             {!isCollapsed ? (
+<<<<<<< HEAD
               <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+=======
+              <Box display="flex" justifyContent="space-between" alignItems="center">
+>>>>>>> f0a424694f8cd146775b89c1aadb9a9e3c0558a6
                       
                 <Box>
                   <Typography

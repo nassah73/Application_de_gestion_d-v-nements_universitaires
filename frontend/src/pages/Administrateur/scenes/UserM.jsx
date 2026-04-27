@@ -21,6 +21,7 @@ import CodeIcon from "@mui/icons-material/Code";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../theme";
 import { mockDataTeam } from "../data/mockData";
+<<<<<<< HEAD
 import { useState } from "react";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import ComputerIcon from "@mui/icons-material/Computer";
@@ -29,6 +30,15 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
+=======
+import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
+import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
+import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import ComputerIcon from "@mui/icons-material/Computer";
+import CodeIcon from "@mui/icons-material/Code";
+
+>>>>>>> f0a424694f8cd146775b89c1aadb9a9e3c0558a6
 
 const UserManagement = () => {
   const theme = useTheme();
@@ -126,7 +136,14 @@ const UserManagement = () => {
         return (
           <Box
             sx={{
+<<<<<<< HEAD
               width: "120px",
+=======
+              width: "60px",
+              m: "0 auto",
+              mt: "10px",
+              ml: "20%",
+>>>>>>> f0a424694f8cd146775b89c1aadb9a9e3c0558a6
               p: "5px",
               display: "flex",
               justifyContent: "flex-start",
@@ -141,11 +158,20 @@ const UserManagement = () => {
               borderRadius: "4px",
             }}
           >
+<<<<<<< HEAD
             {access === "admin" && <AdminPanelSettingsIcon sx={{ fontSize: "18px" }} />}
             {access === "manager" && <ComputerIcon sx={{ fontSize: "18px" }} />}
             {access === "user" && <CodeIcon sx={{ fontSize: "18px" }} />}
             <Typography color={colors.grey[100]} sx={{ fontSize: "12px", fontWeight: "600", textTransform: "capitalize" }}>
               {access}
+=======
+
+            {access === "admin" && <AdminPanelSettingsIcon sx={{ fontSize: "18px" }} />}
+            {access === "manager" && <ComputerIcon sx={{ fontSize: "18px" }} />}
+            {access === "user" && <CodeIcon sx={{ fontSize: "18px" }} />}
+            <Typography color={colors.grey[100]} sx={{ ml: "px", fontSize: "13px"}}>
+              {access === "admin" ? "" : access === "manager" ? "" : ""}
+>>>>>>> f0a424694f8cd146775b89c1aadb9a9e3c0558a6
             </Typography>
           </Box>
         );
@@ -182,6 +208,7 @@ const UserManagement = () => {
   ];
 
   return (
+<<<<<<< HEAD
     <Box sx={{ p: "24px", height: "100%", display: "flex", flexDirection: "column", backgroundColor: colors.primary[500] }}>
       {/* Header */}
       <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: "30px" }}>
@@ -210,6 +237,35 @@ const UserManagement = () => {
           Ajouter un utilisateur
         </Button>
       </Box>
+=======
+    <Box sx={{ p: "24px", height: "100%", display: "flex", flexDirection: "column" }}>
+      {/* Header */}
+      <Box
+          component="h1"
+          sx={{
+            fontSize: "36px",
+            fontWeight: 900,
+            color: "#fff",
+            m: 0,
+            mb: "12px",
+            letterSpacing: "-1px",
+          }}
+        >
+          UTILISATEURS
+        </Box>
+        <Box
+          component="p"
+          sx={{
+            fontSize: "15px",
+            color: "rgba(255,255,255,0.45)",
+            m: 0,
+            mb: "25px",
+          }}
+        >
+          Gestion des membres de l'équipe et des utilisateurs
+        </Box>
+
+>>>>>>> f0a424694f8cd146775b89c1aadb9a9e3c0558a6
 
       {/* Barre de recherche */}
       <Box sx={{ mb: "20px", display: "flex", gap: "10px" }}>
