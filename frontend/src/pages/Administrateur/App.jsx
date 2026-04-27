@@ -3,9 +3,9 @@ import { Routes, Route } from "react-router-dom";
 import Topbar from "./scenes/Topbar";
 import Sidebar from "./scenes/Sidebar";
 import Dashboard from "./scenes/Dashboard";
-import Team from "./scenes/UserM";
+import User from "./scenes/UserM";
 import CategoryManagement from "./scenes/CategoryM";
-import Form from "./scenes/CreateAdmin";
+import Create from "./scenes/CreateAdmin";
 import Moderation from "./scenes/Moderation";
 import Settings from "./scenes/Settings";
 import ActivityLog from "./scenes/ActivityLog";
@@ -42,9 +42,9 @@ function App() {
             <Box sx={{ flex: 1, overflow: "auto", position: "relative" }}>
               <Routes>
                 <Route path="/" element={<Dashboard />} />
-                <Route path="/UserM" element={<Team />} />
-                <Route path="/form" element={<Form />} />
-                <Route path="/pie" element={<CategoryManagement />} />
+                <Route path="/UserM" element={<User />} />
+                <Route path="/create" element={<Create />} />
+                <Route path="/categorie" element={<CategoryManagement />} />
                 <Route path="/moderation" element={<Moderation />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/activity" element={<ActivityLog />} />

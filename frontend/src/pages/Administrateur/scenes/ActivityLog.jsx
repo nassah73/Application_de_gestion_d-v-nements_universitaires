@@ -52,8 +52,8 @@ const ActivityLog = () => {
 
   return (
     <Box sx={{ p: "24px", height: "100%", display: "flex", flexDirection: "column" }}>
-      <Box mb="20px">
-        <Typography variant="h2" color="white" fontWeight="900">
+      <Box sx={{ mb: "20px" }}>
+        <Typography variant="h2" sx={{ color: "white", fontWeight: "900" }}>
           JOURNAL D'ACTIVITÉ
         </Typography>
         <Typography variant="h5" color="rgba(255, 255, 255, 0.45)">
@@ -80,7 +80,16 @@ const ActivityLog = () => {
           },
         }}
       >
-        <DataGrid rows={rows} columns={columns} pageSize={10} />
+        <DataGrid 
+          rows={rows} 
+          columns={columns} 
+          initialState={{
+            pagination: {
+              paginationModel: { pageSize: 10 },
+            },
+          }}
+          pageSizeOptions={[10, 25, 50]}
+        />
       </Box>
     </Box>
   );

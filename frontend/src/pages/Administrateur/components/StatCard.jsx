@@ -4,6 +4,7 @@ import { tokens } from "../theme";
 const StatCard = ({ title, value, change, icon, color }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const mainColor = color || colors.greenAccent[500];
 
   return (
     <Box
@@ -18,7 +19,7 @@ const StatCard = ({ title, value, change, icon, color }) => {
         "&:hover": {
           transform: "translateY(-4px)",
           backgroundColor: "rgba(255, 255, 255, 0.07)",
-          borderColor: "rgba(205, 115, 41, 0.3)",
+          borderColor: `${mainColor}44`,
           boxShadow: "0 12px 24px rgba(0, 0, 0, 0.2)",
         },
       }}
@@ -47,7 +48,7 @@ const StatCard = ({ title, value, change, icon, color }) => {
 
         <Box
           sx={{
-            backgroundColor: "rgba(205, 115, 41, 0.18)",
+            backgroundColor: `${mainColor}22`,
             borderRadius: "12px",
             width: "44px",
             height: "44px",
@@ -55,8 +56,8 @@ const StatCard = ({ title, value, change, icon, color }) => {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            color: "#cd7329",
-            border: "1px solid rgba(205, 115, 41, 0.2)",
+            color: mainColor,
+            border: `1px solid ${mainColor}33`,
             "& svg": { fontSize: "22px" },
           }}
         >
