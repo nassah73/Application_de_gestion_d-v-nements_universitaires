@@ -1,23 +1,70 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, TextField, IconButton, Typography, LinearProgress, Snackbar, Alert } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { MenuItem, InputAdornment } from "@mui/material";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import ComputerIcon from "@mui/icons-material/Computer";
 import CodeIcon from "@mui/icons-material/Code";
+import LockIcon from "@mui/icons-material/Lock";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import { addUser } from "../data/userStorage";
 
 const roles = [
-  { value: "admin", label: "Administration", icon: <AdminPanelSettingsIcon /> },
-  { value: "it", label: "IT", icon: <ComputerIcon /> },
-  { value: "dev", label: "Developer", icon: <CodeIcon /> },
+  { value: "Administration", label: "Administration", icon: <AdminPanelSettingsIcon /> },
+  { value: "IT", label: "IT", icon: <ComputerIcon /> },
+  { value: "Developer", label: "Developer", icon: <CodeIcon /> },
 ];
+
+const getPasswordStrength = (password) => {
+  if (!password) return { score: 0, label: "", color: "#64748b" };
+  let score = 0;
+  if (password.length >= 6) score++;
+  if (password.length >= 10) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+
+  if (score <= 1) return { score: 20, label: "Très faible", color: "#ef4444" };
+  if (score === 2) return { score: 40, label: "Faible", color: "#f97316" };
+  if (score === 3) return { score: 60, label: "Moyen", color: "#eab308" };
+  if (score === 4) return { score: 80, label: "Fort", color: "#22c55e" };
+  return { score: 100, label: "Très fort", color: "#10b981" };
+};
 
 const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
+  const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
-  const handleFormSubmit = (values) => {
-    console.log(values);
+  const handleFormSubmit = (values, { resetForm }) => {
+    // Build user object matching UserM format
+    const newUserData = {
+      name: `${values.firstName} ${values.lastName}`,
+      email: values.email,
+      role: values.role,
+      password: values.password,
+    };
+
+    addUser(newUserData);
+
+    setSnackbar({
+      open: true,
+      message: `${newUserData.name} a été ajouté avec succès !`,
+      severity: "success",
+    });
+
+    resetForm();
+
+    // Navigate to UserM after a short delay so the user sees the success message
+    setTimeout(() => {
+      navigate("/administrateur/UserM");
+    }, 1500);
   };
 
   return (
@@ -173,6 +220,64 @@ const Form = () => {
                   helperText={touched.contact && errors.contact}
                   sx={{ gridColumn: "span 4", ...inputStyles ,pb: "10px"}}
                 />
+                <Box sx={{ gridColumn: "span 4" }}>
+                  <TextField
+                    fullWidth
+                    variant="filled"
+                    type={showPassword ? "text" : "password"}
+                    label="Mot de passe"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.password}
+                    name="password"
+                    error={!!touched.password && !!errors.password}
+                    helperText={touched.password && errors.password}
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <LockIcon sx={{ color: "rgba(255,255,255,0.4)", fontSize: 20 }} />
+                        </InputAdornment>
+                      ),
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            onClick={() => setShowPassword(!showPassword)}
+                            edge="end"
+                            size="small"
+                            sx={{ color: "rgba(255,255,255,0.4)" }}
+                          >
+                            {showPassword ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    sx={{ ...inputStyles, pb: "10px" }}
+                  />
+                  {values.password && (() => {
+                    const strength = getPasswordStrength(values.password);
+                    return (
+                      <Box sx={{ mt: "4px", px: "4px" }}>
+                        <LinearProgress
+                          variant="determinate"
+                          value={strength.score}
+                          sx={{
+                            height: 4,
+                            borderRadius: 2,
+                            backgroundColor: "rgba(255,255,255,0.08)",
+                            "& .MuiLinearProgress-bar": {
+                              backgroundColor: strength.color,
+                              borderRadius: 2,
+                              transition: "transform 0.3s ease, background-color 0.3s ease",
+                            },
+                          }}
+                        />
+                        <Typography sx={{ fontSize: "11px", color: strength.color, mt: "4px", fontWeight: 600 }}>
+                          {strength.label}
+                        </Typography>
+                      </Box>
+                    );
+                  })()}
+                </Box>
                 <TextField
                   fullWidth
                   variant="filled"
@@ -224,6 +329,23 @@ const Form = () => {
           )}
         </Formik>
       </Box>
+
+      {/* Success Snackbar */}
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          severity={snackbar.severity}
+          variant="filled"
+          icon={<CheckCircleOutlineIcon />}
+          sx={{ width: "100%", borderRadius: "12px", fontWeight: 600 }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
@@ -239,8 +361,11 @@ const checkoutSchema = yup.object().shape({
     .string()
     .matches(phoneRegExp, "Numéro de téléphone non valide")
     .required("Contact requis"),
-  address1: yup.string().required("Adresse requise"),
-  address2: yup.string(),
+  password: yup
+    .string()
+    .min(6, "Minimum 6 caractères")
+    .required("Mot de passe requis"),
+  role: yup.string().required("Rôle requis"),
 });
 
 const initialValues = {
@@ -248,8 +373,8 @@ const initialValues = {
   lastName: "",
   email: "",
   contact: "",
-  address1: "",
-  address2: "",
+  password: "",
+  role: "",
 };
 
 const inputStyles = {

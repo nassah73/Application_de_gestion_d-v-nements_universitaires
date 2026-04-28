@@ -1,24 +1,23 @@
 import { useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Box, IconButton, Typography } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import { useTranslation } from "react-i18next";
-import { FaLayerGroup, FaUserPlus, FaChartBar, FaUsers, FaCogs } from "react-icons/fa";
-import { MdCalendarMonth } from "react-icons/md";
-
+import { FaLayerGroup, FaChartBar, FaUsers } from "react-icons/fa";
+import { MdCalendarMonth, MdLogout } from "react-icons/md";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const isActive = selected === title;
   return (
     <MenuItem
       active={isActive}
-      style={{ color: "white" }}
+      style={{ color: isActive ? "#ffffff" : "#8b93a7" }}
       onClick={() => setSelected(title)}
       icon={icon}
     >
-      <Typography sx={{ fontSize: "15px", fontWeight: isActive ? "600" : "400" }}>
+      <Typography sx={{ fontSize: "14px", fontWeight: isActive ? "600" : "500" }}>
         {title}
       </Typography>
       <Link to={to} />
@@ -27,9 +26,15 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
 };
 
 const Sidebar = ({ isSidebar, isCollapsed, setIsCollapsed }) => {
-  const theme = useTheme();
   const { t } = useTranslation();
   const [selected, setSelected] = useState("Statistiques Globales");
+  const navigate = useNavigate(); // ✅ مهم
+
+  // ✅ logout function
+  const handleLogout = () => {
+    localStorage.removeItem("user"); // ولا token حسب المشروع ديالك
+    navigate("/auth/login", { replace: true });
+  };
 
   return (
     <Box
@@ -42,11 +47,12 @@ const Sidebar = ({ isSidebar, isCollapsed, setIsCollapsed }) => {
 
         "& .pro-sidebar": {
           height: "100vh",
-          width: isCollapsed ? "80px !important" : "240px !important",
-          minWidth: isCollapsed ? "80px !important" : "240px !important",
+          width: isCollapsed ? "80px !important" : "260px !important",
+          minWidth: isCollapsed ? "80px !important" : "260px !important",
         },
         "& .pro-sidebar-inner": {
-          background: "linear-gradient(145deg, rgba(205,115,41,0.95), rgba(168,85,20,0.9)) !important",
+          background: "#0f1117 !important",
+          borderRight: "1px solid #1e2130 !important",
         },
         "& .pro-sidebar-layout": {
           display: "flex !important",
@@ -56,26 +62,26 @@ const Sidebar = ({ isSidebar, isCollapsed, setIsCollapsed }) => {
         },
         "& .pro-icon-wrapper": {
           backgroundColor: "transparent !important",
-          color: "rgba(255,255,255,0.85) !important",
+          color: "#8b93a7 !important",
         },
         "& .pro-inner-item": {
-          padding: "10px 16px 10px 16px !important",
+          padding: "12px 14px !important",
           borderRadius: "10px !important",
-          margin: "2px 10px !important",
-          color: "rgba(255,255,255,0.85) !important",
-          transition: "all 0.2s ease !important",
+          margin: "2px 12px !important",
+          color: "#8b93a7 !important",
+          transition: "all 0.15s ease !important",
         },
         "& .pro-inner-item:hover": {
-          backgroundColor: "rgba(255,255,255,0.1) !important",
-          color: "white !important",
+          backgroundColor: "#1a1f2e !important",
+          color: "#c8cdd8 !important",
         },
         "& .pro-menu-item.active .pro-inner-item": {
-          backgroundColor: "rgba(255,255,255,0.2) !important",
+          backgroundColor: "#f97316 !important",
           borderRadius: "10px !important",
         },
         "& .pro-menu-item.active .pro-inner-item *": {
           color: "white !important",
-          fontWeight: "700 !important",
+          fontWeight: "600 !important",
         },
       }}
     >
@@ -83,70 +89,87 @@ const Sidebar = ({ isSidebar, isCollapsed, setIsCollapsed }) => {
         <Menu iconShape="square">
 
           {/* HEADER */}
-          <Box sx={{ borderBottom: "1px solid rgba(255,255,255,0.12)", p: "20px" }}>
+          <Box sx={{ borderBottom: "1px solid #1e2130", p: "24px 20px 20px" }}>
             {!isCollapsed ? (
-              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                 <Box>
                   <Typography
-                    variant="h4"
                     sx={{
                       color: "#ffffff",
                       fontWeight: 900,
+                      fontSize: "18px",
                       letterSpacing: "1px",
                       textTransform: "uppercase",
+                      lineHeight: 1.2,
                     }}
                   >
-                    UIZ University
+                    UIZ<br />University
                   </Typography>
                   <Typography
-                    variant="caption"
                     sx={{
-                      color: "rgba(255,255,255,0.6)",
-                      display: "block",
-                      mt: "2px",
+                      color: "#8b93a7",
+                      fontSize: "11px",
+                      mt: "4px",
                     }}
                   >
                     Administration
                   </Typography>
                 </Box>
-                <IconButton onClick={() => setIsCollapsed(true)} sx={{ color: "white" }}>
+                <IconButton onClick={() => setIsCollapsed(true)} sx={{ color: "#8b93a7" }}>
                   <MenuOutlinedIcon />
                 </IconButton>
               </Box>
             ) : (
               <Box sx={{ display: "flex", justifyContent: "center" }}>
-                <IconButton onClick={() => setIsCollapsed(false)} sx={{ color: "white" }}>
+                <IconButton onClick={() => setIsCollapsed(false)} sx={{ color: "#8b93a7" }}>
                   <MenuOutlinedIcon />
                 </IconButton>
               </Box>
             )}
           </Box>
 
-          {/* MENU ITEMS */}
-          <Box sx={{ mt: "10px" }}>
-            <Box sx={{ pt: "20px" }}>
-              <Item title={t("Statistiques Globales")} to="/administrateur" icon={<FaChartBar size={20} />} selected={selected} setSelected={setSelected} />
-            </Box>
-            <Item title={t("Gestion Utilisateurs")} to="/administrateur/UserM" icon={<FaUsers size={22} />} selected={selected} setSelected={setSelected} />
-            <Item title={t("Ajouter Admin")} to="/administrateur/create" icon={<FaUserPlus size={21} />} selected={selected} setSelected={setSelected} />
-            <Item title={t("Gestion Catégories")} to="/administrateur/categorie" icon={<FaLayerGroup size={18} />} selected={selected} setSelected={setSelected} />
-            <Item title={t("Paramètres")} to="/administrateur/settings" icon={<FaCogs size={18} />} selected={selected} setSelected={setSelected} />
-            <Item title={t("Calendrier")} to="/administrateur/calendar" icon={<MdCalendarMonth size={26} />} selected={selected} setSelected={setSelected} />
+          {/* MENU */}
+          <Box sx={{ mt: "16px" }}>
+            <Item title={t("Statistiques Globales")} to="/administrateur" icon={<FaChartBar size={19} />} selected={selected} setSelected={setSelected} />
+            <Item title={t("Gestion Utilisateurs")} to="/administrateur/UserM" icon={<FaUsers size={19} />} selected={selected} setSelected={setSelected} />
+            <Item title={t("Gestion Catégories")} to="/administrateur/categorie" icon={<FaLayerGroup size={17} />} selected={selected} setSelected={setSelected} />
+            <Item title={t("Calendrier")} to="/administrateur/calendar" icon={<MdCalendarMonth size={19} />} selected={selected} setSelected={setSelected} />
           </Box>
         </Menu>
 
-        {/* USER PROFILE */}
+        {/* LOGOUT */}
         <Box
           sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: "12px",
-            px: "16px",
-            py: "16px",
-            borderTop: "1px solid rgba(255,255,255,0.12)",
+            padding: "12px 12px 20px",
+            borderTop: "1px solid #1e2130",
             mt: "auto",
           }}
-        />
+        >
+          <Box
+            onClick={handleLogout}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: "14px",
+              px: "14px",
+              py: "12px",
+              borderRadius: "10px",
+              cursor: "pointer",
+              color: "#ef4444",
+              "&:hover": {
+                backgroundColor: "rgba(239,68,68,0.1)",
+              },
+            }}
+          >
+            <MdLogout size={19} />
+            {!isCollapsed && (
+              <Typography sx={{ fontSize: "14px", color: "inherit", fontWeight: 500 }}>
+                {t("Déconnexion")}
+              </Typography>
+            )}
+          </Box>
+        </Box>
+
       </ProSidebar>
     </Box>
   );
