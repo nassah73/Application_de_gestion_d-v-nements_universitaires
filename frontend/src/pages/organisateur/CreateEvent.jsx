@@ -37,29 +37,48 @@ const CreateEvent = ({ setActiveTab }) => {
         reader.readAsDataURL(file);
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const data = new FormData();
-        Object.keys(eventData).forEach(key => {
-            data.append(key, eventData[key]);
-        });
-        if (coverImage.rawFile) {
-            data.append('coverImage', coverImage.rawFile);
-        }
+   const handleSubmit = async (e) => {
+    e.preventDefault();
+    const data = new FormData();
 
-        try {
-            const response = await axios.post('http://localhost:5000/Event/CreateEvent', data, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            });
-            if (response.status === 201 || response.status === 200) {
-                alert("Événement créé avec succès! En attente de validation.");
-                setActiveTab('Tableau de Bord');
-            }
-        } catch (error) {
-            console.error("Erreur:", error);
-            alert("Erreur lors de l'envoi des données.");
+    // 1. نزيدو البيانات العادية
+    Object.keys(eventData).forEach(key => {
+        data.append(key, eventData[key]);
+    });
+
+    // 2. نزيدو التصويرة إيلا كانت
+    if (coverImage.rawFile) {
+        data.append('coverImage', coverImage.rawFile);
+    }
+
+    // 3. نزيدو الـ Organizer (هنا فين كان الخلل)
+    const user = JSON.parse(localStorage.getItem('user'));
+    
+    // تأكدنا بلي كنجبدو الـ ID الصحيح كيفما كان الشكل ديال الـ User Object
+    const organizerId = user?._id || user?.user?._id;
+
+    if (organizerId) {
+        data.append('organizer', organizerId);
+        console.log("Organizer ID appended:", organizerId);
+    } else {
+        alert("Session expirée. Veuillez vous reconnecter.");
+        return;
+    }
+
+    try {
+        const response = await axios.post('http://localhost:5000/Event/CreateEvent', data, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        
+        if (response.status === 201 || response.status === 200) {
+            alert("Événement créé avec succès!");
+            setActiveTab('Tableau de Bord');
         }
-    };
+    } catch (error) {
+        console.error("Erreur Backend:", error.response?.data || error.message);
+        alert("Erreur lors de l'envoi.");
+    }
+};
 
     return (
         <div className="bg-slate-900 min-h-screen p-6 md:p-12 text-white relative overflow-hidden font-sans">

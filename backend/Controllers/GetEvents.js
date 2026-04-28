@@ -3,7 +3,7 @@ const Db= require('../models/Event')
 const Getevents =async(req,res)=>{
     try{
 
-        const events = await Db.find({});
+        const events = await Db.find({}).populate('organizer', 'prenom nom email');
         res.status(200).json(events)
     } catch(error){
         res.status(500).json({ message: "Error fetching data", error });

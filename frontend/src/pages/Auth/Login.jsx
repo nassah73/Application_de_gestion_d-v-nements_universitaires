@@ -17,7 +17,7 @@ export default function Login() {
         try {
             const response = await axios.post('http://localhost:5000/api/auth/login', formData);
             console.log("Connexion réussie ✅", response.data);
-            
+             localStorage.setItem('user', JSON.stringify(response.data));
             if (response.data.role === 'student') Navigate('/app/Home');
             else if (response.data.role === 'organizer') Navigate('/organisateur');
             else if (response.data.role === 'admin') Navigate('/responsable');

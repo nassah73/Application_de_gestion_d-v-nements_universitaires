@@ -8,10 +8,6 @@ import {
   Users, CalendarCheck, MapPin, Clock, User, Tag 
 } from 'lucide-react';
 
-const INITIAL_EVENTS = [
-  { id: 1, title: 'Science Fair 2026', organizer: 'Physics Club', category: 'Sociale', date: '2026-04-15', capacity: 200, status: 'Soumis', description: 'Une exposition annuelle des projets scientifiques.', location: 'Salle Polyvalente A' },
-  { id: 2, title: 'Cultural Night', organizer: 'Association Int', category: 'Culturel', date: '2026-04-18', capacity: 500, status: 'Validé', description: 'Soirée culturelle.', location: 'Amphithéâtre Central' },
-];
 
 const INITIAL_NOTIFS = [
   { id: 1, icon: <Users size={16} />, iconBg: 'rgba(205,115,41,0.18)', iconColor: '#cd7329', title: 'Nouvelle demande', desc: 'Club Informatique a demandé le statut.', read: false },
@@ -93,7 +89,12 @@ if (loading) {
                 {filtered.map(event => (
                   <tr key={event.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
                     <td className="px-4 py-4 text-sm font-bold">{event.title}</td>
-                    <td className="px-4 py-4 text-sm text-slate-500">{event.organizer}</td>
+                    <td className="px-4 py-4 text-sm text-slate-500">
+                        
+                        {event.organizer 
+                          ? `${event.organizer.prenom} ${event.organizer.nom}` 
+                          : "Organisateur inconnu"}
+                      </td>
                     <td className="px-4 py-4 text-center"><StatusBadge status={event.status} /></td>
                     {/* ... نفس الـ Imports ... */}
 
