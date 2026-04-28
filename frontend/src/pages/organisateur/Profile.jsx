@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import OrgSidebar from './components/OrgSidebar';
 import OrgNavbar from './components/OrgNavbar';
-import { User, Mail, Lock, Save } from 'lucide-react';
+import { User, Mail, Lock, Save, ShieldCheck } from 'lucide-react';
 
 const Profile = () => {
   const [userInfo, setUserInfo] = useState({
@@ -30,7 +30,6 @@ const Profile = () => {
 
   const updateInfo = (e) => {
     e.preventDefault();
-    // Simulation d'API
     setMessage({ type: 'success', text: 'Informations mises à jour avec succès !' });
     setTimeout(() => setMessage({ type: '', text: '' }), 3000);
   };
@@ -41,120 +40,135 @@ const Profile = () => {
       setMessage({ type: 'error', text: 'Les nouveaux mots de passe ne correspondent pas.' });
       return;
     }
-    // Simulation d'API
     setMessage({ type: 'success', text: 'Mot de passe modifié avec succès !' });
     setPasswords({ currentPassword: '', newPassword: '', confirmPassword: '' });
     setTimeout(() => setMessage({ type: '', text: '' }), 3000);
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen overflow-hidden font-sans" style={{ background: '#0f172a' }}>
       <OrgSidebar />
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col h-screen overflow-y-auto">
         <OrgNavbar />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto p-6">
-          <div className="max-w-4xl mx-auto space-y-6">
-            <h1 className="text-3xl font-bold text-gray-800">Mon Profil</h1>
+        <main className="flex-1 p-8">
+          <div className="max-w-4xl mx-auto">
+            <div className="mb-8">
+              <h1 className="text-3xl font-black text-white uppercase tracking-tight">Mon Profil</h1>
+              <p className="text-white/40 mt-1">Gérez vos informations personnelles et votre sécurité.</p>
+            </div>
             
             {message.text && (
-              <div className={`p-4 rounded-lg ${message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                {message.text}
+              <div className={`p-4 rounded-xl mb-6 flex items-center gap-3 border ${
+                message.type === 'success' 
+                  ? 'bg-green-400/10 border-green-400/20 text-green-400' 
+                  : 'bg-red-400/10 border-red-400/20 text-red-400'
+              }`}>
+                {message.type === 'success' ? <ShieldCheck size={20} /> : <Lock size={20} />}
+                <span className="font-bold text-sm">{message.text}</span>
               </div>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Informations Personnelles */}
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <div className="flex items-center gap-2 mb-6 border-b pb-2">
-                  <User className="text-blue-500" size={20} />
-                  <h2 className="text-xl font-bold text-gray-800">Informations Personnelles</h2>
+              <div className="p-6 rounded-2xl border"
+                style={{ background: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.08)' }}>
+                <div className="flex items-center gap-3 mb-8 border-b border-white/5 pb-4">
+                  <div className="p-2 bg-blue-500/10 rounded-lg text-blue-400">
+                    <User size={20} />
+                  </div>
+                  <h2 className="text-xl font-bold text-white">Informations</h2>
                 </div>
-                <form onSubmit={updateInfo} className="space-y-4">
+                
+                <form onSubmit={updateInfo} className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Nom</label>
+                    <label className="block text-xs font-bold text-white/40 uppercase mb-2 ml-1">Nom</label>
                     <input
                       type="text"
                       name="nom"
                       value={userInfo.nom}
                       onChange={handleInfoChange}
-                      className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-orange-500 transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Prénom</label>
+                    <label className="block text-xs font-bold text-white/40 uppercase mb-2 ml-1">Prénom</label>
                     <input
                       type="text"
                       name="prenom"
                       value={userInfo.prenom}
                       onChange={handleInfoChange}
-                      className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-orange-500 transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 flex items-center gap-1">
-                      <Mail size={14} /> Email
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={userInfo.email}
-                      disabled
-                      className="mt-1 block w-full border border-gray-200 bg-gray-50 rounded-md p-2 text-gray-500 cursor-not-allowed"
-                    />
-                    <p className="text-xs text-gray-400 mt-1 italic">L'email ne peut pas être modifié.</p>
+                    <label className="block text-xs font-bold text-white/40 uppercase mb-2 ml-1">Email</label>
+                    <div className="relative">
+                      <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" />
+                      <input
+                        type="email"
+                        value={userInfo.email}
+                        disabled
+                        className="w-full bg-white/5 border border-white/5 rounded-xl p-3 pl-11 text-white/30 cursor-not-allowed"
+                      />
+                    </div>
                   </div>
                   <button
                     type="submit"
-                    className="w-full flex justify-center items-center gap-2 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition font-medium"
+                    className="w-full flex justify-center items-center gap-2 bg-orange-500 text-white py-3 rounded-xl font-bold hover:bg-orange-600 transition-all hover:shadow-[0_0_20px_rgba(205,115,41,0.3)]"
                   >
-                    <Save size={18} /> Enregistrer les modifications
+                    <Save size={18} /> Mettre à jour
                   </button>
                 </form>
               </div>
 
-              {/* Sécurité / Mot de passe */}
-              <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <div className="flex items-center gap-2 mb-6 border-b pb-2">
-                  <Lock className="text-orange-500" size={20} />
-                  <h2 className="text-xl font-bold text-gray-800">Sécurité</h2>
+              {/* Sécurité */}
+              <div className="p-6 rounded-2xl border"
+                style={{ background: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.08)' }}>
+                <div className="flex items-center gap-3 mb-8 border-b border-white/5 pb-4">
+                  <div className="p-2 bg-orange-500/10 rounded-lg text-orange-400">
+                    <Lock size={20} />
+                  </div>
+                  <h2 className="text-xl font-bold text-white">Sécurité</h2>
                 </div>
-                <form onSubmit={updatePassword} className="space-y-4">
+
+                <form onSubmit={updatePassword} className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Mot de passe actuel</label>
+                    <label className="block text-xs font-bold text-white/40 uppercase mb-2 ml-1">Mot de passe actuel</label>
                     <input
                       type="password"
                       name="currentPassword"
                       value={passwords.currentPassword}
                       onChange={handlePasswordChange}
                       required
-                      className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-orange-500 transition-colors"
                     />
                   </div>
+                  <div className="h-px bg-white/5 my-2"></div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Nouveau mot de passe</label>
+                    <label className="block text-xs font-bold text-white/40 uppercase mb-2 ml-1">Nouveau mot de passe</label>
                     <input
                       type="password"
                       name="newPassword"
                       value={passwords.newPassword}
                       onChange={handlePasswordChange}
                       required
-                      className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-orange-500 transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">Confirmer le nouveau mot de passe</label>
+                    <label className="block text-xs font-bold text-white/40 uppercase mb-2 ml-1">Confirmation</label>
                     <input
                       type="password"
                       name="confirmPassword"
                       value={passwords.confirmPassword}
                       onChange={handlePasswordChange}
                       required
-                      className="mt-1 block w-full border border-gray-300 rounded-md p-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-orange-500 transition-colors"
                     />
                   </div>
                   <button
                     type="submit"
-                    className="w-full bg-gray-800 text-white py-2 px-4 rounded-lg hover:bg-black transition font-medium"
+                    className="w-full bg-white/10 text-white py-3 rounded-xl font-bold hover:bg-white/20 transition-all"
                   >
                     Changer le mot de passe
                   </button>

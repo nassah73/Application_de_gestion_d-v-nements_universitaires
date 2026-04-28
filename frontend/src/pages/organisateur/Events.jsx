@@ -3,11 +3,15 @@ import { Link } from 'react-router-dom';
 import OrgSidebar from './components/OrgSidebar';
 import OrgNavbar from './components/OrgNavbar';
 import eventService from './services/eventService';
+import EventCard from './components/EventCard';
+import { Calendar, PlusCircle, Search, Filter } from 'lucide-react';
 
 const Events = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -34,47 +38,28 @@ const Events = () => {
     fetchEvents();
   }, []);
 
-  const getStatusStyle = (status) => {
-    switch (status) {
-      case 'approved':          return 'bg-green-100 text-green-800';
-      case 'approved-modified': return 'bg-blue-100 text-blue-800';
-      case 'pending':           return 'bg-yellow-100 text-yellow-800';
-      case 'rejected':          return 'bg-red-100 text-red-800';
-      default:                  return 'bg-gray-100 text-gray-800';
-    }
-  };
-
-  const getStatusLabel = (status) => {
-    switch (status) {
-      case 'approved':          return 'Validé';
-      case 'approved-modified': return 'Validé avec modification';
-      case 'pending':           return 'En cours';
-      case 'rejected':          return 'Refusé';
-      default:                  return status;
-    }
-  };
-
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
+  const filteredEvents = events.filter(event => {
+    const matchesSearch = event.titre?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          event.lieu?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesFilter = filterStatus === 'all' || event.status === filterStatus;
+    return matchesSearch && matchesFilter;
+  });
 
   if (loading) {
     return (
-      <div className="flex h-screen bg-gray-100">
+      <div className="flex h-screen overflow-hidden font-sans bg-[#0f172a]">
         <OrgSidebar />
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="flex-1 flex flex-col h-screen overflow-y-auto relative">
           <OrgNavbar />
-          <main className="flex-1 overflow-x-hidden overflow-y-auto p-6 flex items-center justify-center">
+          <main className="flex-1 flex items-center justify-center">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-              <p className="text-gray-500">Chargement des evenements...</p>
+              <div className="relative">
+                <div className="w-16 h-16 border-4 border-orange-500/20 border-t-orange-500 rounded-full animate-spin mx-auto"></div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Calendar size={20} className="text-orange-500 animate-pulse" />
+                </div>
+              </div>
+              <p className="text-gray-500 font-black uppercase tracking-[0.3em] text-[10px] mt-6">Initialisation</p>
             </div>
           </main>
         </div>
@@ -83,105 +68,85 @@ const Events = () => {
   }
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen overflow-hidden font-sans bg-[#0f172a]">
       <OrgSidebar />
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col h-screen overflow-y-auto relative">
+        {/* Background glow effects */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
+
         <OrgNavbar />
-        <main className="flex-1 overflow-x-hidden overflow-y-auto p-6">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">Mes Événements</h2>
+        <main className="flex-1 p-8">
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-10">
+            <div>
+              <h1 className="text-4xl font-black text-white uppercase tracking-tighter">
+                Mes Événements <span className="text-orange-500">.</span>
+              </h1>
+              <p className="text-gray-500 mt-2 font-medium">Gérez et suivez l'état de vos demandes d'événements.</p>
+            </div>
             <Link 
               to="/organisateur/create-event" 
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition flex items-center gap-2"
+              className="flex items-center gap-3 bg-orange-500 text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-orange-600 transition-all hover:shadow-[0_15px_30px_rgba(249,115,22,0.3)] hover:-translate-y-1 active:scale-95"
             >
-              <span>+</span> Créer un événement
+              <PlusCircle size={18} />
+              <span>Créer un événement</span>
             </Link>
           </div>
 
-          {error && (
-            <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded mb-6">
-              <p className="text-red-700">{error}</p>
+          {/* Filters and Search */}
+          <div className="flex flex-col md:flex-row gap-4 mb-8 bg-white/[0.02] border border-white/5 p-4 rounded-3xl backdrop-blur-sm">
+            <div className="relative flex-1 group">
+              <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-orange-500 transition-colors" />
+              <input 
+                type="text"
+                placeholder="Rechercher par titre ou lieu..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-12 pr-4 py-3 bg-white/[0.03] border border-white/5 rounded-2xl text-sm text-white outline-none focus:border-orange-500/30 focus:bg-white/[0.05] transition-all"
+              />
             </div>
-          )}
+            <div className="flex gap-2">
+              <div className="relative group">
+                <Filter size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+                <select 
+                  value={filterStatus}
+                  onChange={(e) => setFilterStatus(e.target.value)}
+                  className="pl-12 pr-10 py-3 bg-white/[0.03] border border-white/5 rounded-2xl text-sm text-white outline-none focus:border-orange-500/30 focus:bg-white/[0.05] appearance-none transition-all cursor-pointer"
+                >
+                  <option value="all" className="bg-[#1e293b]">Tous les statuts</option>
+                  <option value="approved" className="bg-[#1e293b]">Validé</option>
+                  <option value="pending" className="bg-[#1e293b]">En cours</option>
+                  <option value="rejected" className="bg-[#1e293b]">Refusé</option>
+                  <option value="approved-modified" className="bg-[#1e293b]">Modifié</option>
+                </select>
+              </div>
+            </div>
+          </div>
 
-          {events.length === 0 && !error ? (
-            <div className="bg-white rounded-lg shadow-sm p-12 text-center">
-              <div className="text-gray-400 text-6xl mb-4">📅</div>
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">Aucun événement créé</h3>
-              <p className="text-gray-500 mb-6">Commencez par créer votre premier événement.</p>
-              <Link 
-                to="/organisateur/create-event" 
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition inline-block"
-              >
-                Créer un événement
-              </Link>
+          {filteredEvents.length === 0 ? (
+            <div className="p-20 text-center border-2 border-dashed border-white/5 rounded-[2.5rem] bg-white/[0.01] flex flex-col items-center justify-center">
+              <div className="w-24 h-24 bg-white/5 rounded-full flex items-center justify-center mb-6">
+                <Calendar size={40} className="text-gray-700" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Aucun événement trouvé</h3>
+              <p className="text-gray-500 max-w-xs mx-auto mb-8 font-medium">
+                {searchTerm || filterStatus !== 'all' 
+                  ? "Ajustez vos filtres ou votre recherche pour trouver ce que vous cherchez."
+                  : "Commencez par créer votre premier événement pour le voir apparaître ici."}
+              </p>
+              {!(searchTerm || filterStatus !== 'all') && (
+                <Link 
+                  to="/organisateur/create-event" 
+                  className="px-8 py-3 bg-white text-[#0f172a] font-black uppercase tracking-widest text-xs rounded-xl hover:bg-orange-500 hover:text-white transition-all"
+                >
+                  Créer maintenant
+                </Link>
+              )}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {events.map((event) => (
-                <div key={event._id} className="bg-white p-5 rounded-lg shadow border border-gray-200 hover:shadow-md transition">
-                  {/* En-tête avec image de couverture */}
-                  {event.coverImage && (
-                    <div className="h-32 -mx-5 -mt-5 mb-4 overflow-hidden rounded-t-lg">
-                      <img 
-                        src={`http://localhost:5000/${event.coverImage}`} 
-                        alt={event.title}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  )}
-                  
-                  <div className="flex justify-between items-start mb-3">
-                    <h3 className="text-lg font-semibold text-gray-800 line-clamp-1">{event.title}</h3>
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap ${getStatusStyle(event.status)}`}>
-                      {getStatusLabel(event.status)}
-                    </span>
-                  </div>
-                  
-                  <p className="text-sm text-gray-500 mb-3 line-clamp-2">{event.description}</p>
-                  
-                  <div className="text-xs text-gray-400 space-y-1 mb-4">
-                    <p>📍 {event.location}</p>
-                    <p>📅 {formatDate(event.date)}</p>
-                    <p>👥 {event.participants?.length || 0} / {event.capacity} participants</p>
-                  </div>
-                  
-                  <div className="mt-4 pt-4 border-t border-gray-100 flex flex-wrap gap-2">
-                    {/* Bouton Détails — toujours présent */}
-                    <Link 
-                      to={`/organisateur/events/${event._id}`} 
-                      className="flex-1 text-center text-sm bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
-                    >
-                      Détails
-                    </Link>
-
-                    {/* Bouton Modifier — conditionnel */}
-                    {event.status === 'pending' && (
-                      <Link
-                        to={`/organisateur/editer-evenement?id=${event._id}`}
-                        className="flex-1 text-center text-sm bg-gray-100 text-gray-700 py-2 rounded hover:bg-gray-200 transition"
-                      >
-                        Modifier
-                      </Link>
-                    )}
-                    {(event.status === 'approved' || event.status === 'approved-modified') && (
-                      <Link
-                        to={`/organisateur/editer-evenement?id=${event._id}`}
-                        className="flex-1 text-center text-sm bg-yellow-500 text-white py-2 rounded hover:bg-yellow-600 transition"
-                      >
-                        Demander modification
-                      </Link>
-                    )}
-                    {event.status === 'rejected' && (
-                      <button
-                        className="flex-1 text-sm bg-gray-300 text-gray-600 py-2 rounded cursor-not-allowed"
-                        disabled
-                      >
-                        Bloqué
-                      </button>
-                    )}
-                  </div>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+              {filteredEvents.map((event) => (
+                <EventCard key={event._id} event={event} />
               ))}
             </div>
           )}
