@@ -1,198 +1,182 @@
-import React, { useState, useRef } from 'react';
-import { User, Mail, Phone, MapPin, Building, ShieldCheck, Camera, Edit3, Save, X } from 'lucide-react';
+import React, { useState } from 'react';
+import OrgSidebar from './components/OrgSidebar';
+import OrgNavbar from './components/OrgNavbar';
+import { User, Mail, Lock, Save, ShieldCheck } from 'lucide-react';
 
 const Profile = () => {
-  const [isEditing, setIsEditing] = useState(false);
-  const [profileData, setProfileData] = useState({
-    name: 'Club Informatique',
-    department: 'Faculté Polydisciplinaire de Taroudant',
-    role: 'Organisateur Officiel',
-    email: 'contact.clubinfo@uiz.ac.ma',
-    phone: '+212 6 00 00 00 00',
-    location: 'Bureau 12, Bâtiment B',
-    description: "Le Club Informatique de la FP Taroudant a pour objectif de partager la passion des nouvelles technologies, d'organiser des ateliers pratiques (workshops), des hackathons et des rencontres avec des professionnels du secteur IT. Nous visons l'excellence et l'apprentissage par la pratique."
+  const [userInfo, setUserInfo] = useState({
+    nom: 'Dupont',
+    prenom: 'Jean',
+    email: 'jean.dupont@uiz.ac.ma',
   });
 
-  const [avatarPreview, setAvatarPreview] = useState(null);
-  const [coverPreview, setCoverPreview] = useState(null);
+  const [passwords, setPasswords] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: '',
+  });
 
-  const avatarInputRef = useRef(null);
-  const coverInputRef = useRef(null);
+  const [message, setMessage] = useState({ type: '', text: '' });
 
-  const handleInputChange = (e) => {
+  const handleInfoChange = (e) => {
     const { name, value } = e.target;
-    setProfileData(prev => ({ ...prev, [name]: value }));
+    setUserInfo({ ...userInfo, [name]: value });
   };
 
-  const handleImageUpload = (e, setPreview) => {
-    const file = e.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setPreview(imageUrl);
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target;
+    setPasswords({ ...passwords, [name]: value });
+  };
+
+  const updateInfo = (e) => {
+    e.preventDefault();
+    setMessage({ type: 'success', text: 'Informations mises à jour avec succès !' });
+    setTimeout(() => setMessage({ type: '', text: '' }), 3000);
+  };
+
+  const updatePassword = (e) => {
+    e.preventDefault();
+    if (passwords.newPassword !== passwords.confirmPassword) {
+      setMessage({ type: 'error', text: 'Les nouveaux mots de passe ne correspondent pas.' });
+      return;
     }
+    setMessage({ type: 'success', text: 'Mot de passe modifié avec succès !' });
+    setPasswords({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    setTimeout(() => setMessage({ type: '', text: '' }), 3000);
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in zoom-in duration-300">
-      
-      {/* Cover and Avatar Section */}
-      <div className="bg-white rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden relative">
-        <div 
-          className="h-48 relative bg-cover bg-center transition-all"
-          style={{ backgroundImage: coverPreview ? `url(${coverPreview})` : 'linear-gradient(to right, #fb923c, #f59e0b)' }}
-        >
-          <input type="file" ref={coverInputRef} className="hidden" accept="image/*" onChange={(e) => handleImageUpload(e, setCoverPreview)} />
-          <button 
-            onClick={() => coverInputRef.current.click()}
-            className="absolute bottom-4 right-4 bg-white/20 hover:bg-white/30 backdrop-blur-md text-white px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 transition-all cursor-pointer"
-          >
-            <Camera size={16} /> Changer la couverture
-          </button>
-        </div>
-        
-        <div className="px-10 pb-10 relative">
-          <div className="flex flex-col md:flex-row gap-8 items-start md:items-end -mt-16 mb-8">
-            <div className="relative group">
-              <div 
-                className="w-32 h-32 rounded-3xl bg-slate-900 border-4 border-white shadow-xl flex items-center justify-center text-white text-5xl font-black bg-cover bg-center"
-                style={avatarPreview ? { backgroundImage: `url(${avatarPreview})` } : {}}
-              >
-                {!avatarPreview && 'C'}
-              </div>
-              <input type="file" ref={avatarInputRef} className="hidden" accept="image/*" onChange={(e) => handleImageUpload(e, setAvatarPreview)} />
-              <button 
-                onClick={() => avatarInputRef.current.click()}
-                className="absolute -bottom-2 -right-2 bg-orange-500 text-white p-2.5 rounded-xl shadow-lg hover:bg-orange-600 transition-colors cursor-pointer"
-              >
-                <Camera size={18} />
-              </button>
+    <div className="flex h-screen overflow-hidden font-sans" style={{ background: '#0f172a' }}>
+      <OrgSidebar />
+      <div className="flex-1 flex flex-col h-screen overflow-y-auto">
+        <OrgNavbar />
+        <main className="flex-1 p-8">
+          <div className="max-w-4xl mx-auto">
+            <div className="mb-8">
+              <h1 className="text-3xl font-black text-white uppercase tracking-tight">Mon Profil</h1>
+              <p className="text-white/40 mt-1">Gérez vos informations personnelles et votre sécurité.</p>
             </div>
             
-            <div className="flex-1">
-              {isEditing ? (
-                <div className="space-y-2 mt-16 md:mt-0">
-                  <input type="text" name="name" value={profileData.name} onChange={handleInputChange} className="text-3xl font-black text-slate-900 bg-slate-50 border border-slate-200 rounded-lg px-3 py-1 w-full focus:outline-none focus:border-orange-500" />
-                  <input type="text" name="department" value={profileData.department} onChange={handleInputChange} className="text-slate-500 font-medium bg-slate-50 border border-slate-200 rounded-lg px-3 py-1 w-full focus:outline-none focus:border-orange-500" />
-                </div>
-              ) : (
-                <>
-                  <h2 className="text-3xl font-black text-slate-900">{profileData.name}</h2>
-                  <p className="text-slate-500 font-medium flex items-center gap-2 mt-1">
-                    <Building size={16} /> {profileData.department}
-                  </p>
-                </>
-              )}
-            </div>
-            
-            <div className="flex gap-3">
-              {isEditing ? (
-                <>
-                  <button onClick={() => setIsEditing(false)} className="bg-slate-100 text-slate-600 px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-slate-200 transition-colors cursor-pointer">
-                    <X size={18} /> Annuler
-                  </button>
-                  <button onClick={() => setIsEditing(false)} className="bg-emerald-500 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-emerald-600 transition-colors shadow-lg cursor-pointer">
-                    <Save size={18} /> Enregistrer
-                  </button>
-                </>
-              ) : (
-                <button onClick={() => setIsEditing(true)} className="bg-slate-900 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 hover:bg-slate-800 transition-colors shadow-lg cursor-pointer">
-                  <Edit3 size={18} /> Éditer le profil
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Info Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        
-        {/* Left column - About */}
-        <div className="md:col-span-1 space-y-6">
-          <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
-            <h3 className="text-lg font-black text-slate-900 mb-6 flex items-center gap-2">
-              <User size={20} className="text-orange-500" /> À propos
-            </h3>
-            
-            <div className="space-y-5">
-              <div>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Rôle</p>
-                {isEditing ? (
-                  <input type="text" name="role" value={profileData.role} onChange={handleInputChange} className="text-sm font-bold text-slate-700 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 w-full focus:outline-none focus:border-orange-500" />
-                ) : (
-                  <p className="text-sm font-bold text-slate-700 flex items-center gap-2">
-                    <ShieldCheck size={16} className="text-emerald-500" /> {profileData.role}
-                  </p>
-                )}
+            {message.text && (
+              <div className={`p-4 rounded-xl mb-6 flex items-center gap-3 border ${
+                message.type === 'success' 
+                  ? 'bg-green-400/10 border-green-400/20 text-green-400' 
+                  : 'bg-red-400/10 border-red-400/20 text-red-400'
+              }`}>
+                {message.type === 'success' ? <ShieldCheck size={20} /> : <Lock size={20} />}
+                <span className="font-bold text-sm">{message.text}</span>
               </div>
-              
-              <div>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Email de contact</p>
-                {isEditing ? (
-                  <input type="email" name="email" value={profileData.email} onChange={handleInputChange} className="text-sm font-bold text-slate-700 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 w-full focus:outline-none focus:border-orange-500" />
-                ) : (
-                  <p className="text-sm font-bold text-slate-700 flex items-center gap-2">
-                    <Mail size={16} className="text-slate-400" /> {profileData.email}
-                  </p>
-                )}
-              </div>
-              
-              <div>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Téléphone</p>
-                {isEditing ? (
-                  <input type="text" name="phone" value={profileData.phone} onChange={handleInputChange} className="text-sm font-bold text-slate-700 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 w-full focus:outline-none focus:border-orange-500" />
-                ) : (
-                  <p className="text-sm font-bold text-slate-700 flex items-center gap-2">
-                    <Phone size={16} className="text-slate-400" /> {profileData.phone}
-                  </p>
-                )}
-              </div>
-              
-              <div>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Localisation</p>
-                {isEditing ? (
-                  <input type="text" name="location" value={profileData.location} onChange={handleInputChange} className="text-sm font-bold text-slate-700 bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 w-full focus:outline-none focus:border-orange-500" />
-                ) : (
-                  <p className="text-sm font-bold text-slate-700 flex items-center gap-2">
-                    <MapPin size={16} className="text-slate-400" /> {profileData.location}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right column - Settings or Bio */}
-        <div className="md:col-span-2 space-y-6">
-          <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100">
-            <h3 className="text-lg font-black text-slate-900 mb-4">Description du Club</h3>
-            {isEditing ? (
-              <textarea 
-                name="description" 
-                value={profileData.description} 
-                onChange={handleInputChange} 
-                rows="4"
-                className="w-full text-slate-500 leading-relaxed text-sm bg-slate-50 border border-slate-200 rounded-xl p-3 focus:outline-none focus:border-orange-500"
-              />
-            ) : (
-              <p className="text-slate-500 leading-relaxed text-sm mb-6 whitespace-pre-wrap">
-                {profileData.description}
-              </p>
             )}
-            
-            <div className="grid grid-cols-2 gap-4 mt-8">
-              <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100">
-                <p className="text-3xl font-black text-orange-500 mb-1">12</p>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">Événements organisés</p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {/* Informations Personnelles */}
+              <div className="p-6 rounded-2xl border"
+                style={{ background: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.08)' }}>
+                <div className="flex items-center gap-3 mb-8 border-b border-white/5 pb-4">
+                  <div className="p-2 bg-blue-500/10 rounded-lg text-blue-400">
+                    <User size={20} />
+                  </div>
+                  <h2 className="text-xl font-bold text-white">Informations</h2>
+                </div>
+                
+                <form onSubmit={updateInfo} className="space-y-6">
+                  <div>
+                    <label className="block text-xs font-bold text-white/40 uppercase mb-2 ml-1">Nom</label>
+                    <input
+                      type="text"
+                      name="nom"
+                      value={userInfo.nom}
+                      onChange={handleInfoChange}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-orange-500 transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-white/40 uppercase mb-2 ml-1">Prénom</label>
+                    <input
+                      type="text"
+                      name="prenom"
+                      value={userInfo.prenom}
+                      onChange={handleInfoChange}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-orange-500 transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-white/40 uppercase mb-2 ml-1">Email</label>
+                    <div className="relative">
+                      <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" />
+                      <input
+                        type="email"
+                        value={userInfo.email}
+                        disabled
+                        className="w-full bg-white/5 border border-white/5 rounded-xl p-3 pl-11 text-white/30 cursor-not-allowed"
+                      />
+                    </div>
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full flex justify-center items-center gap-2 bg-orange-500 text-white py-3 rounded-xl font-bold hover:bg-orange-600 transition-all hover:shadow-[0_0_20px_rgba(205,115,41,0.3)]"
+                  >
+                    <Save size={18} /> Mettre à jour
+                  </button>
+                </form>
               </div>
-              <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100">
-                <p className="text-3xl font-black text-orange-500 mb-1">850+</p>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">Participants globaux</p>
+
+              {/* Sécurité */}
+              <div className="p-6 rounded-2xl border"
+                style={{ background: 'rgba(255,255,255,0.03)', borderColor: 'rgba(255,255,255,0.08)' }}>
+                <div className="flex items-center gap-3 mb-8 border-b border-white/5 pb-4">
+                  <div className="p-2 bg-orange-500/10 rounded-lg text-orange-400">
+                    <Lock size={20} />
+                  </div>
+                  <h2 className="text-xl font-bold text-white">Sécurité</h2>
+                </div>
+
+                <form onSubmit={updatePassword} className="space-y-6">
+                  <div>
+                    <label className="block text-xs font-bold text-white/40 uppercase mb-2 ml-1">Mot de passe actuel</label>
+                    <input
+                      type="password"
+                      name="currentPassword"
+                      value={passwords.currentPassword}
+                      onChange={handlePasswordChange}
+                      required
+                      className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-orange-500 transition-colors"
+                    />
+                  </div>
+                  <div className="h-px bg-white/5 my-2"></div>
+                  <div>
+                    <label className="block text-xs font-bold text-white/40 uppercase mb-2 ml-1">Nouveau mot de passe</label>
+                    <input
+                      type="password"
+                      name="newPassword"
+                      value={passwords.newPassword}
+                      onChange={handlePasswordChange}
+                      required
+                      className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-orange-500 transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-white/40 uppercase mb-2 ml-1">Confirmation</label>
+                    <input
+                      type="password"
+                      name="confirmPassword"
+                      value={passwords.confirmPassword}
+                      onChange={handlePasswordChange}
+                      required
+                      className="w-full bg-white/5 border border-white/10 rounded-xl p-3 text-white outline-none focus:border-orange-500 transition-colors"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="w-full bg-white/10 text-white py-3 rounded-xl font-bold hover:bg-white/20 transition-all"
+                  >
+                    Changer le mot de passe
+                  </button>
+                </form>
               </div>
             </div>
           </div>
-        </div>
-        
+        </main>
       </div>
     </div>
   );

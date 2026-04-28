@@ -9,7 +9,11 @@ const organisateurSchema = new mongoose.Schema({
     password: { type: String, required: true },
     justificatif: { type: String }, 
     status: { type: String, default: 'En attente' }, 
-    role: { type: String, default: 'organizer' }
+    role: { type: String, default: 'organizer' },
+    staff: [{
+        student: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
+        addedAt: { type: Date, default: Date.now }
+    }]
 });
 
 module.exports = mongoose.model('Organisateur', organisateurSchema);
