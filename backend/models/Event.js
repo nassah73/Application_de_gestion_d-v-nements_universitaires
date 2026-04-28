@@ -19,6 +19,24 @@ const EventSchema = new mongoose.Schema({
     
     //organizer: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }, 
    // createdAt: { type: Date, default: Date.now }
+    organizer: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'Organisateur',
+        required: true 
+    },
+    participants: [{
+        student: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
+        status: { type: String, enum: ['registered', 'present'], default: 'registered' },
+        registeredAt: { type: Date, default: Date.now },
+        presentAt: { type: Date }
+    }],
+    feedbacks: [{
+        student: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
+        rating: { type: Number, min: 1, max: 5 },
+        comment: { type: String },
+        createdAt: { type: Date, default: Date.now }
+    }],
+    createdAt: { type: Date, default: Date.now }
 });
 
 const Event = mongoose.models.Event || mongoose.model('Event', EventSchema);

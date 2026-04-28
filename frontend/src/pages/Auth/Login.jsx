@@ -18,7 +18,25 @@ export default function Login() {
             const response = await axios.post('http://localhost:5000/api/auth/login', formData);
             console.log("Connexion réussie ✅", response.data);
             
-            if (response.data.role === 'student') Navigate('/app/Home');
+            // Stocker l'utilisateur et le rôle
+            localStorage.setItem('user', JSON.stringify(response.data.user));
+            localStorage.setItem('role', response.data.role);
+            if (response.data.staffOf) {
+                localStorage.setItem('staffOf', JSON.stringify(response.data.staffOf));
+            }
+
+            if (response.data.role === 'student') {
+                if (response.data.staffOf) {
+                    // Si l'étudiant est staff, on lui propose d'aller vers le scanner
+                    if (window.confirm(`Vous êtes membre du staff de ${response.data.staffOf.nomClub}. Voulez-vous accéder au scanner d'événements ?`)) {
+                        Navigate('/organisateur/scanner');
+                    } else {
+                        Navigate('/app/Home');
+                    }
+                } else {
+                    Navigate('/app/Home');
+                }
+            }
             else if (response.data.role === 'organizer') Navigate('/organisateur');
             else if (response.data.role === 'admin') Navigate('/responsable');
             else if (response.data.role === 'administration') Navigate('/responsable/users');
@@ -56,6 +74,9 @@ export default function Login() {
                             <div className={style.inputWrapper}>
                                 <input type="password" name="password" id="password" value={formData.password} onChange={handleChange} placeholder="Votre mot de passe secret" />
                                 <Lock className={style.inputIcon} size={20} strokeWidth={2.5} />
+                            </div>
+                            <div className="flex justify-end mt-1">
+                                <NavLink to="/forgot-password" className="text-xs text-blue-600 hover:underline">Mot de passe oublié ?</NavLink>
                             </div>
                         </div>
 

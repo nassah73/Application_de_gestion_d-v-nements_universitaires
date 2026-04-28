@@ -10,6 +10,18 @@ exports.login = async (req, res) => {
     try {
         let user = await Student.findOne({ email });
         let role = 'student';
+        let staffOf = null;
+
+        if (user) {
+            // Vérifier si l'étudiant est un membre du staff d'un organisateur
+            const organizerWithStaff = await Organisateur.findOne({ 'staff.student': user._id });
+            if (organizerWithStaff) {
+                staffOf = {
+                    organizerId: organizerWithStaff._id,
+                    nomClub: organizerWithStaff.nomClub
+                };
+            }
+        }
 
         if (!user) {
             user = await Organisateur.findOne({ email });
@@ -41,7 +53,8 @@ exports.login = async (req, res) => {
         res.status(200).json({
             message: "Bienvenue",
             role: role, 
-            user: user
+            user: user,
+            staffOf: staffOf
         });
 
     } catch (error) {

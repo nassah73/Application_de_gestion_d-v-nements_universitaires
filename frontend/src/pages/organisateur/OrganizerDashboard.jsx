@@ -1,291 +1,74 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  LayoutDashboard,
-  Calendar,
-  PlusSquare,
-  QrCode,
-  BarChart3,
-  LogOut,
-  Bell,
-  User,
-  ChevronRight,
-  BookOpen,
-  CheckCheck,
-  UserPlus,
-  CalendarCheck,
-  AlertCircle,
-  X
-} from 'lucide-react';
-import Dashboard from './Dashboard';
-import MyEvents from './MyEvents';
-import CreateEvent from './CreateEvent';
-import Scanner from './Scanner';
-import Stats from './Stats';
-import Guide from './Guide';
-import Profile from './Profile';
-import Settings from './Settings';
-import { LanguageProvider, useLanguage } from './LanguageContext';
-import './style.css';
+import OrgSidebar from './components/OrgSidebar';
+import OrgNavbar from './components/OrgNavbar';
+import { LayoutDashboard, Calendar, Users, QrCode } from 'lucide-react';
 
-const NOTIFS = [
-  { id: 1, icon: <UserPlus size={16} />, iconBg: 'bg-emerald-100 text-emerald-600', title: 'Nouvelle inscription', desc: 'Karim Benali vient de s\'inscrire à Workshop IA.', time: 'Il y a 2 min', read: false },
-  { id: 2, icon: <CalendarCheck size={16} />, iconBg: 'bg-blue-100 text-blue-600', title: 'Événement validé', desc: 'Votre événement "Hackathon 2025" a été approuvé.', time: 'Il y a 1h', read: false },
-  { id: 3, icon: <UserPlus size={16} />, iconBg: 'bg-emerald-100 text-emerald-600', title: 'Nouvelle inscription', desc: 'Sara Idrissi s\'est inscrite à la Journée Open Source.', time: 'Il y a 3h', read: false },
-  { id: 4, icon: <AlertCircle size={16} />, iconBg: 'bg-orange-100 text-orange-600', title: 'Capacité presque atteinte', desc: 'Workshop IA — il ne reste que 3 places disponibles.', time: 'Hier', read: true },
-  { id: 5, icon: <CalendarCheck size={16} />, iconBg: 'bg-blue-100 text-blue-600', title: 'Rappel événement', desc: 'Conférence Cloud Computing commence demain à 10h.', time: 'Hier', read: true },
-];
-
-const OrganizerDashboardContent = () => {
-  const { t, language } = useLanguage();
+const OrganizerDashboard = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('dashboard');
-  const [notifOpen, setNotifOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
-  const [notifications, setNotifications] = useState(NOTIFS);
-  const notifRef = useRef(null);
-  const profileRef = useRef(null);
-
-  const unreadCount = notifications.filter(n => !n.read).length;
-
-  const markAllRead = () => setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-  const dismiss = (id) => setNotifications(prev => prev.filter(n => n.id !== id));
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (notifRef.current && !notifRef.current.contains(e.target)) {
-        setNotifOpen(false);
-      }
-      if (profileRef.current && !profileRef.current.contains(e.target)) {
-        setProfileOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'dashboard': return <Dashboard setActiveTab={setActiveTab} />;
-      case 'my_events': return <MyEvents setActiveTab={setActiveTab} />;
-      case 'create_event': return <CreateEvent setActiveTab={setActiveTab} />;
-      case 'scanner': return <Scanner />;
-      case 'stats': return <Stats />;
-      case 'guide': return <Guide setActiveTab={setActiveTab} />;
-      case 'profile': return <Profile />;
-      case 'settings': return <Settings />;
-      default: return <Dashboard setActiveTab={setActiveTab} />;
-    }
-  };
-
-  const menuItems = [
-    { id: 'dashboard', icon: <LayoutDashboard size={20} /> },
-    { id: 'my_events', icon: <Calendar size={20} /> },
-    { id: 'create_event', icon: <PlusSquare size={20} /> },
-    { id: 'scanner', icon: <QrCode size={20} /> },
-    { id: 'stats', icon: <BarChart3 size={20} /> },
-    { id: 'guide', icon: <BookOpen size={20} /> }
+  const stats = [
+    { label: 'Événements Actifs', value: '12', icon: <Calendar className="text-blue-500" /> },
+    { label: 'Total Participants', value: '450', icon: <Users className="text-green-500" /> },
+    { label: 'Scans Aujourd\'hui', value: '28', icon: <QrCode className="text-purple-500" /> },
+    { label: 'Taux de présence', value: '85%', icon: <LayoutDashboard className="text-orange-500" /> },
   ];
 
   return (
-    <div className="flex h-screen organizer-root antialiased overflow-hidden">
-      {/* Sidebar */}
-      <aside className="w-[300px] sidebar text-slate-400 flex flex-col relative z-20 shrink-0">
-        <div className="p-8 flex flex-col h-full">
-          <div className="flex items-center gap-4 px-2 mb-12">
-            <div className="w-12 h-12 logo-container rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-lg">
-              U
-            </div>
-            <div>
-              <h1 className="text-xl font-bold text-white leading-none tracking-tight">UIZ Events</h1>
-              <span className="text-[10px] text-orange-500 font-bold uppercase tracking-widest">Organizer Pro</span>
-            </div>
+    <div className="flex h-screen bg-gray-100">
+      <OrgSidebar />
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <OrgNavbar />
+        <main className="flex-1 overflow-x-hidden overflow-y-auto p-6">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold text-gray-800">Tableau de bord</h1>
+            <p className="text-gray-600">Bienvenue sur votre espace de gestion d'événements.</p>
           </div>
 
-          <p className="px-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 mb-6">{t('platform')}</p>
-
-          <nav className="space-y-2 flex-1">
-            {menuItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => setActiveTab(item.id)}
-                className={`nav-item flex items-center gap-3 w-full px-4 py-3 rounded-2xl transition-all ${activeTab === item.id ? 'active bg-slate-800 text-orange-500 font-bold' : 'text-slate-400 hover:bg-slate-800/50 hover:text-slate-300'}`}
-              >
-                <span className={`${activeTab === item.id ? 'text-orange-500' : 'text-slate-500'}`}>
-                  {item.icon}
-                </span>
-                <span className="tracking-tight">{t(item.id)}</span>
-              </button>
-            ))}
-          </nav>
-
-          <div className="pt-8 border-t border-slate-800/50">
-            <button onClick={() => navigate('/auth/login')} className="nav-item flex items-center gap-3 w-full hover:text-red-400 hover:bg-red-400/5 group cursor-pointer px-4 py-3 rounded-2xl transition-all">
-              <LogOut size={20} className={`group-hover:rotate-12 transition-transform ${language === 'ar' ? 'rotate-180' : ''}`} />
-              <span className="font-bold">{t('logout')}</span>
-            </button>
-          </div>
-        </div>
-      </aside>
-
-      {/* Main Content */}
-      <div className="flex-1 flex flex-col min-w-0 bg-transparent">
-        <header className="h-24 dashboard-header flex items-center justify-between px-12 shrink-0 relative z-10">
-          <div className="animate-in" key={activeTab}>
-            <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">{t(activeTab)}</h2>
-            <div className="flex items-center gap-2 mt-1">
-              <span className="w-8 h-0.5 bg-orange-500 rounded-full"></span>
-              <p className="text-slate-400 text-[11px] font-bold uppercase tracking-widest">{t('console')}</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-8">
-            {/* Notifications */}
-            <div className="relative" ref={notifRef}>
-              <button
-                onClick={() => setNotifOpen(o => !o)}
-                className="p-3 text-slate-400 hover:text-orange-600 hover:bg-orange-50 rounded-2xl transition-all relative group"
-              >
-                <Bell size={22} className={notifOpen ? 'text-orange-500' : 'group-hover:scale-110 transition-transform'} />
-                {unreadCount > 0 && (
-                  <span className="absolute top-2 right-2 min-w-[18px] h-[18px] bg-orange-500 text-white text-[10px] font-black rounded-full border-2 border-white flex items-center justify-center px-[3px]">
-                    {unreadCount}
-                  </span>
-                )}
-              </button>
-
-              {/* Dropdown */}
-              {notifOpen && (
-                <div className={`absolute ${language === 'ar' ? 'left-0' : 'right-0'} top-[calc(100%+12px)] w-[380px] bg-white rounded-[28px] shadow-2xl shadow-slate-200/80 border border-slate-100 z-50 overflow-hidden`}>
-                  {/* Header */}
-                  <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-slate-100">
-                    <div>
-                      <h5 className="text-sm font-black text-slate-900">{t('notifications')}</h5>
-                      <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{unreadCount} {t('unread')}</p>
-                    </div>
-                    {unreadCount > 0 && (
-                      <button
-                        onClick={markAllRead}
-                        className="flex items-center gap-1.5 text-[10px] font-black text-orange-500 hover:text-orange-600 uppercase tracking-widest transition-colors"
-                      >
-                        <CheckCheck size={13} /> {t('mark_read')}
-                      </button>
-                    )}
-                  </div>
-
-                  {/* List */}
-                  <div className="max-h-[340px] overflow-y-auto custom-scrollbar divide-y divide-slate-50">
-                    {notifications.length === 0 ? (
-                      <div className="py-12 text-center">
-                        <Bell size={32} className="mx-auto text-slate-200 mb-3" />
-                        <p className="text-sm font-bold text-slate-400">{t('no_notif')}</p>
-                      </div>
-                    ) : notifications.map(n => (
-                      <div
-                        key={n.id}
-                        className={`flex items-start gap-4 px-5 py-4 transition-colors ${n.read ? 'bg-white' : 'bg-orange-50/40'} hover:bg-slate-50`}
-                      >
-                        <div className={`shrink-0 w-9 h-9 rounded-xl flex items-center justify-center ${n.iconBg}`}>
-                          {n.icon}
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-2">
-                            <p className={`text-[13px] font-bold leading-tight ${n.read ? 'text-slate-600' : 'text-slate-900'}`}>{n.title}</p>
-                            {!n.read && <span className="shrink-0 w-2 h-2 rounded-full bg-orange-500"></span>}
-                          </div>
-                          <p className="text-[11px] text-slate-400 mt-0.5 leading-snug">{n.desc}</p>
-                          <p className="text-[10px] text-slate-300 font-bold uppercase tracking-wider mt-1">{n.time}</p>
-                        </div>
-                        <button
-                          onClick={(e) => { e.stopPropagation(); dismiss(n.id); }}
-                          className="shrink-0 p-1 text-slate-300 hover:text-slate-500 hover:bg-slate-100 rounded-lg transition-all"
-                        >
-                          <X size={13} />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Footer */}
-                  <div className="px-6 py-3 border-t border-slate-100 bg-slate-50">
-                    <p className="text-[10px] text-center text-slate-400 font-bold uppercase tracking-widest">Fin des notifications</p>
-                  </div>
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {stats.map((stat, index) => (
+              <div key={index} className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
+                <div className="p-3 bg-gray-50 rounded-lg">
+                  {stat.icon}
                 </div>
-              )}
-            </div>
-
-            <div className="relative" ref={profileRef}>
-              <div
-                onClick={() => setProfileOpen(!profileOpen)}
-                className={`flex items-center gap-4 pl-8 border-l border-slate-100 group cursor-pointer transition-all ${profileOpen ? 'opacity-80' : ''}`}
-              >
-                <div className="text-right hidden sm:block">
-                  <p className="text-sm font-black text-slate-900 leading-tight">Club Informatique</p>
-                  <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">Administrateur</p>
-                </div>
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white ring-4 transition-all duration-300 ${profileOpen ? 'bg-orange-500 ring-orange-100' : 'bg-slate-900 ring-slate-100 group-hover:ring-orange-100'}`}>
-                  <User size={24} />
+                <div>
+                  <p className="text-sm text-gray-500">{stat.label}</p>
+                  <p className="text-2xl font-bold text-gray-800">{stat.value}</p>
                 </div>
               </div>
-
-              {/* Profile Dropdown */}
-              {profileOpen && (
-                <div className="absolute right-0 top-[calc(100%+12px)] w-64 bg-white rounded-[28px] shadow-2xl shadow-slate-200/80 border border-slate-100 z-50 overflow-hidden animate-in fade-in zoom-in duration-200">
-                  <div className="p-6 border-b border-slate-50 bg-slate-50/50">
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">{t('logged_in_as')}</p>
-                    <p className="text-sm font-black text-slate-900">Club Informatique</p>
-                  </div>
-
-                  <div className="p-2">
-                    <button 
-                      onClick={() => { setActiveTab('profile'); setProfileOpen(false); }}
-                      className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-slate-600 hover:bg-orange-50 hover:text-orange-600 transition-all group cursor-pointer"
-                    >
-                      <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center group-hover:bg-white shadow-sm transition-all text-slate-400 group-hover:text-orange-500">
-                        <User size={16} />
-                      </div>
-                      <span className="text-sm font-bold">{t('profile')}</span>
-                    </button>
-
-                    <button 
-                      onClick={() => { setActiveTab('settings'); setProfileOpen(false); }}
-                      className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-slate-600 hover:bg-orange-50 hover:text-orange-600 transition-all group cursor-pointer"
-                    >
-                      <div className="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center group-hover:bg-white shadow-sm transition-all text-slate-400 group-hover:text-orange-500">
-                        <PlusSquare size={16} />
-                      </div>
-                      <span className="text-sm font-bold">{t('settings')}</span>
-                    </button>
-                  </div>
-
-                  <div className="p-2 border-t border-slate-50">
-                    <button onClick={() => navigate('/auth/login')} className="flex items-center gap-3 w-full px-4 py-3 rounded-2xl text-red-500 hover:bg-red-50 transition-all group cursor-pointer">
-                      <div className="w-8 h-8 rounded-xl bg-red-50 flex items-center justify-center group-hover:bg-white shadow-sm transition-all text-red-400 group-hover:text-red-500">
-                        <LogOut size={16} className={language === 'ar' ? 'rotate-180' : ''} />
-                      </div>
-                      <span className="text-sm font-bold">{t('logout')}</span>
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
+            ))}
           </div>
-        </header>
 
-        <main className="flex-1 overflow-y-auto p-12 custom-scrollbar">
-          <div className="max-w-6xl mx-auto">
-            {renderContent()}
+          {/* Recent Activity or Quick Actions */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+              <h2 className="text-xl font-bold mb-4">Événements récents</h2>
+              <div className="space-y-4">
+                <p className="text-gray-500 italic">Aucune activité récente à afficher.</p>
+              </div>
+            </div>
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+              <h2 className="text-xl font-bold mb-4">Actions rapides</h2>
+              <div className="grid grid-cols-2 gap-4">
+                <button 
+                  onClick={() => navigate('/organisateur/create-event')}
+                  className="p-4 bg-blue-50 text-blue-600 rounded-lg font-medium hover:bg-blue-100 transition"
+                >
+                  Créer Événement
+                </button>
+                <button 
+                  onClick={() => navigate('/organisateur/scanner')}
+                  className="p-4 bg-green-50 text-green-600 rounded-lg font-medium hover:bg-green-100 transition"
+                >
+                  Scanner QR
+                </button>
+              </div>
+            </div>
           </div>
         </main>
       </div>
     </div>
   );
 };
-
-const OrganizerDashboard = () => (
-  <LanguageProvider>
-    <OrganizerDashboardContent />
-  </LanguageProvider>
-);
 
 export default OrganizerDashboard;
