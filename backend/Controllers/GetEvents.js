@@ -1,5 +1,6 @@
 const express =require('express');
 const Db= require('../models/Event')
+const Organisateur = require('../models/Organisateur');
 const Getevents =async(req,res)=>{
     try{
 
