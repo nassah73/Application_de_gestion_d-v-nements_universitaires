@@ -17,6 +17,10 @@ const INITIAL_NOTIFS = [
 const TABS = ['All Events', 'Soumis', 'Validé', 'Publié', 'Rejeté'];
 
 export default function ValidateEvents() {
+   const [showModifModal, setShowModifModal] = useState(false);
+   const [selectedEvent, setSelectedEvent] = useState(null);
+   const [feedback, setFeedback] = useState("");
+   
   const [events, setEvents] = useState([]);
   const [activeTab, setActiveTab] = useState('All Events');
   const [notifications, setNotifications] = useState(INITIAL_NOTIFS);
@@ -76,65 +80,100 @@ if (loading) {
             </div>
 
             <table className="w-full text-left">
-              <thead>
-                <tr className="border-b border-slate-100 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                  <th className="px-4 py-3">Event Title</th>
-                  <th className="px-4 py-3">Organizer</th>
-                  <th className="px-4 py-3 text-center">Status</th>
-                  <th className="px-4 py-3 text-center">Actions</th>
-                  
-                </tr>
+                <thead>
+                    <tr className="border-b border-slate-100 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                      <th className="px-3 py-3">Titre Event</th>
+                      <th className="px-3 py-3">Description</th>
+                      <th className="px-3 py-3">Organisateur</th>
+                      <th className="px-3 py-3">Email</th>
+                      <th className="px-3 py-3 text-center">Date & Heure</th>
+                      <th className="px-3 py-3">Lieu</th>
+                      <th className="px-3 py-3 text-center">Status</th>
+                      <th className="px-3 py-3 text-center">Actions</th>
+                    </tr>
               </thead>
               <tbody>
-                {filtered.map(event => (
-                  <tr key={event.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
-                    <td className="px-4 py-4 text-sm font-bold">{event.title}</td>
-                    <td className="px-4 py-4 text-sm text-slate-500">
-                        
-                        {event.organizer 
-                          ? `${event.organizer.prenom} ${event.organizer.nom}` 
-                          : "Organisateur inconnu"}
+                  {filtered.map(event => (
+                    <tr key={event._id || event.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
+                      
+                      {/* 1. Titre (Bohdo) */}
+                      <td className="px-3 py-4 text-sm font-bold text-slate-700">
+                        <div className="max-w-[120px] truncate" title={event.title}>
+                          {event.title}
+                        </div>
                       </td>
-                    <td className="px-4 py-4 text-center"><StatusBadge status={event.status} /></td>
-                    {/* ... نفس الـ Imports ... */}
 
-          <td className="px-4 py-4">
-            <div className="flex items-center justify-center gap-4">
-              
-              {/* 1. زر المعاينة (العين) */}
-              <button 
-                onClick={() => setViewEvent(event)} 
-                className="flex items-center gap-1 p-2 rounded-lg text-blue-600 hover:bg-blue-50 transition-colors"
-                title="Voir détails"
-              >
-                <Eye size={18} />
-                <span className="text-[10px] font-bold uppercase">Détails</span>
-              </button>
+                      {/* 2. Description (Bohdha) */}
+                      <td className="px-3 py-4 text-[11px] text-slate-500 italic">
+                        <div className="max-w-[150px] line-clamp-2" title={event.description}>
+                          {event.description}
+                        </div>
+                      </td>
 
-              {/* 2. زر القبول (Check) */}
-              <button 
-                onClick={() => handleApprove(event._id || event.id)} 
-                className="flex items-center gap-1 p-2 rounded-lg text-emerald-600 hover:bg-emerald-50 transition-colors border border-emerald-100"
-                title="Valider"
-              >
-                <Check size={18} />
-                <span className="text-[10px] font-bold uppercase">Valider</span>
-              </button>
+                      {/* 3. Organisateur */}
+                      <td className="px-3 py-4 text-sm text-slate-600 font-medium">
+                        {event.organizer ? `${event.organizer.prenom} ${event.organizer.nom}` : "---"}
+                      </td>
 
-              {/* 3. زر الرفض (X) */}
-              <button 
-                onClick={() => handleReject(event._id || event.id)} 
-                className="flex items-center gap-1 p-2 rounded-lg text-red-500 hover:bg-red-50 transition-colors border border-red-100"
-                title="Rejeter"
-              >
-                <X size={18} />
-                <span className="text-[10px] font-bold uppercase">Rejeter</span>
-              </button>
+                      {/* 4. Email */}
+                      <td className="px-3 py-4 text-[11px] text-blue-500 underline decoration-blue-200">
+                        {event.organizer?.email || "---"}
+                      </td>
 
-            </div>
-          </td>
-                  </tr>
-                ))}
+                      {/* 5. Date & Heure */}
+                      <td className="px-3 py-4 text-center">
+                        <div className="flex flex-col text-[12px] text-slate-500">
+                          <span className="font-bold">{new Date(event.date).toLocaleDateString()}</span>
+                          <span className="text-[10px] opacity-60">
+                            {new Date(event.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                          </span>
+                        </div>
+                      </td>
+
+                      {/* 6. Lieu */}
+                      <td className="px-3 py-4">
+                        <div className="flex items-center gap-1 text-[12px] text-slate-500">
+                          <MapPin size={12} className="text-red-400 shrink-0" />
+                          <span className="truncate max-w-[80px]">{event.location}</span>
+                        </div>
+                      </td>
+
+                      {/* 7. Status */}
+                      <td className="px-3 py-4 text-center">
+                        <StatusBadge status={event.status} />
+                      </td>
+
+                      {/* 8. Actions (Zdna "Modif" button) */}
+                      <td className="px-3 py-4">
+                        <div className="flex items-center justify-center gap-1.5">
+                          <button onClick={() => setViewEvent(event)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-md transition-colors" title="Détails">
+                            <Eye size={16} />
+                          </button>
+                          
+                          <button onClick={() => handleApprove(event._id)} className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-md border border-emerald-50" title="Accepter">
+                            <Check size={16} />
+                          </button>
+
+                          {/* Button: Valider & Modif */}
+                          <button 
+                              onClick={() => {
+                                setSelectedEvent(event);
+                                setShowModifModal(true);
+                              }}
+                              className="p-1.5 text-purple-600 hover:bg-purple-50 rounded-md border border-purple-50 flex flex-col items-center"
+                            >
+                              <AlertTriangle size={15} />
+                              <span className="text-[7px] font-black uppercase">Modif</span>
+                            </button>
+
+                          <button onClick={() => handleReject(event._id)} className="p-1.5 text-red-400 hover:bg-red-50 rounded-md" title="Refuser">
+                            <X size={16} />
+                          </button>
+                        </div>
+                      </td>
+
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
@@ -163,6 +202,57 @@ if (loading) {
           </div>
         </div>
       )}
+
+
+
+
+    {/* Modal Modifier */}
+{showModifModal && (
+  <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+    <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in fade-in zoom-in duration-200">
+      <div className="p-6">
+        <div className="flex items-center gap-3 mb-4 text-purple-600">
+          <AlertTriangle size={24} />
+          <h3 className="text-lg font-bold text-slate-800">Demander une Modification</h3>
+        </div>
+        
+        <p className="text-sm text-slate-500 mb-4">
+          Événement: <span className="font-semibold text-slate-700">{selectedEvent?.title}</span>
+        </p>
+
+        <textarea
+          className="w-full h-32 p-3 text-sm border border-slate-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none transition-all resize-none"
+          placeholder="Ex: Veuillez changer la salle 4 par la salle 10 car elle est déjà occupée..."
+          value={feedback}
+          onChange={(e) => setFeedback(e.target.value)}
+        ></textarea>
+
+        <div className="flex gap-3 mt-6">
+          <button 
+            onClick={() => { setShowModifModal(false); setFeedback(""); }}
+            className="flex-1 py-2.5 text-sm font-semibold text-slate-500 bg-slate-100 rounded-xl hover:bg-slate-200 transition-colors"
+          >
+            Annuler
+          </button>
+          <button 
+            onClick={() => {
+              // هنا غاتعيط للـ API ديالك باش تصيفط الـ feedback
+              console.log("Sending to organizer:", { eventId: selectedEvent._id, message: feedback });
+              alert("Message envoyé à l'organisateur !");
+              setShowModifModal(false);
+              setFeedback("");
+            }}
+            className="flex-1 py-2.5 text-sm font-semibold text-white bg-purple-600 rounded-xl hover:bg-purple-700 shadow-lg shadow-purple-200 transition-all"
+          >
+            Envoyer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+
     </div>
   );
 }
