@@ -34,7 +34,7 @@ const CreateEvent = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // هنا غاتكون عملية الإرسال للـ Backend (Node.js)
+
     console.log("Données envoyées à l'administration:", formData);
     alert("Demande envoyée avec succès ! En attente de validation.");
   };
@@ -230,7 +230,7 @@ const CreateEvent = () => {
       </div>
     </div>
   );
-  );
+ 
 };
 
 export default CreateEvent;

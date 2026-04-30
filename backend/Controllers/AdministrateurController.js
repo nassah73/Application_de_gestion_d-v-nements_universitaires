@@ -1,0 +1,90 @@
+const Administrateur = require('../models/Administrateur');
+const Administration = require('../models/Administration');
+const bcrypt = require('bcrypt');
+
+exports.createAdministrateur = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        
+        const existing = await Administrateur.findOne({ email });
+        if (existing) {
+            return res.status(400).json({ message: "Cet administrateur existe déjà." });
+        }
+        
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newAdmin = new Administrateur({
+            email,
+            password: hashedPassword
+        });
+        
+        await newAdmin.save();
+        res.status(201).json({ message: "Administrateur créé avec succès!" });
+        
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
+exports.createAdministration = async (req, res) => {
+    try {
+        const { prenom, nom, telephone, email, password } = req.body;
+        
+        const existing = await Administration.findOne({ email });
+        if (existing) {
+            return res.status(400).json({ message: "Ce compte administration existe déjà." });
+        }
+        
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newAdmin = new Administration({
+            prenom,
+            nom,
+            telephone,
+            email,
+            password: hashedPassword
+        });
+        
+        await newAdmin.save();
+        res.status(201).json({ message: "Compte administration créé avec succès!" });
+        
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
+exports.getAllAdministrateurs = async (req, res) => {
+    try {
+        const admins = await Administrateur.find({}, { password: 0 });
+        res.status(200).json(admins);
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
+exports.getAllAdministrations = async (req, res) => {
+    try {
+        const admins = await Administration.find({}, { password: 0 });
+        res.status(200).json(admins);
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
+exports.deleteAdministrateur = async (req, res) => {
+    try {
+        const { id } = req.params;
+        await Administrateur.findByIdAndDelete(id);
+        res.status(200).json({ message: "Administrateur supprimé avec succès!" });
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
+exports.deleteAdministration = async (req, res) => {
+    try {
+        const { id } = req.params;
+        await Administration.findByIdAndDelete(id);
+        res.status(200).json({ message: "Compte administration supprimé avec succès!" });
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};

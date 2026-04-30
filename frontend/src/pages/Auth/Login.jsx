@@ -38,7 +38,7 @@ export default function Login() {
                 }
             }
             else if (response.data.role === 'organizer') Navigate('/organisateur');
-            else if (response.data.role === 'admin') Navigate('/responsable');
+            else if (response.data.role === 'admin') Navigate('/administrateur');
             else if (response.data.role === 'administration') Navigate('/responsable/users');
         } catch (error) {
             console.log("Erreur de connexion ❌", error.response?.data || error.message);

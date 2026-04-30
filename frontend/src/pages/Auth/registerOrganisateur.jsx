@@ -13,23 +13,47 @@ export default function RegisterOrganisateur() {
         telephone: '',
         nomClub: '',
         email: '',
-        password: ''
+        password: '',
+        justificatif: null
     });
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await axios.post('http://localhost:5000/api/organisateurs/register', formData);
-            alert(response.data.message);
-            navigate('/auth/login');
-        } catch (error) {
-            alert(error.response?.data?.message || "Erreur lors de l'inscription");
+        if (e.target.name === 'justificatif') {
+            setFormData({ ...formData, justificatif: e.target.files[0] });
+        } else {
+            setFormData({ ...formData, [e.target.name]: e.target.value });
         }
-    };
+        };
+
+        const handleSubmit = async (e) => {
+            e.preventDefault();
+            console.log('=== Submitting Organisateur Registration ===');
+            console.log('formData:', formData);
+            
+            const data = new FormData();
+            data.append('prenom', formData.prenom);
+            data.append('nom', formData.nom);
+            data.append('telephone', formData.telephone);
+            data.append('nomClub', formData.nomClub);
+            data.append('email', formData.email);
+            data.append('password', formData.password);
+            data.append('justificatif', formData.justificatif); 
+            
+            console.log('FormData contents:');
+            for (let pair of data.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
+        
+            try {
+                const response = await axios.post('http://localhost:5000/api/organisateurs/register', data);
+                alert(response.data.message);
+                navigate('/auth/login');
+            } catch (error) {
+                console.error('Registration error:', error);
+                console.error('Error response:', error.response);
+                alert(error.response?.data?.message || error.message || "Erreur lors de l'inscription");
+            }
+        };
 
     return (
         <div className={style.content}>
@@ -89,12 +113,17 @@ export default function RegisterOrganisateur() {
                         </div>
 
                         <div className={style.inputGroup} style={{ marginBottom: '15px' }}>
-                            <label>Justificatif (Attestation/CV/...)</label>
-                            <div className={style.inputWrapper}>
-                                <input type="file" style={{ paddingLeft: '50px' }} />
-                                <FileText className={style.inputIcon} size={18} strokeWidth={2.5} />
-                            </div>
-                        </div>
+    <label>Justificatif (Attestation/CV/...)</label>
+    <div className={style.inputWrapper}>
+        <input 
+            name="justificatif" 
+            type="file" 
+            onChange={handleChange} 
+            style={{ paddingLeft: '50px' }} 
+        />
+        <FileText className={style.inputIcon} size={18} strokeWidth={2.5} />
+    </div>
+</div>
 
                         <div className={style.inputGroup} style={{ marginBottom: '20px' }}>
                             <label>Mot de passe</label>

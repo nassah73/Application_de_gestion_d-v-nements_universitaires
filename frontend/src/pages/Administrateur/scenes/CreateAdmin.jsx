@@ -2,22 +2,25 @@ import { Box, Button, TextField } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { MenuItem, InputAdornment } from "@mui/material";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import ComputerIcon from "@mui/icons-material/Computer";
-import CodeIcon from "@mui/icons-material/Code";
-
-const roles = [
-  { value: "admin", label: "Administration", icon: <AdminPanelSettingsIcon /> },
-  { value: "it", label: "IT", icon: <ComputerIcon /> },
-  { value: "dev", label: "Developer", icon: <CodeIcon /> },
-];
+import axios from "axios";
 
 const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-  const handleFormSubmit = (values) => {
-    console.log(values);
+  const handleFormSubmit = async (values) => {
+    try {
+      const response = await axios.post('http://localhost:5000/api/administrateur/create-administration', {
+        prenom: values.firstName,
+        nom: values.lastName,
+        telephone: values.contact,
+        email: values.email,
+        password: values.password
+      });
+      alert(response.data.message);
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data?.message || 'Erreur lors de la création du compte');
+    }
   };
 
   return (
@@ -176,25 +179,16 @@ const Form = () => {
                 <TextField
                   fullWidth
                   variant="filled"
-                  select
-                  label="Role"
+                  type="password"
+                  label="Mot de passe"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.role}
-                  name="role"
-                  error={!!touched.role && !!errors.role}
-                  helperText={touched.role && errors.role}
-                  sx={{ gridColumn: "span 4", ...inputStyles, pb: "10px" }}
-                >
-                  {roles.map((role) => (
-                    <MenuItem key={role.value} value={role.value}>
-                      <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        {role.icon}
-                        {role.label}
-                      </span>
-                    </MenuItem>
-                  ))}
-                </TextField>
+                  value={values.password}
+                  name="password"
+                  error={!!touched.password && !!errors.password}
+                  helperText={touched.password && errors.password}
+                  sx={{ gridColumn: "span 4", ...inputStyles ,pb: "10px"}}
+                />
               </Box>
               <Box sx={{ display: "flex", justifyContent: "end", mt: "40px" }}>
                 <Button
@@ -239,8 +233,7 @@ const checkoutSchema = yup.object().shape({
     .string()
     .matches(phoneRegExp, "Numéro de téléphone non valide")
     .required("Contact requis"),
-  address1: yup.string().required("Adresse requise"),
-  address2: yup.string(),
+  password: yup.string().required("Mot de passe requis").min(6, "Mot de passe doit contenir au moins 6 caractères"),
 });
 
 const initialValues = {
@@ -248,8 +241,7 @@ const initialValues = {
   lastName: "",
   email: "",
   contact: "",
-  address1: "",
-  address2: "",
+  password: "",
 };
 
 const inputStyles = {
