@@ -9,6 +9,7 @@ import axios from 'axios'
 
 
 export default function Main(){
+  const [Events,setEvents]=useState([])
     const profileRef = useRef(null);
     const [form ,setform]=useState(false)
     const [selectedEvent, setSelectedEvent] = useState(null);
@@ -16,7 +17,7 @@ export default function Main(){
 const handleCategoryChange = (e) => {
     setcategory(e.target.value);
   };
-const filterObjet= category==='all'?Data: Data.filter((items)=>items.category===category)
+const filterObjet= category==='all'?Events: Events.filter((items)=>items.category===category)
 
  const handelForm=(item)=>{
     setSelectedEvent(item)
@@ -46,6 +47,23 @@ const filterObjet= category==='all'?Data: Data.filter((items)=>items.category===
 
     await axios.post('http://localhost:5000/api/requestEvent',item)
  }
+
+
+useEffect(() => {
+  const fetchEvents = async () => {
+    try {
+      const res = await axios.get('http://localhost:5000/Events/GetEvets');
+      
+      setEvents(res.data); 
+      
+    } catch (error) {
+      console.error("Error fetching events:", error);
+      alert("Error: " + error.message);
+    }
+  };
+
+  fetchEvents();
+}, []); 
    
     return(
         <>
@@ -137,7 +155,7 @@ const filterObjet= category==='all'?Data: Data.filter((items)=>items.category===
           </div>
           <hr className="border-white/5" />
           <p className="text-slate-400 text-sm leading-relaxed">
-            {selectedEvent.description || "هاد ليفينمون غايكون فيه بزاف ديال المفاجآت والأنشطة المتميزة، متنساوش تجيو في الوقت المحدد!"}
+            {selectedEvent.description || "events "}
           </p>
           
           <button onClick={()=>{requestEvent(selectedEvent)}} className="w-full py-3 bg-gradient-to-r from-[#cd7329] to-[#eb8232] text-white font-bold rounded-xl shadow-lg shadow-[#cd7329]/20 hover:scale-[1.02] transition-transform">

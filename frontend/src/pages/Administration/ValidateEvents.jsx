@@ -14,7 +14,7 @@ const INITIAL_NOTIFS = [
   { id: 2, icon: <CalendarCheck size={16} />, iconBg: 'rgba(99,102,241,0.18)', iconColor: '#6366F1', title: 'Événement en attente', desc: '"Science Fair" attend validation.', read: false },
 ];
 
-const TABS = ['All Events', 'Soumis', 'Validé', 'Publié', 'Rejeté'];
+const TABS = ['All Events', 'Soumis', 'approved', 'Publié', 'Rejeté'];
 
 export default function ValidateEvents() {
    const [showModifModal, setShowModifModal] = useState(false);
@@ -58,6 +58,19 @@ if (loading) {
     );
   }
 
+
+  const handelAccept=async(Event_id)=>{
+    try {
+      const res= await axios.put(`http://localhost:5000/api/valide/${Event_id}`)
+      setEvents(prevEvents => prevEvents.filter(ev => ev._id !== Event_id));
+      setEvents(prev => prev.map(e => 
+      e._id === Event_id ? { ...e, status: 'approved' } : e
+    ));
+      alert(res.data.message)
+    } catch (error) {
+      console.log('erreu '+error)
+    }
+  }
   return (
     <div className="flex h-screen bg-[#0f172a] overflow-hidden font-sans">
       <Sidebar />
@@ -150,9 +163,11 @@ if (loading) {
                             <Eye size={16} />
                           </button>
                           
-                          <button onClick={() => handleApprove(event._id)} className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-md border border-emerald-50" title="Accepter">
-                            <Check size={16} />
-                          </button>
+                          {event.status === 'pending' && (
+      
+                            <button onClick={() => handelAccept(event._id)} className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-md border border-emerald-50" title="Accepter">
+                              <Check size={16} />
+                            </button>)}
 
                           {/* Button: Valider & Modif */}
                           <button 

@@ -51,14 +51,15 @@ const startServer = async () => {
     const administrateurRoutes = require('./Routes/AdministrateurRoutes');
     const authRoutes = require('./Routes/authRoutes');  
     const CreateEvent=require('./Routes/CreateEvent')
-    
+    const ValideEvent=require('./Routes/ValideEvents')
     app.use('/api/students', studentRoutes);
     app.use('/api/organisateurs', organisateurRoutes);
     app.use('/api/administration', administrationRoutes); 
     app.use('/api/administrateur', administrateurRoutes);
     app.use('/api/auth', authRoutes);
     app.use('/Event', CreateEvent);
-
+    app.use('/api/valide',ValideEvent)
+    app.use('/Events',CreateEvent)
     const csrfProtection = csrf({ cookie: true });
     app.get('/api/csrf-token', csrfProtection, (req, res) => {
         res.json({ csrfToken: req.csrfToken() });
@@ -68,5 +69,5 @@ const startServer = async () => {
         console.log('Serveur démarré sur le port 5000');
     });
 };
-
+//http://localhost:5000/Events/GetEvets
 startServer();

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const EventControler = require('../Controllers/EventControler');
 const GetEvents = require('../Controllers/GetEvents'); // هادي غالباً فونكسيون بوحدها
-
+const Student_Events=require('../Controllers/StudentEvents')
 // --- الإعدادات الصحيحة للـ Routes ---
 
 // 1. إنشاء حدث (POST)
@@ -19,5 +19,5 @@ router.get('/stats/:organizerId', EventControler.GetOrganizerStats);
 router.post('/mark-attendance', EventControler.MarkAttendance);
 router.put('/:id', EventControler.UpdateEvent);
 router.delete('/:id', EventControler.DeleteEvent);
-
+router.get('/GetEvets',Student_Events)
 module.exports = router;
