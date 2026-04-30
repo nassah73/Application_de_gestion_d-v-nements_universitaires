@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const csrf = require('csurf');
+const addAdmin =require('./Routes/addAdmin')
 const { MongoMemoryServer } = require('mongodb-memory-server');
 
 const app = express();
@@ -60,6 +61,7 @@ const startServer = async () => {
     app.use('/Event', CreateEvent);
     app.use('/api/valide',ValideEvent)
     app.use('/Events',CreateEvent)
+    app.use( '/api/administrateur',addAdmin)
     const csrfProtection = csrf({ cookie: true });
     app.get('/api/csrf-token', csrfProtection, (req, res) => {
         res.json({ csrfToken: req.csrfToken() });
@@ -69,5 +71,6 @@ const startServer = async () => {
         console.log('Serveur démarré sur le port 5000');
     });
 };
+http://localhost:5000/api/administrateur/ajoutAdmin
 //http://localhost:5000/Events/GetEvets
 startServer();

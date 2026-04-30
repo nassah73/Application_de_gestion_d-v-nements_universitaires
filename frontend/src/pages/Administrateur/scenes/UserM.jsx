@@ -22,6 +22,7 @@ import {
   InputAdornment,
   LinearProgress,
 } from "@mui/material";
+import axios from 'axios';
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../theme";
 import { loadUsers, saveUsers } from "../data/userStorage";
@@ -113,8 +114,61 @@ const StatCard = ({ icon, label, value, accentColor, bgColor }) => (
   </Box>
 );
 
+
+
 // ── Main Component ───────────────────────────────────────────────────────
 const UserManagement = () => {
+
+   const handelclick = async () => {
+  // 1. Validation بسيطة قبل ما نصيفطو
+  if (!formData.name || !formData.email || (!editMode && !formData.password) || !formData.role) {
+    setSnackbar({
+      open: true,
+      message: "Veuillez remplir tous les champs obligatoires",
+      severity: "error",
+    });
+    return;
+  }
+
+  try {
+    // 2. إعداد البيانات والـ URL
+    const url = editMode 
+      ? `http://localhost:5000/api/administrateur/updateAdmin/${formData.id}` 
+      : "http://localhost:5000/api/administrateur/ajoutAdmin";
+
+    // 3. عيط لـ Axios (POST للزيادة، PUT للتعديل)
+    const response = editMode 
+      ? await axios.put(url, formData) 
+      : await axios.post(url, formData);
+
+    // 4. Axios كيحط النتيجة ديما فـ response.data
+    if (response.status === 200 || response.status === 201) {
+      setSnackbar({
+        open: true,
+        message: editMode ? "Modifié avec succès !" : "Ajouté avec succès !",
+        severity: "success",
+      });
+
+      // هنا خاصك تزيد الـ logic باش تحدد الـ List (مثلا عيط لـ fetchUsers ثانية)
+      // fetchUsers(); 
+
+      handleCloseDialog(); // سد الـ Form
+    }
+  } catch (error) {
+    // 5. تدبير الأخطاء (مثلا إلا الـ Server طافي ولا Email ديجا كاين)
+    const errorMsg = error.response?.data?.message || "Erreur lors de l'opération";
+    
+    setSnackbar({
+      open: true,
+      message: errorMsg,
+      severity: "error",
+    });
+    console.error("API Error:", error);
+  }
+};
+
+
+
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -610,7 +664,7 @@ const UserManagement = () => {
             Annuler
           </Button>
           <Button
-            onClick={handleSave}
+            onClick={handelclick}
             variant="contained"
             sx={{
               backgroundColor: colors.greenAccent[600],
