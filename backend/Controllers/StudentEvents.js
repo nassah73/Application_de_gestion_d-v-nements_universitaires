@@ -1,7 +1,7 @@
 const Events_db =require('../models/Event')
 const Student_Events= async(req,res)=>{
     try{
-        const events = await Events_db.find({ status: 'approved' });
+        const events = await Events_db.find({ status: 'approved' }).populate('organizer', 'prenom nom ');
         if (events.length === 0) {
             return res.status(200).json({ message: "No approved events yet" });
         }

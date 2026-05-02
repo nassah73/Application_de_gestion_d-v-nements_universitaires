@@ -99,7 +99,12 @@ useEffect(() => {
              <section className=" relative mt-10 shadow-l ">
                <div className="grid grid-cols-3 gap-10">
 
+
+
                 {filterObjet.map((item, index)=>{
+                  const dateObj = new Date(item.date);
+                   const formattedDate = dateObj.toLocaleDateString('fr-FR'); 
+                   const formattedTime = dateObj.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
                     return(
                         
                       <motion.div key={index} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}  transition={{ duration: 1, ease: "easeOut" }}  className=" h-70 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 rounded-2xl relative shadow-[0_10px_30px_-5px_rgba(0,0,0,0.6)] overflow-hidden border border-white/10">
@@ -110,10 +115,17 @@ useEffect(() => {
                            <nav className="absolute left-4 w-[90%]">
                         <h1 className="font-[900] text-2xl capitalize text-white" >{item.title}</h1>
                         <div className="space-y-1.5 mt-4 text-slate-300 text-sm">
-                            <p className="flex gap-3"><CalendarCheck size={18} className="text-[#cd7329]"/><span>{item.date}</span></p>
-                            <p className="flex gap-3"><MapPin size={18} className="text-[#cd7329]"/><span>{item.lieu}</span></p>
-                            <p className="flex gap-3"><Clock size={18} className="text-[#cd7329]"/>{item.temp}</p>
-                            <p className="flex gap-3"><UserCircle size={18} className="text-[#cd7329]"/>{item.Organisateur}</p>
+                          
+                        
+                          
+    
+                           
+                         
+                            <p className="flex gap-3"><CalendarCheck size={18} className="text-[#cd7329]"/><span>{formattedDate}</span></p>
+                            <p className="flex gap-3"><MapPin size={18} className="text-[#cd7329]"/><span>{item.location}</span></p>
+                            <p className="flex gap-3"><Clock size={18} className="text-[#cd7329]"/>{formattedTime}</p>
+                         
+                            <p className="flex gap-3"><UserCircle size={18} className="text-[#cd7329]"/>{item.organizer?.prenom +' ' +item.organizer?.nom || "Chargement..."}</p>
                         </div>
                          </nav>
                         <button  className="bg-white/10 backdrop-blur-md border border-white/20 text-[#cd7329] font-bold w-[90%] mx-[5%] h-10 absolute bottom-0 rounded-xl hover:bg-[#cd7329] hover:text-white transition-all cursor-pointer" onClick={() => handelForm(item)}  ref={profileRef}>Check Details</button>
@@ -123,69 +135,61 @@ useEffect(() => {
                     )
                     
                 })}
-                 {form && <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-    <motion.div 
-      initial={{ scale: 0.9, opacity: 0 }} 
-      animate={{ scale: 1, opacity: 1 }}
-      className="bg-slate-900 border border-white/10 w-full max-w-2xl rounded-3xl overflow-hidden shadow-2xl relative"
-      ref={profileRef}
-    >
-      {/* 1. Cover Image Header */}
-      <div className="h-60 w-full relative ">
-        <img src={BgImag} alt="event cover" className=" h-full w-full object-container bg-bottom" />
-        
-        <button 
-          onClick={() => setform(false)}
-          className="absolute top-4 right-4 bg-black/50 p-2 rounded-full hover:bg-[#cd7329] transition-colors"
-        >
-          <X size={20} className="text-white"/>
-          
-        </button>
-      </div>
+                {form && <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                            <motion.div 
+                              initial={{ scale: 0.9, opacity: 0 }} 
+                              animate={{ scale: 1, opacity: 1 }}
+                              className="bg-slate-900 border border-white/10 w-full max-w-2xl rounded-3xl overflow-hidden shadow-2xl relative"
+                              ref={profileRef}
+                            >
+                              {/* 1. Cover Image Header */}
+                              <div className="h-60 w-full relative ">
+                                <img src={BgImag} alt="event cover" className=" h-full w-full object-container bg-bottom" />
+                                
+                                <button 
+                                  onClick={() => setform(false)}
+                                  className="absolute top-4 right-4 bg-black/50 p-2 rounded-full hover:bg-[#cd7329] transition-colors"
+                                >
+                                  <X size={20} className="text-white"/>
+                                  
+                                </button>
+                              </div>
 
-      {/* 2. Content Body */}
-      <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-8 ">
-        
-        {/* Info Side (Left) */}
-        <div className="md:col-span-2 space-y-4">
-          <h2 className="text-3xl font-bold text-white uppercase italic">{selectedEvent.title}</h2>
-          <div className="flex flex-wrap gap-4 text-slate-300 text-sm">
-            <span className="flex items-center gap-2"><CalendarCheck size={16} className="text-[#cd7329]"/> {selectedEvent.date}</span>
-            <span className="flex items-center gap-2"><MapPin size={16} className="text-[#cd7329]"/> {selectedEvent.lieu}</span>
-          </div>
-          <hr className="border-white/5" />
-          <p className="text-slate-400 text-sm leading-relaxed">
-            {selectedEvent.description || "events "}
-          </p>
-          
-          <button onClick={()=>{requestEvent(selectedEvent)}} className="w-full py-3 bg-gradient-to-r from-[#cd7329] to-[#eb8232] text-white font-bold rounded-xl shadow-lg shadow-[#cd7329]/20 hover:scale-[1.02] transition-transform">
-            S'inscrire Maintenant
-          </button>
-        </div>
+                              {/* 2. Content Body */}
+                              <div className="p-8 grid grid-cols-1 md:grid-cols-3 gap-8 ">
+                                
+                                {/* Info Side (Left) */}
+                                <div className="md:col-span-2 space-y-4">
+                                  <h2 className="text-3xl font-bold text-white uppercase italic">{selectedEvent.title}</h2>
+                                  <div className="flex flex-wrap gap-4 text-slate-300 text-sm">
+                                    <span className="flex items-center gap-2"><CalendarCheck size={16} className="text-[#cd7329]"/> {selectedEvent.date}</span>
+                                    <span className="flex items-center gap-2"><MapPin size={16} className="text-[#cd7329]"/> {selectedEvent.location}</span>
+                                  </div>
+                                  <hr className="border-white/5" />
+                                  <p className="text-slate-400 text-sm leading-relaxed">
+                                    {selectedEvent.description || "events "}
+                                  </p>
+                                  
+                                  <button onClick={()=>{requestEvent(selectedEvent)}} className="w-full py-3 bg-gradient-to-r from-[#cd7329] to-[#eb8232] text-white font-bold rounded-xl shadow-lg shadow-[#cd7329]/20 hover:scale-[1.02] transition-transform">
+                                    S'inscrire Maintenant
+                                  </button>
+                                </div>
 
-        {/* QR Code Side (Right) */}
-        <div className="flex flex-col items-center justify-center space-y-4 bg-white/5 p-4 rounded-2xl border border-white/10">
-          <p className="text-xs text-slate-400 font-bold uppercase">Pass Ticket</p>
-          <div className="bg-white p-2 rounded-lg">
-            {/* هنا غاتستعمل شي مكتبة بحال qrcode.react */}
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=HassanEvent" alt="QR Code" className="w-24 h-24" />
-          </div>
-          <p className="text-[10px] text-center text-slate-500">Scannez pour valider votre entrée</p>
-        </div>
+                                {/* QR Code Side (Right) */}
+                                <div className="flex flex-col items-center justify-center space-y-4 bg-white/5 p-4 rounded-2xl border border-white/10">
+                                  <p className="text-xs text-slate-400 font-bold uppercase">Pass Ticket</p>
+                                  <div className="bg-white p-2 rounded-lg">
+                                    {/* هنا غاتستعمل شي مكتبة بحال qrcode.react */}
+                                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=HassanEvent" alt="QR Code" className="w-24 h-24" />
+                                  </div>
+                                  <p className="text-[10px] text-center text-slate-500">Scannez pour valider votre entrée</p>
+                                </div>
 
-      </div>
-    </motion.div>
-  </div>
+                              </div>
+                            </motion.div>
+                          </div>
                            
                    }
-                 
-                       
-                 
-                 
-                
-                
-
-
                </div>
             </section>
             </nav>

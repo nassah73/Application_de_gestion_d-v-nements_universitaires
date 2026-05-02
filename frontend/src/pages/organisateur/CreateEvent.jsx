@@ -7,12 +7,13 @@ import {
   FileText, Tag, Image as ImageIcon, Clock, Send 
 } from 'lucide-react';
 
-const CreateEvent = ({ setActiveTab }) => { // حيدنا async من هنا
+const CreateEvent = ({ setActiveTab }) => {
   const [eventData, setEventData] = useState({
     title: '',
     description: '',
     category: '',
-    date: '',
+    date: '', // للتاريخ
+    time: '', // للوقت
     location: '',
     capacity: '',
     registrationLink: ''
@@ -36,14 +37,21 @@ const CreateEvent = ({ setActiveTab }) => { // حيدنا async من هنا
     }
   };
 
-  const handleSubmit = async (e) => { // الـ async كاينة هنا فـ الـ function ديال event
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = new FormData(); // هادي هي اللي غنعمرو
+    const data = new FormData();
 
     // 1. إضافة البيانات النصية
     Object.keys(eventData).forEach(key => {
-      data.append(key, eventData[key]);
+      // هنا كنتاكدوا ما نصيفطوش time كـ حقل مستقل للـ backend إلا كانت ما محتاجاهش
+      if (key !== 'time') {
+        data.append(key, eventData[key]);
+      }
     });
+
+    // دمج التاريخ والوقت فمتغير واحد
+    const fullDateTime = `${eventData.date}T${eventData.time}:00`;
+    data.set('date', fullDateTime); // كنعوضو قيمة date المدمجة
 
     // 2. إضافة الصورة
     if (coverImage.rawFile) {
@@ -61,16 +69,13 @@ const CreateEvent = ({ setActiveTab }) => { // حيدنا async من هنا
       return;
     }
 
-    // Console log تصححات (كانت formData دابا ولات data)
-    console.log("Données envoyées à l'administration:", data);
-
     try {
       const response = await axios.post('http://localhost:5000/Event/CreateEvent', data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       
       if (response.status === 201 || response.status === 200) {
-        alert("Événement créé avec succès ! En attente de validation.");
+        alert("Événement créé avec succès !");
         if(setActiveTab) setActiveTab('Tableau de Bord');
       }
     } catch (error) {
@@ -78,8 +83,6 @@ const CreateEvent = ({ setActiveTab }) => { // حيدنا async من هنا
       alert("Erreur lors de l'envoi des données.");
     }
   };
-
-  // ... باقي الـ return (الـ JSX ديالك) هو نيتو ما تبدل والو
 
   return (
     <div className="flex h-screen overflow-hidden font-sans bg-[#0f172a] text-white">
@@ -101,74 +104,74 @@ const CreateEvent = ({ setActiveTab }) => { // حيدنا async من هنا
             <form onSubmit={handleSubmit} className="p-10 rounded-[2.5rem] border border-white/5 bg-white/[0.02] backdrop-blur-xl shadow-2xl space-y-10">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 
-                {/* Title */}
                 <div className="md:col-span-2 space-y-3">
                   <label className="text-xs font-black text-white/40 uppercase tracking-[0.2em] flex items-center gap-2">
                     <Type size={14} className="text-orange-500" /> Titre *
                   </label>
-                  <input type="text" name="title" required className="w-full px-6 py-4 rounded-2xl border border-white/5 bg-white/[0.03] outline-none focus:border-orange-500/50 transition-all" placeholder="Nom de l'événement" onChange={handleChange} />
+                  <input type="text" name="title" required className="w-full px-6 py-4 rounded-2xl border border-white/5 bg-white/[0.03] outline-none" onChange={handleChange} />
                 </div>
 
-                {/* Category & Capacity */}
                 <div className="space-y-3">
                   <label className="text-xs font-black text-white/40 uppercase tracking-[0.2em] flex items-center gap-2">
                     <Tag size={14} className="text-orange-500" /> Catégorie *
                   </label>
-                  <select name="category" required className="w-full px-6 py-4 rounded-2xl border border-white/5 bg-white/[0.03] outline-none appearance-none cursor-pointer" onChange={handleChange}>
-                    <option value="">Choisir...</option>
+                  <select name="category" required className="w-full px-6 py-4 rounded-2xl border border-white/5 bg-gray-700 outline-none appearance-none cursor-pointer" onChange={handleChange}>
+                    <option value="">Choisir une catégorie...</option>
                     <option value="Informatique">Informatique</option>
+                    <option value="Académique">Académique</option>
+                    <option value="Sciences">Sciences</option>
                     <option value="Culturel">Culturel</option>
                     <option value="Sportif">Sportif</option>
-                  </select>
+                    <option value="Économique">Économique</option>
+                    <option value="Art et Design">الشريعة</option>
+                    <option value="Environnement">Environnement</option>
+                    <option value="Développement personnel">Développement personnel</option>
+                    <option value="Social">Social</option>
+                </select>
                 </div>
 
                 <div className="space-y-3">
                   <label className="text-xs font-black text-white/40 uppercase tracking-[0.2em] flex items-center gap-2">
                     <Users size={14} className="text-orange-500" /> Capacité *
                   </label>
-                  <input type="number" name="capacity" required className="w-full px-6 py-4 rounded-2xl border border-white/5 bg-white/[0.03] outline-none" placeholder="Ex: 50" onChange={handleChange} />
+                  <input type="number" name="capacity" required className="w-full px-6 py-4 rounded-2xl border border-white/5 bg-white/[0.03] outline-none" onChange={handleChange} />
                 </div>
 
-                {/* Date & Location */}
+                {/* التاريخ والوقت منفصلين */}
                 <div className="space-y-3">
                   <label className="text-xs font-black text-white/40 uppercase tracking-[0.2em] flex items-center gap-2">
                     <Calendar size={14} className="text-orange-500" /> Date *
                   </label>
-                  <input type="datetime-local" name="date" required className="w-full px-6 py-4 rounded-2xl border border-white/5 bg-white/[0.03] outline-none [color-scheme:dark]" onChange={handleChange} />
+                  <input type="date" name="date" required className="w-full px-6 py-4 rounded-2xl border border-white/5 bg-white/[0.03] outline-none [color-scheme:dark]" onChange={handleChange} />
+                </div>
+
+                <div className="space-y-3">
+                  <label className="text-xs font-black text-white/40 uppercase tracking-[0.2em] flex items-center gap-2">
+                    <Clock size={14} className="text-orange-500" /> Heure *
+                  </label>
+                  <input type="time" name="time" required className="w-full px-6 py-4 rounded-2xl border border-white/5 bg-white/[0.03] outline-none [color-scheme:dark]" onChange={handleChange} />
                 </div>
 
                 <div className="space-y-3">
                   <label className="text-xs font-black text-white/40 uppercase tracking-[0.2em] flex items-center gap-2">
                     <MapPin size={14} className="text-orange-500" /> Lieu *
                   </label>
-                  <input type="text" name="location" required className="w-full px-6 py-4 rounded-2xl border border-white/5 bg-white/[0.03] outline-none" placeholder="Ex: Salle 5" onChange={handleChange} />
+                  <input type="text" name="location" required className="w-full px-6 py-4 rounded-2xl border border-white/5 bg-white/[0.03] outline-none" onChange={handleChange} />
                 </div>
 
-                {/* Description */}
                 <div className="md:col-span-2 space-y-3">
                   <label className="text-xs font-black text-white/40 uppercase tracking-[0.2em] flex items-center gap-2">
                     <FileText size={14} className="text-orange-500" /> Description *
                   </label>
-                  <textarea name="description" required rows="4" className="w-full px-6 py-4 rounded-2xl border border-white/5 bg-white/[0.03] outline-none resize-none" placeholder="Détails..." onChange={handleChange}></textarea>
+                  <textarea name="description" required rows="4" className="w-full px-6 py-4 rounded-2xl border border-white/5 bg-white/[0.03] outline-none" onChange={handleChange}></textarea>
                 </div>
 
-                {/* Image Upload */}
                 <div className="md:col-span-2 space-y-3">
                   <label className="text-xs font-black text-white/40 uppercase tracking-[0.2em] flex items-center gap-2">
                     <ImageIcon size={14} className="text-orange-500" /> Affiche
                   </label>
-                  <div 
-                    onClick={() => fileInputRef.current.click()}
-                    className="border-2 border-dashed border-white/10 rounded-[2rem] p-8 flex flex-col items-center justify-center cursor-pointer hover:border-orange-500/50 transition-all"
-                  >
-                    {coverImage.url ? (
-                      <img src={coverImage.url} alt="Preview" className="h-32 object-cover rounded-xl" />
-                    ) : (
-                      <>
-                        <ImageIcon className="text-white/20 mb-2" size={32} />
-                        <p className="text-sm text-white/40">Cliquez pour ajouter une image</p>
-                      </>
-                    )}
+                  <div onClick={() => fileInputRef.current.click()} className="border-2 border-dashed border-white/10 rounded-[2rem] p-8 flex flex-col items-center justify-center cursor-pointer">
+                    {coverImage.url ? <img src={coverImage.url} className="h-32 object-cover rounded-xl" /> : <p className="text-white/40">Cliquez pour ajouter une image</p>}
                     <input type="file" ref={fileInputRef} className="hidden" onChange={handleFileChange} />
                   </div>
                 </div>
@@ -183,7 +186,6 @@ const CreateEvent = ({ setActiveTab }) => { // حيدنا async من هنا
       </div>
     </div>
   );
- 
+};
 
-}
 export default CreateEvent;
