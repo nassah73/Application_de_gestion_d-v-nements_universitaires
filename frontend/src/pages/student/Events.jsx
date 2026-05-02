@@ -108,7 +108,7 @@ useEffect(() => {
                     return(
                         
                       <motion.div key={index} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}  transition={{ duration: 1, ease: "easeOut" }}  className=" h-70 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 rounded-2xl relative shadow-[0_10px_30px_-5px_rgba(0,0,0,0.6)] overflow-hidden border border-white/10">
-                       <img src={BgImag} alt="" className="w-[100%] h-[100%] bg-cover absolute z-0" />
+                       <img src={`http://localhost:5000/${item.coverImage}`} alt="" className="w-[100%] h-[100%] bg-cover absolute z-0" />
                        <div className="absolute z-10 bg-gradient-to-t from-slate-900 via-slate-900/80 to-black/40 inset-0"></div>
                        <h1 className="absolute z-20 top-3 right-3 bg-[#cd7329] text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">{item.category}</h1>
                        <div  className="absolute h-50 z-20 top-1/4 text-white left-2 w-[100%]">
@@ -144,7 +144,7 @@ useEffect(() => {
                             >
                               {/* 1. Cover Image Header */}
                               <div className="h-60 w-full relative ">
-                                <img src={BgImag} alt="event cover" className=" h-full w-full object-container bg-bottom" />
+                                <img src={`http://localhost:5000/${selectedEvent.coverImage}`} alt="event cover" className=" h-full w-full object-container bg-bottom" />
                                 
                                 <button 
                                   onClick={() => setform(false)}

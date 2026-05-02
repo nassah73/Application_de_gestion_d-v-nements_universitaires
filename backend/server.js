@@ -5,8 +5,9 @@ const cookieParser = require('cookie-parser');
 const csrf = require('csurf');
 const addAdmin =require('./Routes/addAdmin')
 const { MongoMemoryServer } = require('mongodb-memory-server');
-
+const path = require('path');
 const app = express();
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
