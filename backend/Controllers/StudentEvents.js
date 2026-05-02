@@ -16,4 +16,4 @@ const Student_Events= async(req,res)=>{
     }
 
 }
-module.exports=Student_Events;
+module.exports={Student_Events};

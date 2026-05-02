@@ -60,7 +60,7 @@ const startServer = async () => {
     app.use('/api/auth', authRoutes);
     app.use('/Event', CreateEvent);
     app.use('/api/valide',ValideEvent)
-    app.use('/Events',CreateEvent)
+    
     app.use( '/api/administrateur',addAdmin)
     const csrfProtection = csrf({ cookie: true });
     app.get('/api/csrf-token', csrfProtection, (req, res) => {

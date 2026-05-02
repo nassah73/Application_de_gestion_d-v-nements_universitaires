@@ -52,7 +52,7 @@ const filterObjet= category==='all'?Events: Events.filter((items)=>items.categor
 useEffect(() => {
   const fetchEvents = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/Events/GetEvets');
+      const res = await axios.get('http://localhost:5000/Event/StuendtEvents');
       
       setEvents(res.data); 
       
