@@ -25,13 +25,18 @@ export default function RegisterStudent() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log('=== Register Student Submitted ===');
+        console.log('formData:', formData);
 
         try {
             const response = await axios.post('http://localhost:5000/api/students/register', formData);
+            console.log('Response:', response.data);
             alert(response.data.message);
             navigate('/auth/login');
         } catch (error) {
-            alert(error.response?.data?.message || 'Erreur lors de l\'enregistrement');
+            console.error('Error registering student:', error);
+            console.error('Error response:', error.response);
+            alert(error.response?.data?.message || error.message || 'Erreur lors de l\'enregistrement');
         }
     };
 
@@ -64,7 +69,6 @@ export default function RegisterStudent() {
                         <div className={style.inputGroup} style={{ marginBottom: '0' }}>
                             <label>CNE</label>
                             <div className={style.inputWrapper}>
-                                {/* بدلت name لـ cne */}
                                 <input name='cne' value={formData.cne} onChange={handleChange} type="text" placeholder="D123456789" required />
                                 <Hash className={style.inputIcon} size={16} />
                             </div>
@@ -75,7 +79,7 @@ export default function RegisterStudent() {
                         <div className={style.inputGroup} style={{ marginBottom: '0' }}>
                             <label>Email</label>
                             <div className={style.inputWrapper}>
-                                {/* بدلت name لـ email */}
+                                
                                 <input name='email' value={formData.email} onChange={handleChange} type="email" placeholder="hassan@edu.uiz.ac.ma" required />
                                 <Mail className={style.inputIcon} size={16} />
                             </div>
@@ -83,7 +87,7 @@ export default function RegisterStudent() {
                         <div className={style.inputGroup} style={{ marginBottom: '0' }}>
                             <label>Téléphone</label>
                             <div className={style.inputWrapper}>
-                                {/* بدلت name لـ tel باش يطابق الـ Model */}
+                                
                                 <input name="phone" value={formData.phone} onChange={handleChange} type="tel" placeholder="+212 6..." required />
                                 <Phone className={style.inputIcon} size={16} />
                             </div>
@@ -94,8 +98,8 @@ export default function RegisterStudent() {
                         <div className={style.inputGroup} style={{ marginBottom: '0' }}>
                             <label>Filière</label>
                             <div className={style.inputWrapper}>
-                                {/* بدلت name لـ filiere */}
-                                <select required defaultValue="" name='filiere' value={formData.filiere} onChange={handleChange}>
+                                
+                                <select required name='filiere' value={formData.filiere} onChange={handleChange}>
                                     <option value="" disabled>Filière</option>
                                     <option value="SMI">SMI</option>
                                     <option value="SMA">SMA</option>
@@ -107,8 +111,8 @@ export default function RegisterStudent() {
                         <div className={style.inputGroup} style={{ marginBottom: '0' }}>
                             <label>Niveau</label>
                             <div className={style.inputWrapper}>
-                                {/* بدلت name لـ niveau */}
-                                <select required defaultValue="" name='niveau' value={formData.niveau} onChange={handleChange}>
+                                
+                                <select required name='niveau' value={formData.niveau} onChange={handleChange}>
                                     <option value="" disabled>Niveau</option>
                                     <option value="1ère Année">1ère Année</option>
                                     <option value="2ème Année">2ème Année</option>

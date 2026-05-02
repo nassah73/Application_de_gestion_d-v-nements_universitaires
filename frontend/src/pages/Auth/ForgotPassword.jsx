@@ -13,13 +13,15 @@ export default function ForgotPassword() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            // Simulation d'envoi d'email
-            // const response = await axios.post('http://localhost:5000/api/auth/forgot-password', { email });
-            console.log("Demande de réinitialisation envoyée pour :", email);
-            setSubmitted(true);
+            
+            const response = await axios.post('http://localhost:5000/api/auth/forgot-password', { email });
+            
+            if (response.status === 200) {
+                setSubmitted(true);
+            }
         } catch (error) {
             console.error("Erreur ❌", error.response?.data || error.message);
-            alert(error.response?.data?.message || "Une erreur est survenue");
+            alert("Une erreur est survenue. Vérifiez votre connexion.");
         }
     };
 

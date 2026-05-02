@@ -7,8 +7,7 @@ import {
   FileText, Tag, Image as ImageIcon, Clock, Send 
 } from 'lucide-react';
 
-const CreateEvent = ({ setActiveTab }) => {
-  // توحيد الأسماء مع اللي كاين فـ الـ Backend
+const CreateEvent = ({ setActiveTab }) => { // حيدنا async من هنا
   const [eventData, setEventData] = useState({
     title: '',
     description: '',
@@ -37,9 +36,9 @@ const CreateEvent = ({ setActiveTab }) => {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => { // الـ async كاينة هنا فـ الـ function ديال event
     e.preventDefault();
-    const data = new FormData();
+    const data = new FormData(); // هادي هي اللي غنعمرو
 
     // 1. إضافة البيانات النصية
     Object.keys(eventData).forEach(key => {
@@ -51,7 +50,7 @@ const CreateEvent = ({ setActiveTab }) => {
       data.append('coverImage', coverImage.rawFile);
     }
 
-    // 3. إضافة الـ Organizer (الحل ديال المشكل اللي كان عندك)
+    // 3. إضافة الـ Organizer
     const user = JSON.parse(localStorage.getItem('user'));
     const organizerId = user?._id || user?.user?._id;
 
@@ -61,6 +60,9 @@ const CreateEvent = ({ setActiveTab }) => {
       alert("Session expirée. Veuillez vous reconnecter.");
       return;
     }
+
+    // Console log تصححات (كانت formData دابا ولات data)
+    console.log("Données envoyées à l'administration:", data);
 
     try {
       const response = await axios.post('http://localhost:5000/Event/CreateEvent', data, {
@@ -76,6 +78,8 @@ const CreateEvent = ({ setActiveTab }) => {
       alert("Erreur lors de l'envoi des données.");
     }
   };
+
+  // ... باقي الـ return (الـ JSX ديالك) هو نيتو ما تبدل والو
 
   return (
     <div className="flex h-screen overflow-hidden font-sans bg-[#0f172a] text-white">
@@ -179,6 +183,7 @@ const CreateEvent = ({ setActiveTab }) => {
       </div>
     </div>
   );
-};
+ 
 
+}
 export default CreateEvent;

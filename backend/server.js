@@ -8,7 +8,7 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
 
 const app = express();
 
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
+app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -16,7 +16,7 @@ const startServer = async () => {
     let mongoUri = 'mongodb://127.0.0.1:27017/pfe_fpt';
     
     try {
-        // Try to connect to local MongoDB first
+        
         await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 2000 });
         console.log('Connexion à MongoDB locale réussie');
     } catch (err) {
@@ -26,20 +26,21 @@ const startServer = async () => {
         await mongoose.connect(mongoUri);
         console.log('Connexion à MongoMemoryServer réussie:', mongoUri);
         
-        // Populate with default admin if using memory server
+        // Populate with default super admin if using memory server
         try {
             const bcrypt = require('bcrypt');
-            const Administration = require('./models/Administration');
-            const existing = await Administration.findOne({ email: 'admin@uiz.ac.ma' });
-            if (!existing) {
-                const hashedPassword = await bcrypt.hash('Admin@1234', 10);
-                const admin = new Administration({
-                    email: 'admin@uiz.ac.ma',
+            const Administrateur = require('./models/Administrateur');
+            
+            const existingSuperAdmin = await Administrateur.findOne({ email: 'superadmin@uiz.ac.ma' });
+            if (!existingSuperAdmin) {
+                const hashedPassword = await bcrypt.hash('SuperAdmin@1234', 10);
+                const superAdmin = new Administrateur({
+                    email: 'superadmin@uiz.ac.ma',
                     password: hashedPassword,
-                    role: 'administration'
+                    role: 'admin'
                 });
-                await admin.save();
-                console.log('✅ Compte Administration par défaut créé (Memory DB)');
+                await superAdmin.save();
+                console.log('✅ Compte Administrateur par défaut créé (Memory DB)');
             }
         } catch (populateErr) {
             console.error('Erreur lors de la population de la DB:', populateErr);

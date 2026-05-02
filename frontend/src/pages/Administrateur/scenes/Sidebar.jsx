@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import { useTranslation } from "react-i18next";
-import { FaLayerGroup, FaChartBar, FaUsers } from "react-icons/fa";
+import { FaLayerGroup, FaUserPlus, FaChartBar, FaUsers, FaCogs } from "react-icons/fa";
 import { MdCalendarMonth, MdLogout } from "react-icons/md";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
@@ -27,14 +27,18 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
 
 const Sidebar = ({ isSidebar, isCollapsed, setIsCollapsed }) => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [selected, setSelected] = useState("Statistiques Globales");
-  const navigate = useNavigate(); // ✅ مهم
+  
 
   // ✅ logout function
   const handleLogout = () => {
-    localStorage.removeItem("user"); // ولا token حسب المشروع ديالك
+    localStorage.removeItem("user"); 
+     localStorage.clear();// ولا token حسب المشروع ديالك
     navigate("/auth/login", { replace: true });
   };
+
+ 
 
   return (
     <Box
@@ -109,6 +113,7 @@ const Sidebar = ({ isSidebar, isCollapsed, setIsCollapsed }) => {
                     sx={{
                       color: "#8b93a7",
                       fontSize: "11px",
+                      display: "block",
                       mt: "4px",
                     }}
                   >
@@ -128,16 +133,18 @@ const Sidebar = ({ isSidebar, isCollapsed, setIsCollapsed }) => {
             )}
           </Box>
 
-          {/* MENU */}
+          {/* MENU ITEMS */}
           <Box sx={{ mt: "16px" }}>
             <Item title={t("Statistiques Globales")} to="/administrateur" icon={<FaChartBar size={19} />} selected={selected} setSelected={setSelected} />
             <Item title={t("Gestion Utilisateurs")} to="/administrateur/UserM" icon={<FaUsers size={19} />} selected={selected} setSelected={setSelected} />
+            <Item title={t("Ajouter Admin")} to="/administrateur/create" icon={<FaUserPlus size={19} />} selected={selected} setSelected={setSelected} />
             <Item title={t("Gestion Catégories")} to="/administrateur/categorie" icon={<FaLayerGroup size={17} />} selected={selected} setSelected={setSelected} />
+            <Item title={t("Paramètres")} to="/administrateur/settings" icon={<FaCogs size={17} />} selected={selected} setSelected={setSelected} />
             <Item title={t("Calendrier")} to="/administrateur/calendar" icon={<MdCalendarMonth size={19} />} selected={selected} setSelected={setSelected} />
           </Box>
         </Menu>
 
-        {/* LOGOUT */}
+        {/* DÉCONNEXION */}
         <Box
           sx={{
             padding: "12px 12px 20px",
@@ -156,6 +163,7 @@ const Sidebar = ({ isSidebar, isCollapsed, setIsCollapsed }) => {
               borderRadius: "10px",
               cursor: "pointer",
               color: "#ef4444",
+              transition: "all 0.15s ease",
               "&:hover": {
                 backgroundColor: "rgba(239,68,68,0.1)",
               },

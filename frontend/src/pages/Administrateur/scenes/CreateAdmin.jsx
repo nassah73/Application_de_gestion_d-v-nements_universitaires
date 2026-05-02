@@ -2,23 +2,7 @@ import { Box, Button, TextField, IconButton, Typography, LinearProgress, Snackba
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { MenuItem, InputAdornment } from "@mui/material";
-import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
-import ComputerIcon from "@mui/icons-material/Computer";
-import CodeIcon from "@mui/icons-material/Code";
-import LockIcon from "@mui/icons-material/Lock";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { addUser } from "../data/userStorage";
-
-const roles = [
-  { value: "Administration", label: "Administration", icon: <AdminPanelSettingsIcon /> },
-  { value: "IT", label: "IT", icon: <ComputerIcon /> },
-  { value: "Developer", label: "Developer", icon: <CodeIcon /> },
-];
+import axios from "axios";
 
 const getPasswordStrength = (password) => {
   if (!password) return { score: 0, label: "", color: "#64748b" };
@@ -42,29 +26,20 @@ const Form = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
-  const handleFormSubmit = (values, { resetForm }) => {
-    // Build user object matching UserM format
-    const newUserData = {
-      name: `${values.firstName} ${values.lastName}`,
-      email: values.email,
-      role: values.role,
-      password: values.password,
-    };
-
-    addUser(newUserData);
-
-    setSnackbar({
-      open: true,
-      message: `${newUserData.name} a été ajouté avec succès !`,
-      severity: "success",
-    });
-
-    resetForm();
-
-    // Navigate to UserM after a short delay so the user sees the success message
-    setTimeout(() => {
-      navigate("/administrateur/UserM");
-    }, 1500);
+  const handleFormSubmit = async (values) => {
+    try {
+      const response = await axios.post('http://localhost:5000/api/administrateur/create-administration', {
+        prenom: values.firstName,
+        nom: values.lastName,
+        telephone: values.contact,
+        email: values.email,
+        password: values.password
+      });
+      alert(response.data.message);
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data?.message || 'Erreur lors de la création du compte');
+    }
   };
 
   return (
@@ -281,25 +256,16 @@ const Form = () => {
                 <TextField
                   fullWidth
                   variant="filled"
-                  select
-                  label="Role"
+                  type="password"
+                  label="Mot de passe"
                   onBlur={handleBlur}
                   onChange={handleChange}
-                  value={values.role}
-                  name="role"
-                  error={!!touched.role && !!errors.role}
-                  helperText={touched.role && errors.role}
-                  sx={{ gridColumn: "span 4", ...inputStyles, pb: "10px" }}
-                >
-                  {roles.map((role) => (
-                    <MenuItem key={role.value} value={role.value}>
-                      <span style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        {role.icon}
-                        {role.label}
-                      </span>
-                    </MenuItem>
-                  ))}
-                </TextField>
+                  value={values.password}
+                  name="password"
+                  error={!!touched.password && !!errors.password}
+                  helperText={touched.password && errors.password}
+                  sx={{ gridColumn: "span 4", ...inputStyles ,pb: "10px"}}
+                />
               </Box>
               <Box sx={{ display: "flex", justifyContent: "end", mt: "40px" }}>
                 <Button
@@ -361,11 +327,7 @@ const checkoutSchema = yup.object().shape({
     .string()
     .matches(phoneRegExp, "Numéro de téléphone non valide")
     .required("Contact requis"),
-  password: yup
-    .string()
-    .min(6, "Minimum 6 caractères")
-    .required("Mot de passe requis"),
-  role: yup.string().required("Rôle requis"),
+  password: yup.string().required("Mot de passe requis").min(6, "Mot de passe doit contenir au moins 6 caractères"),
 });
 
 const initialValues = {
@@ -374,7 +336,6 @@ const initialValues = {
   email: "",
   contact: "",
   password: "",
-  role: "",
 };
 
 const inputStyles = {

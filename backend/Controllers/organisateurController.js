@@ -1,27 +1,59 @@
 const Organisateur = require('../models/Organisateur');
 const Student = require('../models/Student');
 const bcrypt = require('bcrypt');
+const multer = require('multer');
+const path = require('path');
 
-exports.registerOrganisateur = async (req, res) => {
-    try {
-        const { prenom, nom, telephone, nomClub, email, password } = req.body;
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        const newOrganizer = new Organisateur({
-            prenom,
-            nom,
-            telephone,
-            nomClub,
-            email,
-            password: hashedPassword,
-        });
-
-        await newOrganizer.save();
-        res.status(201).json({ message: "Compte créé. En attente de validation (72h)." });
-
-    } catch (error) {
-        res.status(400).json({ message: "Erreur lors de l'inscription", error: error.message });
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + path.extname(file.originalname));
     }
+});
+
+const upload = multer({ storage: storage }).single('justificatif');
+
+exports.registerOrganisateur = (req, res) => {
+    upload(req, res, async (err) => {
+        console.log('=== registerOrganisateur called ===');
+        console.log('req.body:', req.body);
+        console.log('req.file:', req.file);
+        console.log('err:', err);
+        
+        if (err) {
+            console.error('Upload error:', err);
+            return res.status(500).json({ message: "Erreur lors de l'upload du justificatif" });
+        }
+
+        try {
+            const { prenom, nom, telephone, nomClub, email, password } = req.body;
+            const justificatifPath = req.file ? req.file.path : null;
+
+            if (!justificatifPath) {
+                return res.status(400).json({ message: "Veuillez fournir un justificatif." });
+            }
+            const hashedPassword = await bcrypt.hash(password, 10);
+
+            const newOrganizer = new Organisateur({
+                prenom,
+                nom,
+                telephone,
+                nomClub,
+                email,
+                password: hashedPassword,
+                justificatif: justificatifPath,
+            });
+
+            await newOrganizer.save();
+            res.status(201).json({ message: "Compte créé. En attente de validation par l'administration." });
+
+        } catch (error) {
+            console.error('Registration error:', error);
+            res.status(400).json({ message: "Erreur lors de l'inscription", error: error.message });
+        }
+    });
 };
 
 exports.addStaff = async (req, res) => {

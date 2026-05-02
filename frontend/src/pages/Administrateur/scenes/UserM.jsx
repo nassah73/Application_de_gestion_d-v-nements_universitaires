@@ -114,8 +114,6 @@ const StatCard = ({ icon, label, value, accentColor, bgColor }) => (
   </Box>
 );
 
-
-
 // ── Main Component ───────────────────────────────────────────────────────
 const UserManagement = () => {
 
@@ -334,6 +332,7 @@ const UserManagement = () => {
       sortable: false,
       renderCell: ({ row }) => {
         const isRevealed = revealedPasswords[row.id];
+        
         return (
           <Box sx={{ display: "flex", alignItems: "center", gap: "8px", width: "100%" }}>
             <LockIcon sx={{ fontSize: 16, color: colors.grey[500] }} />
@@ -664,7 +663,7 @@ const UserManagement = () => {
             Annuler
           </Button>
           <Button
-            onClick={handelclick}
+            onClick={handleSave}
             variant="contained"
             sx={{
               backgroundColor: colors.greenAccent[600],
