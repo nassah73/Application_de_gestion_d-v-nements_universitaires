@@ -38,3 +38,18 @@ exports.rejectOrganizer = async (req, res) => {
         res.status(500).json({ message: "Erreur serveur" });
     }
 };
+
+exports.deleteOrganizer = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const organizer = await Organisateur.findByIdAndDelete(id);
+        
+        if (!organizer) {
+            return res.status(404).json({ message: "Organisateur non trouvé" });
+        }
+        
+        res.status(200).json({ message: "Demande supprimée avec succès" });
+    } catch (err) {
+        res.status(500).json({ message: "Erreur serveur" });
+    }
+};
