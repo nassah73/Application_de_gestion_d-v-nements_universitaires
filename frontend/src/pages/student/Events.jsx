@@ -43,10 +43,36 @@ const filterObjet= category==='all'?Events: Events.filter((items)=>items.categor
     }, [form]);
 
    
- const requestEvent=async(item)=>{
+const requestEvent = async (item) => {
+  try {
+    
+    const userString = localStorage.getItem('user');
+    
+    if (!userString) {
+      return alert("Vous devez être connecté pour vous inscrire !");
+    }
 
-    await axios.post('http://localhost:5000/api/requestEvent',item)
- }
+    // 2. ضروري دير JSON.parse حيت الـ Storage كيخزن غير نصوص
+    const user = JSON.parse(userString);
+
+    
+    const registrationData = {
+      studentId: user._id, 
+      eventId: item._id    
+    };
+
+    // 4. صيفط الطلب للسيرفر
+    const res = await axios.post('http://localhost:5000/Event/My_events', registrationData);
+    
+    setform(false);
+    alert("Inscription réussie !");
+    console.log(res.data);
+
+  } catch (error) {
+    // هاد السطر كيعطيك ميساج واعر فاش كيكون Error
+    alert(error.response?.data?.message || "Erreur lors de l'inscription");
+  }
+}
 
 
 useEffect(() => {

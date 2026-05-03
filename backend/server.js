@@ -8,7 +8,7 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
 const path = require('path');
 const app = express();
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
+app.use('/uploads', express.static('uploads'))
 app.use(cors({ origin: true, credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
