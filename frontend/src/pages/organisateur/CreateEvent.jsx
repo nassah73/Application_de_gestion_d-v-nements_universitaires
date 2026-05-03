@@ -12,8 +12,8 @@ const CreateEvent = ({ setActiveTab }) => {
     title: '',
     description: '',
     category: '',
-    date: '', // للتاريخ
-    time: '', // للوقت
+    date: '', 
+    time: '', 
     location: '',
     capacity: '',
     registrationLink: ''
