@@ -4,7 +4,7 @@ import axios from 'axios';
 import {
   FileText, Check, X, Search, Bell, LogOut, Settings, Tag,
   LayoutDashboard, CalendarCheck, Users, ExternalLink,
-  AlertTriangle, CheckCircle2, Mail, Clock, Filter
+  AlertTriangle, CheckCircle2, Mail, Clock, Filter, Trash2
 } from 'lucide-react';
 
 const ADMIN_NOTIFS = [
@@ -18,11 +18,12 @@ const ValidateOrganizers = () => {
   const navigate = useNavigate();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [activeFilter, setActiveFilter] = useState('Tous');
+  const [activeFilter, setActiveFilter] = useState('En attente');
   const [viewDoc, setViewDoc] = useState(null);
   const [rejectTarget, setRejectTarget] = useState(null);
   const [rejectReason, setRejectReason] = useState('');
   const [toast, setToast] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
   const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -86,6 +87,18 @@ const ValidateOrganizers = () => {
       setRejectTarget(null);
     } catch (err) {
       showToast('Erreur lors du rejet', 'error');
+    }
+  };
+
+  // Delete via API
+  const handleDelete = async (req) => {
+    try {
+      await axios.delete(`http://localhost:5000/api/administration/delete-organizer/${req._id}`);
+      setRequests(prev => prev.filter(r => r._id !== req._id));
+      showToast(`"${req.nomClub}" supprimé avec succès`);
+      setConfirmDelete(null);
+    } catch (err) {
+      showToast('Erreur lors de la suppression', 'error');
     }
   };
 
@@ -233,16 +246,24 @@ const ValidateOrganizers = () => {
                     </div>
                   )}
 
-                  {req.status === 'En attente' && (
-                    <div className="mt-5 flex gap-3">
-                      <button onClick={() => handleApprove(req)} className="flex-1 py-2.5 rounded-xl font-bold text-sm bg-emerald-500 text-white shadow-md hover:bg-emerald-600 transition-colors">
-                        ✓ Approuver
+                  {/* Actions */}
+                  <div className="mt-5 flex gap-3">
+                    {req.status === 'En attente' && (
+                      <>
+                        <button onClick={() => handleApprove(req)} className="flex-1 py-2.5 rounded-xl font-bold text-sm bg-emerald-500 text-white shadow-md hover:bg-emerald-600 transition-colors">
+                          ✓ Approuver
+                        </button>
+                        <button onClick={() => openRejectModal(req)} className="flex-1 py-2.5 rounded-xl font-bold text-sm bg-red-500 text-white shadow-md hover:bg-red-600 transition-colors">
+                          ✗ Rejeter
+                        </button>
+                      </>
+                    )}
+                    {req.status !== 'En attente' && (
+                      <button onClick={() => setConfirmDelete(req)} className="flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-sm bg-white/10 text-white/60 hover:bg-red-500/20 hover:text-red-400 transition-all">
+                        <Trash2 size={16} /> Supprimer
                       </button>
-                      <button onClick={() => openRejectModal(req)} className="flex-1 py-2.5 rounded-xl font-bold text-sm bg-red-500 text-white shadow-md hover:bg-red-600 transition-colors">
-                        ✗ Rejeter
-                      </button>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -272,6 +293,20 @@ const ValidateOrganizers = () => {
             <div className="flex gap-3">
               <button onClick={() => setRejectTarget(null)} className="flex-1 py-3 font-bold bg-slate-100 rounded-xl">Annuler</button>
               <button onClick={confirmReject} className="flex-1 py-3 font-bold bg-red-500 text-white rounded-xl">Confirmer le rejet</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal - Confirm Delete */}
+      {confirmDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70" onClick={() => setConfirmDelete(null)}>
+          <div className="bg-white rounded-3xl p-7 w-full max-w-md animate-in zoom-in" onClick={e => e.stopPropagation()}>
+            <h3 className="text-lg font-bold mb-2">Supprimer cette demande ?</h3>
+            <p className="text-slate-500 text-sm mb-4">Club : <strong>{confirmDelete.nomClub}</strong><br/>Cette action est irréversible.</p>
+            <div className="flex gap-3">
+              <button onClick={() => setConfirmDelete(null)} className="flex-1 py-3 font-bold bg-slate-100 rounded-xl">Annuler</button>
+              <button onClick={() => handleDelete(confirmDelete)} className="flex-1 py-3 font-bold bg-red-500 text-white rounded-xl">Confirmer la suppression</button>
             </div>
           </div>
         </div>

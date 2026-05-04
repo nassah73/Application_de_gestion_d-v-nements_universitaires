@@ -70,10 +70,20 @@ exports.login = async (req, res) => {
         }
         
         // إعداد البيانات اللي غاترجع (Handling fullname vs nom/prenom)
+        let displayName;
+        if (user.fullname) {
+            displayName = user.fullname;
+        } else if (user.prenom && user.nom) {
+            displayName = `${user.prenom} ${user.nom}`;
+        } else if (user.fullName) {
+            displayName = user.fullName;
+        } else {
+            displayName = user.email.split('@')[0];
+        }
+        
         res.status(200).json({
             _id: user._id,
-            // إلا كان من Administration كنخدو fullname، وإلا كان طالب كنخدو prenom + nom
-            displayName: user.fullname || `${user.prenom} ${user.nom}`,
+            displayName: displayName,
             email: user.email,
             role: role, 
             staffOf: staffOf,
