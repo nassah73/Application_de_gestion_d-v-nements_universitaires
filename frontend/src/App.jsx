@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 // Auth Pages
 import Login from './pages/Auth/Login';
 import ForgotPassword from './pages/Auth/ForgotPassword';
+import ResetPassword from './pages/Auth/ResetPassword';
 import RegisterStudent from './pages/Auth/RegisterStudent';
 import RegisterOrganisateur from './pages/Auth/registerOrganisateur';
 import AdministrateurApp from './pages/Administrateur/App';
@@ -45,6 +46,7 @@ function App() {
       {/* --- Auth Routes --- */}
       <Route path="/auth/login" element={<Login />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/auth/reset-password" element={<ResetPassword />} />
       <Route path="/register-student" element={<RegisterStudent />} />
       <Route path="/Administration" element={<Administration />} />
       <Route path="/register-organisateur" element={<RegisterOrganisateur />} />

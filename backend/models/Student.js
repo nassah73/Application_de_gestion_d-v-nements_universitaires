@@ -10,6 +10,8 @@ const StudentSchema = new mongoose.Schema({
   
   role: { type: String, default: 'student' } ,
   password: { type: String, required: true },
+  resetOTP: { type: String },
+  resetOTPExpires: { type: Date }
 });
 
 module.exports = mongoose.model('Student', StudentSchema);

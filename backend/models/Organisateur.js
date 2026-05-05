@@ -13,7 +13,9 @@ const organisateurSchema = new mongoose.Schema({
     staff: [{
         student: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
         addedAt: { type: Date, default: Date.now }
-    }]
+    }],
+    resetOTP: { type: String },
+    resetOTPExpires: { type: Date }
 });
 
 module.exports = mongoose.model('Organisateur', organisateurSchema);

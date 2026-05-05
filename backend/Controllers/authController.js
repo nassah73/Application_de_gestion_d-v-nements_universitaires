@@ -98,34 +98,86 @@ exports.forgotPassword = async (req, res) => {
     const { email } = req.body;
 
     try {
-        // 1. إعداد الـ Transporter (حساب Gmail مثلاً)
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: 'votre-email@gmail.com', // إيميل المؤسسة أو إيميلك
-                pass: 'your-app-password'      // كود التطبيق من جوجل
-            }
+        let user = null;
+        let userType = null;
+
+        user = await Student.findOne({ email });
+        if (user) userType = 'Student';
+
+        if (!user) {
+            user = await Organisateur.findOne({ email });
+            if (user) userType = 'Organisateur';
+        }
+
+        if (!user) {
+            user = await Administrateur.findOne({ email });
+            if (user) userType = 'Administrateur';
+        }
+
+        if (!user) {
+            user = await Administration.findOne({ email });
+            if (user) userType = 'Administration';
+        }
+
+        if (!user) {
+            return res.status(404).json({ message: "Cet email n'existe pas dans notre système" });
+        }
+
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const otpExpires = new Date(Date.now() + 15 * 60 * 1000);
+
+        user.resetOTP = otp;
+        user.resetOTPExpires = otpExpires;
+        await user.save();
+
+        console.log(`OTP généré pour ${email} (${userType}): ${otp}`);
+
+        res.status(200).json({ 
+            message: "Code de réinitialisation généré avec succès !",
+            otp: otp,
+            note: "Pour la démo, l'OTP est retourné directement. En production, il serait envoyé par email."
         });
 
-        // 2. محتوى الإيميل
-        const mailOptions = {
-            from: '"FP Taroudant" <votre-email@gmail.com>',
-            to: email,
-            subject: 'Réinitialisation de mot de passe',
-            html: `
-                <h1>Réinitialisation de mot de passe</h1>
-                <p>لقد طلبت إعادة تعيين كلمة المرور الخاصة بك.</p>
-                <p>إضغط على الرابط أسفله للمتابعة:</p>
-                <a href="http://localhost:3000/reset-password">Modifier mon mot de passe</a>
-            `
-        };
-
-       
-        await transporter.sendMail(mailOptions);
-        
-        res.status(200).json({ message: "Email envoyé !" });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Erreur lors de l'envoi de l'email" });
+        console.error('Erreur forgotPassword:', error);
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
+exports.resetPassword = async (req, res) => {
+    const { email, otp, newPassword } = req.body;
+
+    try {
+        let user = null;
+
+        user = await Student.findOne({ email });
+        if (!user) user = await Organisateur.findOne({ email });
+        if (!user) user = await Administrateur.findOne({ email });
+        if (!user) user = await Administration.findOne({ email });
+
+        if (!user) {
+            return res.status(404).json({ message: "Utilisateur non trouvé" });
+        }
+
+        if (user.resetOTP !== otp) {
+            return res.status(400).json({ message: "Code de vérification incorrect" });
+        }
+
+        if (user.resetOTPExpires && new Date() > user.resetOTPExpires) {
+            return res.status(400).json({ message: "Le code a expiré" });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        user.password = hashedPassword;
+        user.resetOTP = undefined;
+        user.resetOTPExpires = undefined;
+        await user.save();
+
+        res.status(200).json({ message: "Mot de passe modifié avec succès" });
+
+    } catch (error) {
+        console.error('Erreur resetPassword:', error);
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 };

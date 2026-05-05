@@ -71,7 +71,24 @@ export default function ForgotPassword() {
                             <button onClick={() => navigate('/auth/login')} className={style.submitBtn}>
                                 Retour à la connexion <ArrowLeft size={20} strokeWidth={2.5} />
                             </button>
+                            <div className="bg-green-100 text-green-700 p-4 rounded-lg mb-6">
+            Un code de réinitialisation a été envoyé à <strong>{email}</strong>.
+        </div>
+        
+        {/* زرار جديد باش يدوز لصفحة إدخال الكود */}
+        <button 
+            onClick={() => navigate('/auth/reset-password')} 
+            className={style.submitBtn}
+            style={{marginBottom: '10px'}}
+        >
+            Saisir le code <ArrowRight size={20} />
+        </button>
+
+        <button onClick={() => navigate('/auth/login')} className={style.submitBtn}>
+            Retour à la connexion <ArrowLeft size={20} />
+        </button>
                         </div>
+                        
                     )}
 
                     <div className={style.formFooter}>
