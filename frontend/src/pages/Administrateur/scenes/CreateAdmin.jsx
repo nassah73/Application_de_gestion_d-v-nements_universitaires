@@ -1,8 +1,15 @@
 import { Box, Button, TextField, IconButton, Typography, LinearProgress, Snackbar, Alert } from "@mui/material";
 import { Formik } from "formik";
+import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import axios from "axios";
+import React, { useState } from 'react';
+import { InputAdornment } from "@mui/material";
+import LockIcon from "@mui/icons-material/Lock";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutlined";
 
 const getPasswordStrength = (password) => {
   if (!password) return { score: 0, label: "", color: "#64748b" };

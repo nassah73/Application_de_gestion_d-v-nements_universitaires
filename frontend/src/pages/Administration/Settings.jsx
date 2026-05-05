@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+
 import {
   Settings, User, Lock, Bell, Globe, Save,
   LayoutDashboard, CalendarCheck, Users, LogOut, Tag, ShieldCheck,
   CheckCircle2, X, AlertTriangle, CheckCheck
 } from 'lucide-react';
+import Sidebare from './components/Sidebare';
 
 const GLASS       = { background: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.08)' };
 const GLASS_INPUT = { background: 'rgba(15,23,42,0.5)',    borderColor: 'rgba(255,255,255,0.12)' };
@@ -47,11 +49,7 @@ const AdminSettings = () => {
   return (
     <div className="flex h-screen overflow-hidden font-sans" style={{ background: '#0f172a' }}>
       {toast && (<div className="fixed top-6 right-6 z-[100] flex items-center gap-3 px-5 py-3 rounded-2xl shadow-2xl text-sm font-bold animate-in fade-in" style={{ background: toast.type === 'success' ? '#10B981' : '#ef4444', color: '#fff' }}>{toast.type === 'success' ? <CheckCircle2 size={18} /> : <X size={18} />}{toast.msg}</div>)}
-      <aside className="w-64 flex flex-col shrink-0" style={{ background: 'linear-gradient(145deg,rgba(205,115,41,0.95),rgba(168,85,20,0.9))' }}>
-        <div className="p-6 border-b border-white/10"><h1 className="text-xl font-black uppercase tracking-wider text-white">UIZ University</h1><p className="text-xs text-white/60 mt-1">Administration</p></div>
-        <nav className="flex-1 px-4 space-y-1 mt-4 overflow-y-auto"><NavItem path="/responsable" icon={<LayoutDashboard size={20}/>} label="Dashboard" /><NavItem path="/responsable/events" icon={<CalendarCheck size={20}/>} label="Event Validation" /><NavItem path="/responsable/users" icon={<Users size={20}/>} label="User Management" /><NavItem path="/responsable/notifications" icon={<Bell size={20}/>} label="Notifications" /><NavItem path="/responsable/categories" icon={<Tag size={20}/>} label="Categories" /></nav>
-        <div className="mt-auto p-4 border-t border-white/10 space-y-1 shrink-0"><NavItem path="/responsable/settings" icon={<Settings size={20}/>} label="Settings" active /><NavItem path="/auth/login" icon={<LogOut size={20}/>} label="Logout" /></div>
-      </aside>
+      <Sidebare />
 
       <main className="flex-1 flex flex-col overflow-hidden">
         <header className="h-16 border-b flex items-center justify-between px-8 sticky top-0 z-10 shrink-0" style={{ background: 'rgba(15,23,42,0.85)', backdropFilter: 'blur(12px)', borderColor: 'rgba(255,255,255,0.08)' }}>

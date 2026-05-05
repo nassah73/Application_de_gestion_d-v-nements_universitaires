@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
@@ -24,7 +24,6 @@ const pieData = [
 ];
 
 const ORANGE = '#cd7329';
-const ORANGE_LIGHT = '#eb8232';
 
 const ADMIN_NOTIFS = [
   { id: 1, icon: <UserPlus size={16} />, iconBg: 'rgba(205,115,41,0.18)', iconColor: '#cd7329', title: 'Nouvelle demande organisateur', desc: 'Le Club Informatique a demandé le statut organisateur.', time: 'Il y a 2 min', read: false },
@@ -36,6 +35,7 @@ const ADMIN_NOTIFS = [
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [notifOpen, setNotifOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [notifications, setNotifications] = useState(ADMIN_NOTIFS);
@@ -56,246 +56,243 @@ const Dashboard = () => {
   }, []);
 
   return (
-  <div className="flex h-screen overflow-hidden font-sans" style={{ background: '#0f172a' }}>
+    <div className="flex h-screen overflow-hidden font-sans" style={{ background: '#0f172a' }}>
 
-    {/* ── Sidebar ── */}
-    <aside className="w-64 flex flex-col shrink-0" style={{ background: 'linear-gradient(145deg,rgba(205,115,41,0.95),rgba(168,85,20,0.9))' }}>
-      <div className="p-6 border-b border-white/10">
-        <h1 className="text-xl font-black uppercase tracking-wider text-white">UIZ University</h1>
-        <p className="text-xs text-white/60 mt-1">Administration</p>
-      </div>
-
-      <nav className="flex-1 px-4 space-y-1 mt-4 overflow-y-auto">
-        <NavItem path="/responsable"               icon={<LayoutDashboard size={20}/>} label="Dashboard"        active />
-        <NavItem path="/responsable/events"        icon={<CalendarCheck   size={20}/>} label="Event Validation" />
-        <NavItem path="/responsable/users"         icon={<Users           size={20}/>} label="User Management"  />
-        <NavItem path="/responsable/notifications" icon={<Bell            size={20}/>} label="Notifications"    />
-        <NavItem path="/responsable/categories"    icon={<Tag             size={20}/>} label="Categories"       />
-      </nav>
-
-      <div className="mt-auto p-4 border-t border-white/10 space-y-1 shrink-0">
-        <NavItem path="/responsable/settings" icon={<Settings size={20}/>} label="Settings" />
-        <NavItem path="/auth/login"           icon={<LogOut   size={20}/>} label="Logout"   />
-      </div>
-    </aside>
-
-    {/* ── Main ── */}
-    <main className="flex-1 flex flex-col h-screen overflow-y-auto">
-
-      {/* Header */}
-      <header className="h-16 border-b flex items-center justify-between px-8 sticky top-0 z-10 shrink-0"
-        style={{ background: 'rgba(15,23,42,0.85)', backdropFilter: 'blur(12px)', borderColor: 'rgba(255,255,255,0.08)' }}>
-        <div className="relative w-80">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
-          <input
-            className="w-full pl-9 pr-3 py-2 rounded-lg text-sm text-white placeholder-white/30 border outline-none focus:border-orange-400 transition-colors"
-            style={{ background: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.12)' }}
-            placeholder="Search events, organizers, students..."
-          />
+      {/* ── Sidebar ── */}
+      <aside className="w-64 flex flex-col shrink-0" style={{ background: '#12151c' }}>
+        <div className="p-6 flex justify-between items-start border-b" style={{ borderColor: 'rgba(255,255,255,0.07)' }}>
+          <div>
+            <h1 className="text-lg font-black uppercase tracking-widest text-white leading-tight">
+              UIZ<br />UNIVERSITY
+            </h1>
+            <p className="text-xs mt-1" style={{ color: 'rgba(255,255,255,0.4)' }}>Administration</p>
+          </div>
+          <div className="flex flex-col gap-1 pt-1">
+            {[0,1,2].map(i => (
+              <span key={i} className="block w-4 rounded-sm" style={{ height: '1.5px', background: 'rgba(255,255,255,0.4)' }} />
+            ))}
+          </div>
         </div>
-        <div className="flex items-center gap-4">
 
-          {/* ── Notification Bell ── */}
-          <div className="relative" ref={notifRef}>
-            <button
-              onClick={() => setNotifOpen(o => !o)}
-              className="relative p-2 rounded-full cursor-pointer transition-all"
-              style={{ background: notifOpen ? 'rgba(205,115,41,0.2)' : 'rgba(255,255,255,0.06)', color: notifOpen ? '#cd7329' : 'rgba(255,255,255,0.5)' }}
-            >
-              <Bell size={18} />
-              {unreadCount > 0 && (
-                <span
-                  className="absolute top-1 right-1 min-w-[16px] h-[16px] text-white text-[9px] font-black rounded-full border border-slate-900 flex items-center justify-center px-[2px]"
-                  style={{ background: '#cd7329' }}
-                >
-                  {unreadCount}
-                </span>
-              )}
-            </button>
+        <nav className="flex-1 px-3 mt-3 space-y-1 overflow-y-auto">
+          <NavItem path="/responsable"               icon={<LayoutDashboard size={18}/>} label="Dashboard"        active={location.pathname === '/responsable'} />
+          <NavItem path="/responsable/events"        icon={<CalendarCheck   size={18}/>} label="Event Validation" active={location.pathname === '/responsable/events'} />
+          <NavItem path="/responsable/users"         icon={<Users           size={18}/>} label="User Management"  active={location.pathname === '/responsable/users'} />
+          <NavItem path="/responsable/notifications" icon={<Bell            size={18}/>} label="Notifications"    active={location.pathname === '/responsable/notifications'} />
+          <NavItem path="/responsable/categories"    icon={<Tag             size={18}/>} label="Categories"       active={location.pathname === '/responsable/categories'} />
+        </nav>
 
-            {/* Dropdown */}
-            {notifOpen && (
-              <div className="absolute right-0 top-[calc(100%+10px)] w-[360px] rounded-2xl shadow-2xl border overflow-hidden z-50"
-                style={{ background: '#1e293b', borderColor: 'rgba(255,255,255,0.1)' }}>
+        <div className="mt-auto p-3 border-t space-y-1 shrink-0" style={{ borderColor: 'rgba(255,255,255,0.07)' }}>
+          <NavItem path="/responsable/settings" icon={<Settings size={18}/>} label="Settings" active={location.pathname === '/responsable/settings'} />
+          <div
+            onClick={() => navigate('/auth/login')}
+            className="flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all"
+            style={{ color: '#e07a20' }}
+            onMouseEnter={e => e.currentTarget.style.background = 'rgba(224,122,32,0.1)'}
+            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+          >
+            <LogOut size={18} />
+            <span className="text-sm font-medium">Logout</span>
+          </div>
+        </div>
+      </aside>
 
-                {/* Header */}
-                <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
-                  <div>
-                    <h5 className="text-sm font-black text-white">Notifications</h5>
-                    <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>{unreadCount} non lues</p>
-                  </div>
-                  {unreadCount > 0 && (
-                    <button
-                      onClick={markAllRead}
-                      className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest transition-colors hover:opacity-80"
-                      style={{ color: '#cd7329' }}
-                    >
-                      <CheckCheck size={13} /> Tout marquer
-                    </button>
-                  )}
-                </div>
+      {/* ── Main ── */}
+      <main className="flex-1 flex flex-col h-screen overflow-y-auto">
 
-                {/* List */}
-                <div className="max-h-[320px] overflow-y-auto divide-y" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
-                  {notifications.length === 0 ? (
-                    <div className="py-10 text-center">
-                      <Bell size={28} className="mx-auto mb-3" style={{ color: 'rgba(255,255,255,0.15)' }} />
-                      <p className="text-sm font-bold" style={{ color: 'rgba(255,255,255,0.3)' }}>Aucune notification</p>
+        {/* Header */}
+        <header className="h-16 border-b flex items-center justify-between px-8 sticky top-0 z-10 shrink-0"
+          style={{ background: 'rgba(15,23,42,0.85)', backdropFilter: 'blur(12px)', borderColor: 'rgba(255,255,255,0.08)' }}>
+          <div className="relative w-80">
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
+            <input
+              className="w-full pl-9 pr-3 py-2 rounded-lg text-sm text-white placeholder-white/30 border outline-none focus:border-orange-400 transition-colors"
+              style={{ background: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.12)' }}
+              placeholder="Search events, organizers, students..."
+            />
+          </div>
+          <div className="flex items-center gap-4">
+
+            {/* ── Notification Bell ── */}
+            <div className="relative" ref={notifRef}>
+              <button
+                onClick={() => setNotifOpen(o => !o)}
+                className="relative p-2 rounded-full cursor-pointer transition-all"
+                style={{ background: notifOpen ? 'rgba(205,115,41,0.2)' : 'rgba(255,255,255,0.06)', color: notifOpen ? '#cd7329' : 'rgba(255,255,255,0.5)' }}
+              >
+                <Bell size={18} />
+                {unreadCount > 0 && (
+                  <span
+                    className="absolute top-1 right-1 min-w-[16px] h-[16px] text-white text-[9px] font-black rounded-full border border-slate-900 flex items-center justify-center px-[2px]"
+                    style={{ background: '#cd7329' }}
+                  >
+                    {unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {notifOpen && (
+                <div className="absolute right-0 top-[calc(100%+10px)] w-[360px] rounded-2xl shadow-2xl border overflow-hidden z-50"
+                  style={{ background: '#1e293b', borderColor: 'rgba(255,255,255,0.1)' }}>
+                  <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                    <div>
+                      <h5 className="text-sm font-black text-white">Notifications</h5>
+                      <p className="text-[10px] font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.4)' }}>{unreadCount} non lues</p>
                     </div>
-                  ) : notifications.map(n => (
-                    <div
-                      key={n.id}
-                      className="flex items-start gap-3 px-4 py-3 transition-colors"
-                      style={{ background: n.read ? 'transparent' : 'rgba(205,115,41,0.06)' }}
-                      onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
-                      onMouseLeave={e => e.currentTarget.style.background = n.read ? 'transparent' : 'rgba(205,115,41,0.06)'}
-                    >
-                      <div className="shrink-0 w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: n.iconBg, color: n.iconColor }}>
-                        {n.icon}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between gap-2">
-                          <p className="text-[13px] font-bold leading-tight" style={{ color: n.read ? 'rgba(255,255,255,0.6)' : '#fff' }}>{n.title}</p>
-                          {!n.read && <span className="shrink-0 w-2 h-2 rounded-full" style={{ background: '#cd7329' }} />}
-                        </div>
-                        <p className="text-[11px] mt-0.5 leading-snug" style={{ color: 'rgba(255,255,255,0.4)' }}>{n.desc}</p>
-                        <p className="text-[10px] font-bold uppercase tracking-wider mt-1" style={{ color: 'rgba(255,255,255,0.25)' }}>{n.time}</p>
-                      </div>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); dismiss(n.id); }}
-                        className="shrink-0 p-1 rounded-lg transition-all"
-                        style={{ color: 'rgba(255,255,255,0.25)' }}
-                        onMouseEnter={e => { e.currentTarget.style.color = '#fff'; e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; }}
-                        onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.25)'; e.currentTarget.style.background = 'transparent'; }}
-                      >
-                        <X size={12} />
+                    {unreadCount > 0 && (
+                      <button onClick={markAllRead} className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest transition-colors hover:opacity-80" style={{ color: '#cd7329' }}>
+                        <CheckCheck size={13} /> Tout marquer
                       </button>
+                    )}
+                  </div>
+                  <div className="max-h-[320px] overflow-y-auto divide-y" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
+                    {notifications.length === 0 ? (
+                      <div className="py-10 text-center">
+                        <Bell size={28} className="mx-auto mb-3" style={{ color: 'rgba(255,255,255,0.15)' }} />
+                        <p className="text-sm font-bold" style={{ color: 'rgba(255,255,255,0.3)' }}>Aucune notification</p>
+                      </div>
+                    ) : notifications.map(n => (
+                      <div
+                        key={n.id}
+                        className="flex items-start gap-3 px-4 py-3 transition-colors"
+                        style={{ background: n.read ? 'transparent' : 'rgba(205,115,41,0.06)' }}
+                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
+                        onMouseLeave={e => e.currentTarget.style.background = n.read ? 'transparent' : 'rgba(205,115,41,0.06)'}
+                      >
+                        <div className="shrink-0 w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: n.iconBg, color: n.iconColor }}>
+                          {n.icon}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-2">
+                            <p className="text-[13px] font-bold leading-tight" style={{ color: n.read ? 'rgba(255,255,255,0.6)' : '#fff' }}>{n.title}</p>
+                            {!n.read && <span className="shrink-0 w-2 h-2 rounded-full" style={{ background: '#cd7329' }} />}
+                          </div>
+                          <p className="text-[11px] mt-0.5 leading-snug" style={{ color: 'rgba(255,255,255,0.4)' }}>{n.desc}</p>
+                          <p className="text-[10px] font-bold uppercase tracking-wider mt-1" style={{ color: 'rgba(255,255,255,0.25)' }}>{n.time}</p>
+                        </div>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); dismiss(n.id); }}
+                          className="shrink-0 p-1 rounded-lg transition-all"
+                          style={{ color: 'rgba(255,255,255,0.25)' }}
+                          onMouseEnter={e => { e.currentTarget.style.color = '#fff'; e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; }}
+                          onMouseLeave={e => { e.currentTarget.style.color = 'rgba(255,255,255,0.25)'; e.currentTarget.style.background = 'transparent'; }}
+                        >
+                          <X size={12} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="px-5 py-3 border-t" style={{ borderColor: 'rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.02)' }}>
+                    <p className="text-[10px] text-center font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.25)' }}>Fin des notifications</p>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="relative" ref={profileRef}>
+              <button
+                onClick={() => setProfileOpen(o => !o)}
+                className="flex items-center gap-3 border-l pl-4 hover:opacity-80 transition-all cursor-pointer outline-none"
+                style={{ borderColor: 'rgba(255,255,255,0.1)' }}
+              >
+                <div className="text-right hidden sm:block">
+                  <p className="text-sm font-semibold text-white">Admin User</p>
+                  <p className="text-[10px] text-white/40 uppercase tracking-widest font-bold">Super Administrateur</p>
+                </div>
+                <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-black text-sm transition-transform"
+                  style={{ background: '#e07a20', transform: profileOpen ? 'scale(1.1)' : 'scale(1)' }}>A</div>
+              </button>
+
+              {profileOpen && (
+                <div className="absolute right-0 top-[calc(100%+10px)] w-56 rounded-2xl shadow-2xl border overflow-hidden z-50"
+                  style={{ background: '#1e293b', borderColor: 'rgba(255,255,255,0.1)' }}>
+                  <div className="px-5 py-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                    <p className="text-xs font-bold text-white/40 uppercase tracking-widest">Compte Admin</p>
+                    <p className="text-sm font-bold text-white mt-1">Super Administrateur</p>
+                  </div>
+                  <div className="p-2">
+                    <button onClick={() => { setProfileOpen(false); navigate('/responsable/settings'); }}
+                      className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-bold text-white/70 hover:text-white hover:bg-white/5 transition-all">
+                      <Settings size={16} /> Paramètres
+                    </button>
+                    <button onClick={() => { setProfileOpen(false); navigate('/auth/login'); }}
+                      className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-bold text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all">
+                      <LogOut size={16} /> Se déconnecter
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </header>
+
+        {/* Content */}
+        <div className="p-8 space-y-8">
+
+          {/* Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            <StatCard icon={<CalendarCheck size={22} />} label="Total Events"        value="247"   trend="+12%" accent={ORANGE}     />
+            <StatCard icon={<Users         size={22} />} label="Active Students"     value="3,842" trend="+8%"  accent="#10B981"    />
+            <StatCard icon={<TrendingUp    size={22} />} label="Participation Rate"  value="68%"   trend="+18%" accent="#6366F1"    />
+            <StatCard icon={<CalendarCheck size={22} />} label="Pending Validations" value="12"    alert="3 urgent" accent="#F59E0B" />
+          </div>
+
+          {/* Charts */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="p-6 rounded-2xl border" style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.08)' }}>
+              <h3 className="font-bold text-white mb-6 text-sm uppercase tracking-wider">Student Engagement</h3>
+              <div className="h-56">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={lineData}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
+                    <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.35)' }} />
+                    <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.35)' }} />
+                    <Tooltip contentStyle={{ background: '#1e293b', border: 'none', borderRadius: '10px', color: '#fff', fontSize: '12px' }} />
+                    <Line type="monotone" dataKey="engagement" stroke={ORANGE} strokeWidth={3} dot={{ r: 4, fill: ORANGE }} activeDot={{ r: 6 }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            <div className="p-6 rounded-2xl border" style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.08)' }}>
+              <h3 className="font-bold text-white mb-6 text-sm uppercase tracking-wider">Events by Category</h3>
+              <div className="h-56 flex items-center">
+                <ResponsiveContainer width="55%" height="100%">
+                  <PieChart>
+                    <Pie data={pieData} innerRadius={50} outerRadius={72} paddingAngle={4} dataKey="value">
+                      {pieData.map((e, i) => <Cell key={i} fill={e.color} />)}
+                    </Pie>
+                    <Tooltip contentStyle={{ background: '#1e293b', border: 'none', borderRadius: '10px', color: '#fff', fontSize: '12px' }} />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="flex-1 space-y-3 pl-2">
+                  {pieData.map(item => (
+                    <div key={item.name} className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
+                      <span className="text-xs text-white/50 truncate">{item.name}: <span className="text-white/80 font-bold">{item.value}</span></span>
                     </div>
                   ))}
                 </div>
-
-                {/* Footer */}
-                <div className="px-5 py-3 border-t" style={{ borderColor: 'rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.02)' }}>
-                  <p className="text-[10px] text-center font-bold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.25)' }}>Fin des notifications</p>
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="relative" ref={profileRef}>
-            <button 
-              onClick={() => setProfileOpen(o => !o)}
-              className="flex items-center gap-3 border-l pl-4 hover:opacity-80 transition-all cursor-pointer outline-none" 
-              style={{ borderColor: 'rgba(255,255,255,0.1)' }}
-            >
-              <div className="text-right hidden sm:block">
-                <p className="text-sm font-semibold text-white">Admin User</p>
-                <p className="text-[10px] text-white/40 uppercase tracking-widest font-bold">Super Administrateur</p>
-              </div>
-              <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-black text-sm shadow-lg transform transition-transform"
-                style={{ 
-                  background: 'linear-gradient(135deg,#cd7329,#eb8232)',
-                  transform: profileOpen ? 'scale(1.1)' : 'scale(1)'
-                }}>A</div>
-            </button>
-
-            {/* Profile Dropdown */}
-            {profileOpen && (
-              <div className="absolute right-0 top-[calc(100%+10px)] w-56 rounded-2xl shadow-2xl border overflow-hidden z-50 animate-in fade-in zoom-in duration-200"
-                style={{ background: '#1e293b', borderColor: 'rgba(255,255,255,0.1)' }}>
-                
-                <div className="px-5 py-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
-                  <p className="text-xs font-bold text-white/40 uppercase tracking-widest">Compte Admin</p>
-                  <p className="text-sm font-bold text-white mt-1">Super Administrateur</p>
-                </div>
-
-                <div className="p-2">
-                  <button 
-                    onClick={() => { setProfileOpen(false); navigate('/responsable/settings'); }}
-                    className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-bold text-white/70 hover:text-white hover:bg-white/5 transition-all"
-                  >
-                    <Settings size={16} /> Paramètres
-                  </button>
-                  <button 
-                    onClick={() => { setProfileOpen(false); navigate('/auth/login'); }}
-                    className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-bold text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-all"
-                  >
-                    <LogOut size={16} /> Se déconnecter
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </header>
-
-      {/* Content */}
-      <div className="p-8 space-y-8">
-
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-          <StatCard icon={<CalendarCheck size={22} />} label="Total Events"        value="247"   trend="+12%" accent={ORANGE}     />
-          <StatCard icon={<Users         size={22} />} label="Active Students"     value="3,842" trend="+8%"  accent="#10B981"    />
-          <StatCard icon={<TrendingUp    size={22} />} label="Participation Rate"  value="68%"   trend="+18%" accent="#6366F1"    />
-          <StatCard icon={<CalendarCheck size={22} />} label="Pending Validations" value="12"    alert="3 urgent" accent="#F59E0B" />
-        </div>
-
-        {/* Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="p-6 rounded-2xl border" style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.08)' }}>
-            <h3 className="font-bold text-white mb-6 text-sm uppercase tracking-wider">Student Engagement</h3>
-            <div className="h-56">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={lineData}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
-                  <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.35)' }} />
-                  <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.35)' }} />
-                  <Tooltip contentStyle={{ background: '#1e293b', border: 'none', borderRadius: '10px', color: '#fff', fontSize: '12px' }} />
-                  <Line type="monotone" dataKey="engagement" stroke={ORANGE} strokeWidth={3} dot={{ r: 4, fill: ORANGE }} activeDot={{ r: 6 }} />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          <div className="p-6 rounded-2xl border" style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.08)' }}>
-            <h3 className="font-bold text-white mb-6 text-sm uppercase tracking-wider">Events by Category</h3>
-            <div className="h-56 flex items-center">
-              <ResponsiveContainer width="55%" height="100%">
-                <PieChart>
-                  <Pie data={pieData} innerRadius={50} outerRadius={72} paddingAngle={4} dataKey="value">
-                    {pieData.map((e, i) => <Cell key={i} fill={e.color} />)}
-                  </Pie>
-                  <Tooltip contentStyle={{ background: '#1e293b', border: 'none', borderRadius: '10px', color: '#fff', fontSize: '12px' }} />
-                </PieChart>
-              </ResponsiveContainer>
-              <div className="flex-1 space-y-3 pl-2">
-                {pieData.map(item => (
-                  <div key={item.name} className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
-                    <span className="text-xs text-white/50 truncate">{item.name}: <span className="text-white/80 font-bold">{item.value}</span></span>
-                  </div>
-                ))}
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Recent Activity */}
-        <div className="rounded-2xl border overflow-hidden" style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.08)' }}>
-          <div className="px-6 py-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
-            <h3 className="font-bold text-white text-sm uppercase tracking-wider">Recent Activity</h3>
+          {/* Recent Activity */}
+          <div className="rounded-2xl border overflow-hidden" style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.08)' }}>
+            <div className="px-6 py-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+              <h3 className="font-bold text-white text-sm uppercase tracking-wider">Recent Activity</h3>
+            </div>
+            <div className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
+              <ActivityItem icon={<CheckCircle />} iconColor="#10B981" title="Event Validated"       desc="Science Fair 2026 approved by Administration"     time="5 min ago" />
+              <ActivityItem icon={<UserPlus   />} iconColor={ORANGE}   title="New Organizer Request" desc="Computer Science Club requested organizer status"  time="12 min ago" />
+              <ActivityItem icon={<XCircle    />} iconColor="#ef4444"  title="Event Cancelled"       desc="Basketball Tournament postponed"                   time="1 hour ago" />
+              <ActivityItem icon={<CalendarCheck/>} iconColor="#6366F1" title="Event Published"      desc="Cultural Night 2026 is now live for registration" time="2 hours ago" />
+            </div>
           </div>
-          <div className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
-            <ActivityItem icon={<CheckCircle />} iconColor="#10B981" title="Event Validated"        desc="Science Fair 2026 approved by Administration"              time="5 min ago" />
-            <ActivityItem icon={<UserPlus   />} iconColor={ORANGE}   title="New Organizer Request"  desc="Computer Science Club requested organizer status"           time="12 min ago" />
-            <ActivityItem icon={<XCircle    />} iconColor="#ef4444"  title="Event Cancelled"        desc="Basketball Tournament postponed"                            time="1 hour ago" />
-            <ActivityItem icon={<CalendarCheck/>} iconColor="#6366F1" title="Event Published"       desc="Cultural Night 2026 is now live for registration"          time="2 hours ago" />
-          </div>
-        </div>
 
-      </div>
-    </main>
-  </div>
+        </div>
+      </main>
+    </div>
   );
 };
 
@@ -307,10 +304,10 @@ const NavItem = ({ icon, label, path, active = false }) => {
       onClick={() => path && navigate(path)}
       className="flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all"
       style={active
-        ? { background: 'rgba(255,255,255,0.2)', color: '#fff', fontWeight: 700 }
-        : { color: 'rgba(255,255,255,0.75)' }}
-      onMouseEnter={e => !active && (e.currentTarget.style.background = 'rgba(255,255,255,0.1)')}
-      onMouseLeave={e => !active && (e.currentTarget.style.background = 'transparent')}
+        ? { background: '#e07a20', color: '#fff', fontWeight: 700 }
+        : { color: 'rgba(160,165,185,0.85)' }}
+      onMouseEnter={e => { if (!active) e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; }}
+      onMouseLeave={e => { if (!active) e.currentTarget.style.background = 'transparent'; }}
     >
       {icon}
       <span className="text-sm">{label}</span>
@@ -324,8 +321,8 @@ const StatCard = ({ icon, label, value, trend, alert, accent }) => (
       <div className="w-11 h-11 rounded-xl flex items-center justify-center" style={{ background: `${accent}22`, color: accent }}>
         {icon}
       </div>
-      {trend  && <span className="text-[10px] font-black px-2 py-1 rounded-full" style={{ background: 'rgba(16,185,129,0.15)', color: '#10B981' }}>{trend}</span>}
-      {alert  && <span className="text-[10px] font-black px-2 py-1 rounded-full" style={{ background: 'rgba(245,158,11,0.15)', color: '#F59E0B' }}>{alert}</span>}
+      {trend && <span className="text-[10px] font-black px-2 py-1 rounded-full" style={{ background: 'rgba(16,185,129,0.15)', color: '#10B981' }}>{trend}</span>}
+      {alert && <span className="text-[10px] font-black px-2 py-1 rounded-full" style={{ background: 'rgba(245,158,11,0.15)', color: '#F59E0B' }}>{alert}</span>}
     </div>
     <p className="text-2xl font-black text-white">{value}</p>
     <p className="text-xs text-white/40 mt-1">{label}</p>
