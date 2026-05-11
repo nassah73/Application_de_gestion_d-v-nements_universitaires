@@ -258,15 +258,35 @@ const ValidateOrganizers = () => {
 
       {/* Modal - View Doc */}
       {viewDoc && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70" onClick={() => setViewDoc(null)}>
-          <div className="bg-slate-800 rounded-3xl p-8 border border-white/10 text-center animate-in zoom-in" onClick={e => e.stopPropagation()}>
-            <FileText size={50} className="text-orange-400 mx-auto mb-4"/>
-            <p className="text-white font-bold">{viewDoc.nomClub}</p>
-            <p className="text-white/40 text-sm mt-1">{viewDoc.justificatif}</p>
-            <button onClick={() => setViewDoc(null)} className="mt-4 px-6 py-2 bg-white/10 text-white rounded-xl text-sm font-bold hover:bg-white/20 transition-colors">Fermer</button>
-          </div>
-        </div>
-      )}
+  <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm" onClick={() => setViewDoc(null)}>
+    <div className="bg-slate-900 rounded-3xl p-6 border border-white/10 text-center animate-in zoom-in max-w-2xl w-full" onClick={e => e.stopPropagation()}>
+      
+      {/* عنوان النادي */}
+      <p className="text-white font-bold text-xl mb-4">Justificatif : {viewDoc.nomClub}</p>
+      
+      {/* عرض الصورة بلاصة الأيقونة والنص */}
+      <div className="relative overflow-hidden rounded-2xl bg-black/40 border border-white/5 shadow-2xl">
+        <img 
+          src={`http://localhost:5000/${viewDoc.justificatif.replace(/\\/g, '/')}`} 
+          alt="Justificatif Organisateur" 
+          className="w-full h-auto max-h-[70vh] object-contain mx-auto"
+          onError={(e) => {
+            e.target.src = "https://via.placeholder.com/400x300?text=Image+non+trouvée";
+            console.log("Erreur de chargement de l'image");
+          }}
+        />
+      </div>
+
+      {/* زر الإغلاق */}
+      <button 
+        onClick={() => setViewDoc(null)} 
+        className="mt-6 px-8 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-sm font-bold transition-all shadow-lg shadow-orange-500/20"
+      >
+        Fermer
+      </button>
+    </div>
+  </div>
+)}
 
       {/* Modal - Reject */}
       {rejectTarget && (
