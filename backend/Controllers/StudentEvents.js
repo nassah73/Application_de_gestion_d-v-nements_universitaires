@@ -68,7 +68,7 @@ const My_registers = async (req, res) => {
 
         
         if (registrations.length === 0) {
-            return res.status(200).json({ message: "Vous n'avez pas encore d'événements inscrits" });
+            res.status(200).json(registrations);
         }
 
         res.status(200).json(registrations);

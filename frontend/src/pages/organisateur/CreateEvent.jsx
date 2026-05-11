@@ -123,7 +123,7 @@ const CreateEvent = ({ setActiveTab }) => {
                     <option value="Culturel">Culturel</option>
                     <option value="Sportif">Sportif</option>
                     <option value="Économique">Économique</option>
-                    <option value="Art et Design">الشريعة</option>
+                    <option value="الشريعة">الشريعة</option>
                     <option value="Environnement">Environnement</option>
                     <option value="Développement personnel">Développement personnel</option>
                     <option value="Social">Social</option>
