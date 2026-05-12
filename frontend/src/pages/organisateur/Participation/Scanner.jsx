@@ -12,10 +12,11 @@ import {
   Zap,
   Maximize2
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const QRScanner = () => {
   const navigate = useNavigate();
+  const { eventId } = useParams();
   const [scanResult, setScanResult] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   

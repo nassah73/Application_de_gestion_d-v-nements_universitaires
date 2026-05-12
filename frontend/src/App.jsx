@@ -71,6 +71,7 @@ function App() {
       <Route path="/organisateur/participants/:eventId" element={<ParticipantList />} />
       <Route path="/organisateur/participants/liste" element={<ParticipantList />} />
       <Route path="/organisateur/scanner" element={<Scanner />} />
+      <Route path="/student/Scanner/:eventId" element={<Scanner />} />
       <Route path="/organisateur/equipe" element={<StaffManager />} />
 
       {/* --- Administration Routes --- */}

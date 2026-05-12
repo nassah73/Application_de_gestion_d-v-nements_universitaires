@@ -1,33 +1,41 @@
 import Navbar from "../../assets/NavBar";
 import React from 'react';
 import axios from 'axios';
-import { Calendar, Clock, Users, Trash2, Ticket } from 'lucide-react';
+import { Calendar, Clock, Users, Trash2, Ticket, ScanQrCode } from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from 'react-router-dom';
 
 const MyEvents = () => {
   const [eventsList, setEventsList] = React.useState([]);
+  const [staffOrganizerId, setStaffOrganizerId] = React.useState(null); // ID de l'organisateur pour lequel l'étudiant est staff
+  const navigate = useNavigate();
 
   React.useEffect(() => {
-  const getMyEvent = async () => {
-    try {
-      const userString = localStorage.getItem('user');
-      if (!userString) return;
-      const user = JSON.parse(userString);
-      
-      const res = await axios.get(`http://localhost:5000/Event/My_registers/${user._id}`);
-      
-      
-      const validEvents = Array.isArray(res.data) 
-        ? res.data.filter(reg => reg.event !== null) 
-        : [];
+    const fetchData = async () => {
+      try {
+        const userString = localStorage.getItem('user');
+        if (!userString) return;
+        const user = JSON.parse(userString);
+        
+        // 1. جلب الأحداث اللي مسجل فيها الطالب
+        const resEvents = await axios.get(`http://localhost:5000/Event/My_registers/${user._id}`);
+        const validEvents = Array.isArray(resEvents.data) 
+          ? resEvents.data.filter(reg => reg.event !== null) 
+          : [];
+        setEventsList(validEvents);
 
-      setEventsList(validEvents);
-    } catch (error) {
-      console.error("Error fetching events:", error);
-    }
-  };
-  getMyEvent();
-}, []);
+        // 2. التحقق من وضعية الـ Staff - récupérer l'ID de l'organisateur
+        const resStaff = await axios.get(`http://localhost:5000/organisateur/check-staff/${user._id}`);
+        if (resStaff.data.isStaff) {
+          setStaffOrganizerId(resStaff.data.organizerId);
+        }
+
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleDelete = async (id) => {
     try {
@@ -38,7 +46,6 @@ const MyEvents = () => {
     }
   };
 
-  // Variants بسيطة ومضمونة
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
     visible: { y: 0, opacity: 1 }
@@ -101,7 +108,6 @@ const MyEvents = () => {
                           
                           <h3 className="text-2xl font-bold mb-2">{eventData.title}</h3>
                           
-                          {/* Organizer Info */}
                           <p className="text-slate-400 text-sm mb-4">
                             Organisé par: <span className="text-[#cd7329] font-semibold">
                               {eventData.organizer?.nom || "Non spécifié"} {eventData.organizer?.prenom || ""}
@@ -129,6 +135,24 @@ const MyEvents = () => {
                               <span>{eventData.location || "N/A"}</span>
                             </div>
                           </div>
+
+                          {/* Le bouton de scan n'apparaît que pour les événements de l'organisateur qui a accepté l'étudiant */}
+                          {staffOrganizerId && eventData.organizer?._id === staffOrganizerId && (
+                            <div className="mt-auto pt-4 border-t border-white/10 flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-green-500">Accès Scanner Activé</span>
+                              </div>
+                              <button 
+                                onClick={() => navigate(`/student/Scanner/${eventData._id}`)}
+                                className="flex items-center gap-2 bg-[#cd7329] hover:bg-orange-600 text-white px-6 py-2 rounded-xl font-bold text-xs transition-all shadow-lg shadow-orange-500/20"
+                              >
+                                <ScanQrCode size={16} />
+                                Scanner les présences
+                              </button>
+                            </div>
+                          )}
+
                         </div>
                       </div>
                     </motion.div>

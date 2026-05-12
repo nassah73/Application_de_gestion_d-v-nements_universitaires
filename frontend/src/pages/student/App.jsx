@@ -18,6 +18,8 @@ export default function App() {
         <Route path="Annencement" element={<Annencement />} />
         <Route path="Analityc" element={<Analityc />} />
         <Route path="/" element={<Navigate to="Home" />} />
+        
+        
       </Routes>
    
  

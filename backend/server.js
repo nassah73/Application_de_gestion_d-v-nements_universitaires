@@ -58,6 +58,7 @@ const startServer = async () => {
      const newsRoutes = require('./Routes/NewsRoutes');
     app.use('/api/students', studentRoutes);
     app.use('/api/organisateurs', organisateurRoutes);
+    app.use('/organisateur', organisateurRoutes); // Ajout du préfixe demandé par l'utilisateur
     app.use('/api/administration', administrationRoutes); 
     app.use('/api/administrateur', administrateurRoutes);
     app.use('/api/auth', authRoutes);

@@ -13,5 +13,6 @@ router.post('/request-staff', organisateurController.sendStaffRequest);
 router.get('/staff-requests/:organizerId', organisateurController.getStaffRequests);
 router.post('/respond-staff-request', organisateurController.respondToStaffRequest);
 router.get('/check-staff-status/:studentId', organisateurController.checkStaffStatus);
+router.get('/check-staff/:studentId', organisateurController.checkStaffStatus); // Alias demandé par l'utilisateur
 
 module.exports = router;
