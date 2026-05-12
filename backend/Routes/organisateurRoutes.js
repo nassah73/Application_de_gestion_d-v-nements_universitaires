@@ -8,4 +8,10 @@ router.post('/add-staff', organisateurController.addStaff);
 router.get('/staff/:organizerId', organisateurController.getStaff);
 router.delete('/staff/:organizerId/:studentId', organisateurController.removeStaff);
 
+// Nouvelles routes pour les demandes de staff
+router.post('/request-staff', organisateurController.sendStaffRequest);
+router.get('/staff-requests/:organizerId', organisateurController.getStaffRequests);
+router.post('/respond-staff-request', organisateurController.respondToStaffRequest);
+router.get('/check-staff-status/:studentId', organisateurController.checkStaffStatus);
+
 module.exports = router;

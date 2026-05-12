@@ -14,6 +14,11 @@ const organisateurSchema = new mongoose.Schema({
         student: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
         addedAt: { type: Date, default: Date.now }
     }],
+    staffRequests: [{
+        student: { type: mongoose.Schema.Types.ObjectId, ref: 'Student' },
+        status: { type: String, enum: ['en attente', 'accepté', 'refusé'], default: 'en attente' },
+        requestedAt: { type: Date, default: Date.now }
+    }],
     resetOTP: { type: String },
     resetOTPExpires: { type: Date }
 });

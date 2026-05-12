@@ -1,4 +1,5 @@
 const Events_db =require('../models/Event')
+const Organisateur = require('../models/Organisateur');
 
 const Student_Events= async(req,res)=>{
     try{
@@ -41,8 +42,30 @@ const setMyEvent = async (req, res) => {
         
         await newRegistration.save();
 
+        // LOGIQUE SUPPLÉMENTAIRE POUR LE VOLONTARIAT
+        if (type === 'volunteer') {
+            const event = await Events_db.findById(eventId);
+            if (event && event.organizer) {
+                const organizer = await Organisateur.findById(event.organizer);
+                if (organizer) {
+                    // Vérifier si une demande existe déjà pour éviter les doublons dans staffRequests
+                    const alreadyRequested = organizer.staffRequests.find(
+                        r => r.student.toString() === studentId && r.status === 'en attente'
+                    );
+                    
+                    if (!alreadyRequested) {
+                        organizer.staffRequests.push({ 
+                            student: studentId, 
+                            status: 'en attente' 
+                        });
+                        await organizer.save();
+                    }
+                }
+            }
+        }
+
         return res.status(201).json({ 
-            message: "Inscription réussie", 
+            message: type === 'volunteer' ? "Demande de volontariat envoyée à l'organisateur" : "Inscription réussie", 
             registration: newRegistration 
         });
 

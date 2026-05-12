@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import OrgSidebar from '../components/OrgSidebar';
 import OrgNavbar from '../components/OrgNavbar';
+import axios from 'axios';
 import { 
   Users, 
   UserPlus, 
@@ -17,28 +18,71 @@ import { useNavigate } from 'react-router-dom';
 
 const StaffManager = () => {
   const navigate = useNavigate();
-  // 1. Liste des demandes (En attente)
-  const [requests, setRequests] = useState([
-    { id: 101, name: 'Yassine', email: 'yassine@edu.uiz.ac.ma', role: 'Logistique' },
-    { id: 102, name: 'Sara', email: 'sara@edu.uiz.ac.ma', role: 'Communication' }
-  ]);
+  const [requests, setRequests] = useState([]);
+  const [team, setTeam] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // 2. Liste de l'équipe acceptée
-  const [team, setTeam] = useState([
-    { id: 1, name: 'Ahmed', email: 'ahmed@uiz.ac.ma', role: 'Responsable Staff' }
-  ]);
+  const userString = localStorage.getItem('user');
+  const user = userString ? JSON.parse(userString) : null;
+  const organizerId = user ? user._id : null;
 
-  const handleAccept = (req) => {
-    setTeam([...team, req]);
-    setRequests(requests.filter(item => item.id !== req.id));
+  useEffect(() => {
+    if (organizerId) {
+      fetchData();
+    }
+  }, [organizerId]);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const [requestsRes, teamRes] = await Promise.all([
+        axios.get(`http://localhost:5000/api/organisateurs/staff-requests/${organizerId}`),
+        axios.get(`http://localhost:5000/api/organisateurs/staff/${organizerId}`)
+      ]);
+      setRequests(requestsRes.data);
+      setTeam(teamRes.data);
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleReject = (id) => {
-    setRequests(requests.filter(item => item.id !== id));
+  const handleAccept = async (studentId) => {
+    try {
+      await axios.post('http://localhost:5000/api/organisateurs/respond-staff-request', {
+        organizerId,
+        studentId,
+        action: 'accept'
+      });
+      fetchData(); // Recharger les données
+    } catch (error) {
+      alert("Erreur lors de l'acceptation de la demande");
+    }
   };
 
-  const handleDeleteMember = (id) => {
-    setTeam(team.filter(member => member.id !== id));
+  const handleReject = async (studentId) => {
+    try {
+      await axios.post('http://localhost:5000/api/organisateurs/respond-staff-request', {
+        organizerId,
+        studentId,
+        action: 'reject'
+      });
+      fetchData(); // Recharger les données
+    } catch (error) {
+      alert("Erreur lors du refus de la demande");
+    }
+  };
+
+  const handleDeleteMember = async (studentId) => {
+    if (window.confirm("Êtes-vous sûr de vouloir retirer ce membre de l'équipe ?")) {
+      try {
+        await axios.delete(`http://localhost:5000/api/organisateurs/staff/${organizerId}/${studentId}`);
+        fetchData(); // Recharger les données
+      } catch (error) {
+        alert("Erreur lors de la suppression du membre");
+      }
+    }
   };
 
   return (
@@ -87,32 +131,34 @@ const StaffManager = () => {
                   <h2 className="text-lg font-black text-white uppercase tracking-wider">Demandes en attente</h2>
                 </div>
                 
-                {requests.length > 0 ? (
+                {loading ? (
+                  <div className="py-10 text-center text-white/20">Chargement...</div>
+                ) : requests.length > 0 ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {requests.map(req => (
-                      <div key={req.id} className="p-5 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-all group">
+                      <div key={req._id} className="p-5 rounded-2xl border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] transition-all group">
                         <div className="flex items-center justify-between mb-4">
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-500/20 to-yellow-600/10 flex items-center justify-center border border-yellow-500/20">
-                              <span className="text-yellow-500 font-black text-sm uppercase">{req.name.charAt(0)}</span>
+                              <span className="text-yellow-500 font-black text-sm uppercase">{req.student?.fullName?.charAt(0)}</span>
                             </div>
                             <div>
-                              <div className="text-sm font-bold text-white uppercase tracking-tight">{req.name}</div>
-                              <div className="text-[10px] text-white/30 font-black uppercase tracking-widest">{req.role}</div>
+                              <div className="text-sm font-bold text-white uppercase tracking-tight">{req.student?.fullName}</div>
+                              <div className="text-[10px] text-white/30 font-black uppercase tracking-widest">CNE: {req.student?.cne}</div>
                             </div>
                           </div>
                           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button onClick={() => handleAccept(req)} className="p-2 rounded-lg bg-green-500/10 text-green-500 hover:bg-green-500 hover:text-white transition-all">
+                            <button onClick={() => handleAccept(req.student?._id)} className="p-2 rounded-lg bg-green-500/10 text-green-500 hover:bg-green-500 hover:text-white transition-all">
                               <CheckCircle2 size={16} />
                             </button>
-                            <button onClick={() => handleReject(req.id)} className="p-2 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all">
+                            <button onClick={() => handleReject(req.student?._id)} className="p-2 rounded-lg bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all">
                               <XCircle size={16} />
                             </button>
                           </div>
                         </div>
                         <div className="flex items-center gap-2 text-white/40 text-xs">
                           <Mail size={12} className="text-orange-500/50" />
-                          {req.email}
+                          {req.student?.email}
                         </div>
                       </div>
                     ))}
@@ -137,32 +183,32 @@ const StaffManager = () => {
                       <tr className="bg-white/[0.03] border-b border-white/5">
                         <th className="px-6 py-4 text-[10px] font-black text-white/30 uppercase tracking-[0.2em]">Membre</th>
                         <th className="px-6 py-4 text-[10px] font-black text-white/30 uppercase tracking-[0.2em]">Email</th>
-                        <th className="px-6 py-4 text-[10px] font-black text-white/30 uppercase tracking-[0.2em]">Rôle</th>
+                        <th className="px-6 py-4 text-[10px] font-black text-white/30 uppercase tracking-[0.2em]">CNE</th>
                         <th className="px-6 py-4 text-right text-[10px] font-black text-white/30 uppercase tracking-[0.2em]">Action</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/5">
                       {team.map(member => (
-                        <tr key={member.id} className="hover:bg-white/[0.02] transition-colors group">
+                        <tr key={member._id} className="hover:bg-white/[0.02] transition-colors group">
                           <td className="px-6 py-4">
                             <div className="flex items-center gap-3">
                               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500/20 to-orange-600/10 flex items-center justify-center border border-orange-500/20">
-                                <span className="text-orange-500 font-black text-xs uppercase">{member.name.charAt(0)}</span>
+                                <span className="text-orange-500 font-black text-xs uppercase">{member.student?.fullName?.charAt(0)}</span>
                               </div>
-                              <span className="text-sm font-bold text-white uppercase tracking-tight">{member.name}</span>
+                              <span className="text-sm font-bold text-white uppercase tracking-tight">{member.student?.fullName}</span>
                             </div>
                           </td>
                           <td className="px-6 py-4">
-                            <span className="text-sm text-white/40 font-medium">{member.email}</span>
+                            <span className="text-sm text-white/40 font-medium">{member.student?.email}</span>
                           </td>
                           <td className="px-6 py-4">
                             <span className="px-2 py-1 rounded-md bg-blue-500/10 text-blue-400 text-[10px] font-black uppercase tracking-widest border border-blue-500/20">
-                              {member.role}
+                              {member.student?.cne}
                             </span>
                           </td>
                           <td className="px-6 py-4 text-right">
                             <button 
-                              onClick={() => handleDeleteMember(member.id)}
+                              onClick={() => handleDeleteMember(member.student?._id)}
                               className="p-2 rounded-lg text-white/20 hover:text-red-500 hover:bg-red-500/10 transition-all opacity-0 group-hover:opacity-100"
                             >
                               <Trash2 size={16} />
@@ -172,6 +218,11 @@ const StaffManager = () => {
                       ))}
                     </tbody>
                   </table>
+                  {!loading && team.length === 0 && (
+                    <div className="p-10 text-center text-white/20 italic">
+                      L'équipe est vide. Acceptez des volontaires pour commencer.
+                    </div>
+                  )}
                 </div>
               </section>
 

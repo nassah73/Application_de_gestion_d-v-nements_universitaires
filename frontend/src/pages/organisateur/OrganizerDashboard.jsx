@@ -77,6 +77,15 @@ const OrganizerDashboard = () => {
               </h1>
               <p className="text-gray-500 mt-2 font-medium">Bienvenue sur votre espace de gestion d'événements UIZ.</p>
             </div>
+            <div className="flex gap-3">
+              <button 
+                onClick={() => navigate('/organisateur/equipe')}
+                className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-orange-500 text-white font-bold text-sm hover:bg-orange-600 transition-all shadow-lg shadow-orange-500/20"
+              >
+                <Users size={18} />
+                Gérer l'Équipe
+              </button>
+            </div>
             
           </div>
 
