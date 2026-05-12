@@ -58,7 +58,7 @@ const ParticipantsTable = ({ participants = [] }) => {
           <tbody className="divide-y divide-white/5">
             {participants.map((participant, index) => {
               const student = participant.student || {};
-              const isPresent = participant.status === 'present';
+              const isPresent = participant.attendanceStatus === 'present';
               
               return (
                 <tr key={index} className="hover:bg-white/[0.02] transition-colors group">
@@ -66,17 +66,12 @@ const ParticipantsTable = ({ participants = [] }) => {
                     <div className="flex items-center">
                       <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500/20 to-orange-600/10 flex items-center justify-center border border-orange-500/20 group-hover:scale-110 transition-transform">
                         <span className="text-orange-500 font-black text-sm uppercase">
-                          {student.firstName?.charAt(0) || '?'}{student.lastName?.charAt(0) || ''}
+                          {student.fullName?.charAt(0) || '?'}
                         </span>
                       </div>
                       <div className="ml-4">
                         <div className="text-sm font-bold text-white uppercase tracking-tight">
-                          {student.firstName && student.lastName 
-                            ? `${student.firstName} ${student.lastName}` 
-                            : 'Non spécifié'}
-                        </div>
-                        <div className="text-xs text-white/30 font-medium">
-                          {student.studentCardNumber || 'No Card ID'}
+                          {student.fullName || 'Non spécifié'}
                         </div>
                       </div>
                     </div>
@@ -87,7 +82,7 @@ const ParticipantsTable = ({ participants = [] }) => {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-white/40 font-medium">
-                    {participant.registeredAt ? formatDate(participant.registeredAt) : '-'}
+                    {participant.registrationDate ? formatDate(participant.registrationDate) : '-'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border transition-all ${

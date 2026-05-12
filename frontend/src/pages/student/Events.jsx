@@ -3,6 +3,7 @@ import { X, MapPin, CalendarCheck, Clock, Search, UserCircle } from 'lucide-reac
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import axios from 'axios'
+import { Link, useNavigate } from 'react-router-dom';
 
 export default function Main() {
     const [Events, setEvents] = useState([])
@@ -10,6 +11,7 @@ export default function Main() {
     const [form, setform] = useState(false)
     const [selectedEvent, setSelectedEvent] = useState(null);
     const [category, setcategory] = useState('all')
+    const navigate = useNavigate();
 
     const handleCategoryChange = (e) => {
         setcategory(e.target.value);
@@ -17,13 +19,9 @@ export default function Main() {
 
     const filterObjet = category === 'all' ? Events : Events.filter((items) => items.category === category)
 
-    const handelForm = (item) => {
-      console.log("--- Check Event Details ---");
-    console.log("Title:", item.title);
-    console.log("Needs Help Value:", item.needsHelp);
-        setSelectedEvent(item)
-
-        setform(!form)
+    const handelForm = (e, item) => {
+        if (e) e.stopPropagation();
+        navigate(`/app/Event/${item._id}`);
     }
 
     useEffect(() => {
@@ -122,10 +120,16 @@ export default function Main() {
                                                     <p className="flex gap-3"><CalendarCheck size={18} className="text-[#cd7329]"/><span>{formattedDate}</span></p>
                                                     <p className="flex gap-3"><MapPin size={18} className="text-[#cd7329]"/><span>{item.location}</span></p>
                                                     <p className="flex gap-3"><Clock size={18} className="text-[#cd7329]"/>{formattedTime}</p>
-                                                    <p className="flex gap-3"><UserCircle size={18} className="text-[#cd7329]"/>{item.organizer?.prenom + ' ' + item.organizer?.nom || "Chargement..."}</p>
+                                                    <Link 
+                                                        to={`/app/OrganizerEvents/${item.organizer?._id}`}
+                                                        className="flex gap-3 hover:text-[#cd7329] transition-colors"
+                                                    >
+                                                        <UserCircle size={18} className="text-[#cd7329]"/>
+                                                        {item.organizer?.prenom + ' ' + item.organizer?.nom || "Chargement..."}
+                                                    </Link>
                                                 </div>
                                             </nav>
-                                            <button className="bg-white/10 backdrop-blur-md border border-white/20 text-[#cd7329] font-bold w-[90%] mx-[5%] h-10 absolute bottom-0 rounded-xl hover:bg-[#cd7329] hover:text-white transition-all cursor-pointer" onClick={() => handelForm(item)}>Check Details</button>
+                                            <button className="bg-white/10 backdrop-blur-md border border-white/20 text-[#cd7329] font-bold w-[90%] mx-[5%] h-10 absolute bottom-0 rounded-xl hover:bg-[#cd7329] hover:text-white transition-all cursor-pointer" onClick={(e) => handelForm(e, item)}>Check Details</button>
                                         </div>
                                     </motion.div>
                                 )
@@ -149,7 +153,8 @@ export default function Main() {
                                 <div className="md:col-span-2 space-y-4">
                                     <h2 className="text-3xl font-bold text-white uppercase italic">{selectedEvent.title}</h2>
                                     <div className="flex flex-wrap gap-4 text-slate-300 text-sm">
-                                        <span className="flex items-center gap-2"><CalendarCheck size={16} className="text-[#cd7329]"/> {selectedEvent.date}</span>
+                                        <span className="flex items-center gap-2"><CalendarCheck size={16} className="text-[#cd7329]"/> {new Date(selectedEvent.date).toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                                        <span className="flex items-center gap-2"><Clock size={16} className="text-[#cd7329]"/> {new Date(selectedEvent.date).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</span>
                                         <span className="flex items-center gap-2"><MapPin size={16} className="text-[#cd7329]"/> {selectedEvent.location}</span>
                                     </div>
                                     <hr className="border-white/5" />

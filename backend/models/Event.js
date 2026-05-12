@@ -24,7 +24,17 @@ const EventSchema = new mongoose.Schema({
     },
     
     organizer: { type: mongoose.Schema.Types.ObjectId, ref: 'Organisateur' }, 
-    createdAt: { type: Date, default: Date.now }
+    createdAt: { type: Date, default: Date.now },
+    
+    // Administration fields
+    modifiedTitle: { type: String },
+    modifiedDescription: { type: String },
+    modifiedCategory: { type: String },
+    modifiedCapacity: { type: Number },
+    modifiedDate: { type: Date },
+    modifiedLocation: { type: String },
+    modifiedRegistrationLink: { type: String },
+    rejectionReason: { type: String }
 });
 
 const Event = mongoose.models.Event || mongoose.model('Event', EventSchema);

@@ -54,11 +54,27 @@ const OrganizerDashboard = () => {
     },
   ];
 
-  const recentEvents = [
-    { id: 1, title: 'Science Fair 2026', date: '15 Mai 2026', participants: 120, status: 'Bientôt' },
-    { id: 2, title: 'Hackathon UIZ', date: '20 Juin 2026', participants: 85, status: 'En attente' },
-    { id: 3, title: 'Cultural Night', date: '10 Juillet 2026', participants: 250, status: 'Validé' },
-  ];
+  const [recentEvents, setRecentEvents] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const organizerId = user._id || user.id;
+        if (!organizerId) return;
+
+        const res = await fetch(`http://localhost:5000/Event/organizer/${organizerId}`);
+        const data = await res.json();
+        setRecentEvents(data.slice(0, 3));
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStats();
+  }, []);
 
   return (
     <div className="flex h-screen overflow-hidden font-sans bg-[#0f172a]">
@@ -132,24 +148,34 @@ const OrganizerDashboard = () => {
               
               <div className="space-y-4">
                 {recentEvents.map((event) => (
-                  <div key={event.id} className="group flex items-center justify-between p-5 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] hover:border-white/10 transition-all duration-300">
+                  <div 
+                    key={event._id} 
+                    onClick={() => navigate(`/organisateur/events/${event._id}`)}
+                    className="group flex items-center justify-between p-5 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.05] hover:border-white/10 transition-all duration-300 cursor-pointer"
+                  >
                     <div className="flex items-center gap-4">
                       <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500 font-bold border border-orange-500/20 group-hover:scale-110 transition-transform">
-                        <Calendar size={20} />
+                        {event.coverImage ? (
+                          <img src={`http://localhost:5000/${event.coverImage}`} alt="" className="w-full h-full object-cover rounded-xl" />
+                        ) : (
+                          <Calendar size={20} />
+                        )}
                       </div>
                       <div>
                         <h3 className="text-sm font-bold text-white mb-0.5">{event.title}</h3>
-                        <p className="text-xs text-gray-500 font-medium">{event.date} • {event.participants} Participants</p>
+                        <p className="text-xs text-gray-500 font-medium">
+                          {new Date(event.date).toLocaleDateString('fr-FR')} • {event.location}
+                        </p>
                       </div>
                     </div>
                     <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border ${
-                      event.status === 'Validé' 
+                      event.status === 'approved' 
                         ? 'bg-green-500/10 text-green-400 border-green-500/20' 
-                        : event.status === 'Bientôt'
-                        ? 'bg-blue-500/10 text-blue-400 border-blue-500/20'
-                        : 'bg-orange-500/10 text-orange-400 border-orange-500/20'
+                        : event.status === 'pending'
+                        ? 'bg-orange-500/10 text-orange-400 border-orange-500/20'
+                        : 'bg-red-500/10 text-red-400 border-red-500/20'
                     }`}>
-                      {event.status}
+                      {event.status === 'approved' ? 'Validé' : event.status === 'pending' ? 'En cours' : 'Refusé'}
                     </span>
                   </div>
                 ))}

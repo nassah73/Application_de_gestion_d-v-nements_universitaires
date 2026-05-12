@@ -39,8 +39,8 @@ const Events = () => {
   }, []);
 
   const filteredEvents = events.filter(event => {
-    const matchesSearch = event.titre?.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          event.lieu?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = event.title?.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          event.location?.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFilter = filterStatus === 'all' || event.status === filterStatus;
     return matchesSearch && matchesFilter;
   });

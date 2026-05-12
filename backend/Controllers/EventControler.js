@@ -13,6 +13,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage }).single('coverImage');
 
 const Event = require('../models/Event');
+const Registration = require('../models/My_Events');
 
 const CreateEvent = (req, res) => {
     upload(req, res, async (err) => {
@@ -64,21 +65,19 @@ const GetOrganizerEvents = async (req, res) => {
 const MarkAttendance = async (req, res) => {
     try {
         const { eventId, studentId } = req.body;
-        const event = await Event.findById(eventId);
-        if (!event) return res.status(404).json({ message: "Evenement non trouve" });
-
-        const participant = event.participants.find(p => p.student.toString() === studentId);
-        if (!participant) {
+        
+        const registration = await Registration.findOne({ event: eventId, student: studentId });
+        if (!registration) {
             return res.status(404).json({ message: "Etudiant non inscrit a cet evenement" });
         }
 
-        if (participant.status === 'present') {
+        if (registration.attendanceStatus === 'present') {
             return res.status(400).json({ message: "Etudiant deja marque comme present" });
         }
 
-        participant.status = 'present';
-        participant.presentAt = new Date();
-        await event.save();
+        registration.attendanceStatus = 'present';
+        registration.presentAt = new Date();
+        await registration.save();
 
         res.status(200).json({ message: "Presence validee avec succes !" });
     } catch (error) {
@@ -92,10 +91,13 @@ const GetOrganizerStats = async (req, res) => {
         const events = await Event.find({ organizer: organizerId });
 
         const totalEvents = events.length;
-        const totalInscriptions = events.reduce((acc, curr) => acc + curr.participants.length, 0);
-        const totalPresent = events.reduce((acc, curr) => 
-            acc + curr.participants.filter(p => p.status === 'present').length, 0
-        );
+        
+        // Get all registrations for these events
+        const eventIds = events.map(e => e._id);
+        const registrations = await Registration.find({ event: { $in: eventIds } });
+
+        const totalInscriptions = registrations.length;
+        const totalPresent = registrations.filter(r => r.attendanceStatus === 'present').length;
 
         const stats = {
             totalEvents,
@@ -104,8 +106,8 @@ const GetOrganizerStats = async (req, res) => {
             attendanceRate: totalInscriptions > 0 ? (totalPresent / totalInscriptions * 100).toFixed(1) : 0,
             events: events.map(e => ({
                 title: e.title,
-                inscriptions: e.participants.length,
-                presents: e.participants.filter(p => p.status === 'present').length
+                inscriptions: registrations.filter(r => r.event.toString() === e._id.toString()).length,
+                presents: registrations.filter(r => r.event.toString() === e._id.toString() && r.attendanceStatus === 'present').length
             }))
         };
 
@@ -141,15 +143,21 @@ const DeleteEvent = async (req, res) => {
 const GetEventById = async (req, res) => {
     try {
         const { id } = req.params;
-        const event = await Event.findById(id)
-            .populate('participants.student', 'firstName lastName email');
+        const event = await Event.findById(id).lean();
         
         if (!event) {
             return res.status(404).json({ message: "Evenement non trouve" });
         }
+
+        // Fetch participants from Registration model
+        const participants = await Registration.find({ event: id })
+            .populate('student', 'fullName email'); 
+        
+        event.participants = participants;
         
         res.status(200).json(event);
     } catch (error) {
+        console.error("Error in GetEventById:", error);
         res.status(500).json({ message: "Erreur lors de la recuperation de l'evenement" });
     }
 };
