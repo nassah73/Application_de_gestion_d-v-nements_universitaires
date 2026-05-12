@@ -1,9 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Bell, Send, AlertTriangle, Info, Type, FileText, 
-  FileUp, Megaphone, Stars, Clock, X
+  Send, AlertTriangle, FileText, 
+  FileUp, Megaphone, Stars, Clock, X, Type 
 } from 'lucide-react';
+import axios from 'axios';
 
 export default function NewsManager() {
   const fileInputRef = useRef(null);
@@ -26,25 +27,61 @@ export default function NewsManager() {
     if (file && file.type === "application/pdf") {
       setSelectedFile(file);
     } else {
-      alert("Please upload a PDF file");
+      alert("Please upload a valid PDF file");
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!category || !newsData.title) {
+      alert("Please select a category and enter a title");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('title', newsData.title);
+    formData.append('description', newsData.description);
+    formData.append('category', category); 
+    
+    if (selectedFile) {
+      formData.append('pdfFile', selectedFile); 
+    }
+
+    try {
+      const response = await axios.post('http://localhost:5000/api/news/add', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+        withCredentials: true 
+      });
+
+      if (response.status === 201) {
+        alert("✅ Announcement published successfully!");
+        // Reset Form
+        setNewsData({ title: '', description: '' });
+        setSelectedFile(null);
+        setCategory('');
+      }
+    } catch (error) {
+      console.error("Error publishing news:", error);
+      alert("❌ Error: " + (error.response?.data?.error || "Server error"));
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#0f1117] text-white p-6 pt-10 font-sans">
+    <div className="min-h-screen bg-[#0f1117] text-white p-6 pt-10 font-sans text-left">
       <div className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         {/* --- FORM SECTION --- */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }} 
           animate={{ opacity: 1, y: 0 }}
-          className="lg:col-span-7 bg-[#1a1f2e] border border-white/10 rounded-[2.5rem] p-8 shadow-2xl text-left"
+          className="lg:col-span-7 bg-[#1a1f2e] border border-white/10 rounded-[2.5rem] p-8 shadow-2xl"
         >
           <h2 className="text-2xl font-bold mb-8 flex items-center gap-3 text-[#f97316]">
             <Megaphone /> Broadcast Hub
           </h2>
 
-          <div className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Selection de Catégorie */}
             <div className="space-y-3">
               <label className="text-sm font-semibold text-slate-400">What are you broadcasting?</label>
@@ -52,6 +89,7 @@ export default function NewsManager() {
                 {Object.keys(categoryConfigs).map((cat) => (
                   <button
                     key={cat}
+                    type="button"
                     onClick={() => { setCategory(cat); setSelectedFile(null); }}
                     className={`p-4 rounded-2xl border text-xs font-black uppercase transition-all flex items-center justify-between ${category === cat ? 'bg-[#f97316] border-[#f97316] text-white shadow-lg shadow-[#f97316]/20' : 'bg-white/5 border-white/10 text-slate-400 hover:bg-white/10'}`}
                   >
@@ -66,16 +104,18 @@ export default function NewsManager() {
               {category && (
                 <motion.div
                   key={category}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="space-y-6 pt-4 border-t border-white/5"
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="space-y-6 pt-4 border-t border-white/5 overflow-hidden"
                 >
-                  {/* Title & Description */}
                   <div className="space-y-4">
                     <div className="space-y-2">
                       <label className="text-sm text-slate-400 flex items-center gap-2"><Type size={14}/> Title</label>
                       <input 
                         type="text" 
+                        required
+                        value={newsData.title}
                         className="w-full bg-[#0f1117] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#f97316] transition-all"
                         placeholder={`Enter ${category} heading...`}
                         onChange={(e) => setNewsData({...newsData, title: e.target.value})}
@@ -85,13 +125,14 @@ export default function NewsManager() {
                       <label className="text-sm text-slate-400">Detailed Message</label>
                       <textarea 
                         rows="3" 
+                        value={newsData.description}
                         className="w-full bg-[#0f1117] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#f97316] transition-all"
+                        placeholder="Write your message here..."
                         onChange={(e) => setNewsData({...newsData, description: e.target.value})}
                       ></textarea>
                     </div>
                   </div>
 
-                  {/* --- PDF UPLOAD AREA (Shared by Urgent & Exam) --- */}
                   {(category === 'Urgent Alert' || category === 'Exam Schedule') && (
                     <div className="space-y-2">
                       <label className={`text-sm font-bold uppercase tracking-widest ${category === 'Urgent Alert' ? 'text-red-400' : 'text-orange-400'}`}>
@@ -105,7 +146,7 @@ export default function NewsManager() {
                         {selectedFile ? (
                           <div className="flex items-center gap-3 text-green-400">
                             <FileText size={24} />
-                            <span className="text-sm font-medium">{selectedFile.name}</span>
+                            <span className="text-sm font-medium truncate max-w-[200px]">{selectedFile.name}</span>
                             <X size={18} className="text-red-400 ml-2" onClick={(e) => { e.stopPropagation(); setSelectedFile(null); }} />
                           </div>
                         ) : (
@@ -118,13 +159,16 @@ export default function NewsManager() {
                     </div>
                   )}
 
-                  <button className="w-full bg-gradient-to-r from-[#f97316] to-[#fb923c] text-white font-black py-4 rounded-2xl shadow-xl hover:opacity-90 transition-all flex items-center justify-center gap-3">
+                  <button 
+                    type="submit" 
+                    className="w-full bg-gradient-to-r from-[#f97316] to-[#fb923c] text-white font-black py-4 rounded-2xl shadow-xl hover:opacity-90 transition-all flex items-center justify-center gap-3"
+                  >
                     <Send size={18} /> BROADCAST NOW
                   </button>
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
+          </form>
         </motion.div>
 
         {/* --- PREVIEW SECTION --- */}
@@ -138,7 +182,7 @@ export default function NewsManager() {
                 animate={{ scale: 1, opacity: 1 }}
                 className={`p-8 rounded-[2.5rem] border shadow-2xl relative ${categoryConfigs[category].bg} ${categoryConfigs[category].border}`}
               >
-                <div className={`absolute top-8 right-8 p-3 rounded-2xl ${category === 'Urgent Alert' ? 'bg-red-500 shadow-lg shadow-red-500/30' : 'bg-[#f97316]'} text-white`}>
+                <div className={`absolute top-8 right-8 p-3 rounded-2xl ${category === 'Urgent Alert' ? 'bg-red-500' : 'bg-[#f97316]'} text-white`}>
                   {categoryConfigs[category].icon}
                 </div>
 
@@ -152,9 +196,9 @@ export default function NewsManager() {
                   </p>
 
                   <div className="flex flex-col gap-3">
-                    <button className="w-full py-3 bg-[#f97316] text-white rounded-xl text-xs font-black shadow-lg">VIEW DETAILS</button>
+                    <button type="button" className="w-full py-3 bg-[#f97316] text-white rounded-xl text-xs font-black shadow-lg">VIEW DETAILS</button>
                     {selectedFile && (
-                      <button className="w-full py-3 bg-white/5 border border-white/10 text-white rounded-xl text-xs font-black flex items-center justify-center gap-2">
+                      <button type="button" className="w-full py-3 bg-white/5 border border-white/10 text-white rounded-xl text-xs font-black flex items-center justify-center gap-2">
                         <FileText size={14} className="text-red-400"/> DOWNLOAD ATTACHED PDF
                       </button>
                     )}
@@ -162,8 +206,8 @@ export default function NewsManager() {
                 </div>
               </motion.div>
             ) : (
-              <div className="h-64 border-2 border-dashed border-white/10 rounded-[2.5rem] flex items-center justify-center text-slate-600 font-bold uppercase text-xs tracking-widest">
-                Waiting for selection...
+              <div className="h-64 border-2 border-dashed border-white/10 rounded-[2.5rem] flex items-center justify-center text-slate-600 font-bold uppercase text-xs tracking-widest text-center px-6">
+                Select a category to see the live preview
               </div>
             )}
           </AnimatePresence>

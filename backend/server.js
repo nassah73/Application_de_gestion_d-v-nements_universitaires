@@ -55,6 +55,7 @@ const startServer = async () => {
     const authRoutes = require('./Routes/authRoutes');  
     const CreateEvent=require('./Routes/CreateEvent')
     const ValideEvent=require('./Routes/ValideEvents')
+     const newsRoutes = require('./Routes/NewsRoutes');
     app.use('/api/students', studentRoutes);
     app.use('/api/organisateurs', organisateurRoutes);
     app.use('/api/administration', administrationRoutes); 
@@ -62,6 +63,8 @@ const startServer = async () => {
     app.use('/api/auth', authRoutes);
     app.use('/Event', CreateEvent);
     app.use('/api/valide',ValideEvent)
+   
+app.use('/api/news', newsRoutes);
     
     app.use( '/api/administrateur',addAdmin)
     const csrfProtection = csrf({ cookie: true });
