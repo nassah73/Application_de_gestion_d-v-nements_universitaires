@@ -8,16 +8,17 @@ import {
 } from 'lucide-react';
 
 const CreateEvent = ({ setActiveTab }) => {
-  const [eventData, setEventData] = useState({
-    title: '',
-    description: '',
-    category: '',
-    date: '', 
-    time: '', 
-    location: '',
-    capacity: '',
-    registrationLink: ''
-  });
+ const [eventData, setEventData] = useState({
+  title: '',
+  description: '',
+  category: '',
+  date: '', 
+  time: '', 
+  location: '',
+  capacity: '',
+  registrationLink: '',
+  needsHelp: 'no', 
+});
 
   const [coverImage, setCoverImage] = useState({ url: null, rawFile: null });
   const fileInputRef = useRef(null);
@@ -37,52 +38,64 @@ const CreateEvent = ({ setActiveTab }) => {
     }
   };
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = new FormData();
-
-    // 1. إضافة البيانات النصية
-    Object.keys(eventData).forEach(key => {
-      // هنا كنتاكدوا ما نصيفطوش time كـ حقل مستقل للـ backend إلا كانت ما محتاجاهش
-      if (key !== 'time') {
-        data.append(key, eventData[key]);
-      }
-    });
-
-    // دمج التاريخ والوقت فمتغير واحد
-    const fullDateTime = `${eventData.date}T${eventData.time}:00`;
-    data.set('date', fullDateTime); // كنعوضو قيمة date المدمجة
-
-    // 2. إضافة الصورة
-    if (coverImage.rawFile) {
-      data.append('coverImage', coverImage.rawFile);
-    }
-
-    // 3. إضافة الـ Organizer
+    
+    // تأكد بلي الـ Organizer موجود قبل ما تبدا
     const user = JSON.parse(localStorage.getItem('user'));
     const organizerId = user?._id || user?.user?._id;
 
-    if (organizerId) {
-      data.append('organizer', organizerId);
-    } else {
-      alert("Session expirée. Veuillez vous reconnecter.");
-      return;
+    if (!organizerId) {
+        alert("Session expirée. Veuillez vous reconnecter.");
+        return;
     }
 
-    try {
-      const response = await axios.post('http://localhost:5000/Event/CreateEvent', data, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      
-      if (response.status === 201 || response.status === 200) {
-        alert("Événement créé avec succès !");
-        if(setActiveTab) setActiveTab('Tableau de Bord');
-      }
-    } catch (error) {
-      console.error("Erreur:", error.response?.data || error.message);
-      alert("Erreur lors de l'envoi des données.");
+    const data = new FormData();
+
+    // 1. إضافة الحقول النصية الأساسية يدوياً لضمان الدقة
+    data.append('title', eventData.title);
+    data.append('description', eventData.description);
+    data.append('category', eventData.category);
+    data.append('location', eventData.location);
+    data.append('capacity', eventData.capacity);
+    data.append('registrationLink', eventData.registrationLink || '');
+    
+    // هادي هي المهمة: كنصيفطو القيمة ديال needsHelp (yes/no)
+    data.append('needsHelp', eventData.needsHelp);
+
+    // 2. معالجة التاريخ والوقت
+    if (eventData.date && eventData.time) {
+        const fullDateTime = `${eventData.date}T${eventData.time}:00`;
+        data.append('date', fullDateTime);
     }
-  };
+
+    // 3. إضافة الصورة إذا وجدت
+    if (coverImage.rawFile) {
+        data.append('coverImage', coverImage.rawFile);
+    }
+
+    // 4. إضافة الـ Organizer ID
+    data.append('organizer', organizerId);
+
+    try {
+        // Log للتأكد فـ الكونسول قبل الإرسال
+        console.log("Envoi de needsHelp:", eventData.needsHelp);
+
+        const response = await axios.post('http://localhost:5000/Event/CreateEvent', data, {
+            headers: { 
+                'Content-Type': 'multipart/form-data' 
+            }
+        });
+        
+        if (response.status === 201 || response.status === 200) {
+            alert("Événement créé avec succès !");
+            if(setActiveTab) setActiveTab('Tableau de Bord');
+        }
+    } catch (error) {
+        console.error("Erreur Backend:", error.response?.data || error.message);
+        alert("Erreur lors de la création de l'événement.");
+    }
+};
 
   return (
     <div className="flex h-screen overflow-hidden font-sans bg-[#0f172a] text-white">
@@ -176,6 +189,44 @@ const CreateEvent = ({ setActiveTab }) => {
                   </div>
                 </div>
               </div>
+
+
+
+              {/* Needs Help Section */}
+              <div className="md:col-span-2 space-y-4 p-6 rounded-3xl bg-white/[0.02] border border-white/5">
+                <label className="text-xs font-black text-white/40 uppercase tracking-[0.2em] flex items-center gap-2">
+                  <Users size={14} className="text-orange-500" /> Besoin d'aide pour l'organisation ?
+                </label>
+                
+                <div className="flex gap-8">
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input 
+                      type="radio" 
+                      name="needsHelp" 
+                      value="yes" 
+                      checked={eventData.needsHelp === 'yes'}
+                      onChange={handleChange}
+                      className="w-5 h-5 accent-orange-500"
+                    />
+                    <span className="text-sm font-bold group-hover:text-orange-500 transition-colors">Oui</span>
+                  </label>
+
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input 
+                      type="radio" 
+                      name="needsHelp" 
+                      value="no" 
+                      checked={eventData.needsHelp === 'no'}
+                      onChange={handleChange}
+                      className="w-5 h-5 accent-orange-500"
+                    />
+                    <span className="text-sm font-bold group-hover:text-orange-500 transition-colors">Non</span>
+                  </label>
+                </div>
+
+               
+              </div>
+
 
               <button type="submit" className="w-full bg-orange-500 text-white font-black py-5 rounded-2xl hover:bg-orange-600 transition-all flex items-center justify-center gap-4 uppercase text-xs tracking-widest">
                 <Send size={18} /> Soumettre pour validation

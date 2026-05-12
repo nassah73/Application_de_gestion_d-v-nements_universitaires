@@ -21,7 +21,8 @@ const CreateEvent = (req, res) => {
         }
 
         try {
-            const { title, category, capacity, date, location, registrationLink, description, organizer } = req.body;
+            
+            const { title, category, capacity, date, location, registrationLink, description, organizer, needsHelp } = req.body;
 
             const newEvent = new Event({
                 title,
@@ -32,6 +33,7 @@ const CreateEvent = (req, res) => {
                 registrationLink,
                 description,
                 organizer,
+                needsHelp, 
                 coverImage: req.file ? req.file.path : null
             });
 

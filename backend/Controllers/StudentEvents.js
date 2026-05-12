@@ -21,9 +21,9 @@ const Registration = require('../models/My_Events');
 
 const setMyEvent = async (req, res) => {
     try {
-        const { studentId, eventId } = req.body; 
-
         
+        const { studentId, eventId, type } = req.body; 
+
         const existingRegistration = await Registration.findOne({ 
             student: studentId, 
             event: eventId 
@@ -33,10 +33,10 @@ const setMyEvent = async (req, res) => {
             return res.status(400).json({ message: "Vous êtes déjà inscrit à cet événement" });
         }
 
-       
         const newRegistration = new Registration({ 
             student: studentId, 
-            event: eventId 
+            event: eventId,
+            role: type || 'participant' 
         });
         
         await newRegistration.save();
