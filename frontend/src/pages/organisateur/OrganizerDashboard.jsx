@@ -228,13 +228,7 @@ const OrganizerDashboard = () => {
                 </div>
               </div>
 
-              {/* Stats Mini Card */}
-              <div className="p-6 rounded-[2rem] border border-white/5 bg-gradient-to-br from-orange-500 to-orange-600 text-white relative overflow-hidden shadow-2xl shadow-orange-500/20">
-                <div className="absolute top-[-20%] right-[-20%] w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-                <h3 className="text-lg font-black mb-1">Passer à Pro</h3>
-                <p className="text-xs text-white/70 font-medium mb-4">Gérez plus de 50 événements par mois.</p>
-                <button className="w-full py-2.5 bg-white text-orange-500 rounded-xl text-xs font-black uppercase tracking-wider hover:bg-orange-50 transition-colors">Découvrir</button>
-              </div>
+              
             </div>
           </div>
         </main>

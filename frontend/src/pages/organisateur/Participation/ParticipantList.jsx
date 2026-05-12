@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import OrgSidebar from '../components/OrgSidebar';
 import OrgNavbar from '../components/OrgNavbar';
 import ParticipantsTable from '../components/ParticipantsTable';
+import eventService from '../services/eventService';
 import { 
   Users, 
   Search, 
@@ -10,35 +13,64 @@ import {
   ArrowLeft,
   FileSpreadsheet
 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const ParticipantList = () => {
   const navigate = useNavigate();
+  const { eventId } = useParams();
   const [searchTerm, setSearchTerm] = useState('');
+  const [participants, setParticipants] = useState([]);
+  const [event, setEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Mock data for demonstration
-  const mockParticipants = [
-    {
-      student: {
-        firstName: 'Ahmed',
-        lastName: 'Alami',
-        email: 'ahmed.alami@uiz.ac.ma',
-        studentCardNumber: 'S123456'
-      },
-      registeredAt: '2024-05-20T10:30:00',
-      status: 'present'
-    },
-    {
-      student: {
-        firstName: 'Sara',
-        lastName: 'Benali',
-        email: 'sara.benali@uiz.ac.ma',
-        studentCardNumber: 'S789012'
-      },
-      registeredAt: '2024-05-21T14:15:00',
-      status: 'pending'
+  useEffect(() => {
+    const fetchParticipants = async () => {
+      try {
+        if (!eventId) return;
+        const data = await eventService.getEventById(eventId);
+        setEvent(data);
+        setParticipants(data.participants || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchParticipants();
+  }, [eventId]);
+
+  const exportToPDF = () => {
+    try {
+      const DocConstructor = jsPDF.jsPDF || jsPDF;
+      const doc = new DocConstructor();
+      
+      const title = event?.title || "Liste des Participants";
+      doc.setFontSize(20);
+      doc.setTextColor(249, 115, 22);
+      doc.text(title, 14, 22);
+
+      const tableColumn = ["Participant", "Email", "Date Inscription", "Statut"];
+      const tableRows = participants.map(p => [
+        p.student?.fullName || "Non spécifié",
+        p.student?.email || "Non spécifié",
+        p.registrationDate ? new Date(p.registrationDate).toLocaleDateString('fr-FR') : "-",
+        p.attendanceStatus === 'present' ? "Présent" : "Absent"
+      ]);
+
+      autoTable(doc, {
+        head: [tableColumn],
+        body: tableRows,
+        startY: 30,
+        theme: 'grid',
+        headStyles: { fillColor: [249, 115, 22] }
+      });
+
+      doc.save(`Participants_${title.replace(/\s+/g, '_')}.pdf`);
+    } catch (error) {
+      console.error(error);
+      alert("Erreur lors de l'export PDF");
     }
-  ];
+  };
 
   return (
     <div className="flex h-screen overflow-hidden font-sans" style={{ background: '#0f172a' }}>
@@ -71,7 +103,10 @@ const ParticipantList = () => {
                   <FileSpreadsheet size={16} />
                   Exporter CSV
                 </button>
-                <button className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-orange-500 text-white hover:bg-orange-600 transition-all text-xs font-black uppercase tracking-widest shadow-[0_0_20px_rgba(205,115,41,0.2)]">
+                <button 
+                  onClick={exportToPDF}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-orange-500 text-white hover:bg-orange-600 transition-all text-xs font-black uppercase tracking-widest shadow-[0_0_20px_rgba(205,115,41,0.2)]"
+                >
                   <Download size={16} />
                   PDF Rapport
                 </button>
@@ -82,19 +117,27 @@ const ParticipantList = () => {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
               <div className="p-4 rounded-2xl border border-white/5 bg-white/[0.02]">
                 <div className="text-white/30 text-[10px] font-black uppercase tracking-widest mb-1">Total Inscrits</div>
-                <div className="text-2xl font-black text-white">124</div>
+                <div className="text-2xl font-black text-white">{participants.length}</div>
               </div>
               <div className="p-4 rounded-2xl border border-white/5 bg-white/[0.02]">
                 <div className="text-white/30 text-[10px] font-black uppercase tracking-widest mb-1">Présents</div>
-                <div className="text-2xl font-black text-green-500">86</div>
+                <div className="text-2xl font-black text-green-500">
+                  {participants.filter(p => p.attendanceStatus === 'present').length}
+                </div>
               </div>
               <div className="p-4 rounded-2xl border border-white/5 bg-white/[0.02]">
                 <div className="text-white/30 text-[10px] font-black uppercase tracking-widest mb-1">Absents</div>
-                <div className="text-2xl font-black text-yellow-500">38</div>
+                <div className="text-2xl font-black text-yellow-500">
+                  {participants.filter(p => p.attendanceStatus !== 'present').length}
+                </div>
               </div>
               <div className="p-4 rounded-2xl border border-white/5 bg-white/[0.02]">
                 <div className="text-white/30 text-[10px] font-black uppercase tracking-widest mb-1">Taux de présence</div>
-                <div className="text-2xl font-black text-orange-500">69%</div>
+                <div className="text-2xl font-black text-orange-500">
+                  {participants.length > 0 
+                    ? Math.round((participants.filter(p => p.attendanceStatus === 'present').length / participants.length) * 100) 
+                    : 0}%
+                </div>
               </div>
             </div>
 
@@ -111,7 +154,10 @@ const ParticipantList = () => {
                 />
               </div>
 
-              <ParticipantsTable participants={mockParticipants} />
+              <ParticipantsTable participants={participants.filter(p => 
+                p.student?.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                p.student?.email?.toLowerCase().includes(searchTerm.toLowerCase())
+              )} />
             </div>
           </div>
         </main>

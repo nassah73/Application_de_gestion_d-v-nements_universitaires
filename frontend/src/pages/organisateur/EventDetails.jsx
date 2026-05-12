@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import OrgSidebar from './components/OrgSidebar';
 import OrgNavbar from './components/OrgNavbar';
 import ParticipantsTable from './components/ParticipantsTable';
@@ -32,6 +34,7 @@ const EventDetails = () => {
     const fetchEventDetails = async () => {
       try {
         const data = await eventService.getEventById(id);
+        console.log("Event Data Loaded:", data);
         setEvent(data);
       } catch (err) {
         setError('Erreur lors de la récupération des détails de l\'événement');
@@ -132,7 +135,7 @@ const EventDetails = () => {
     );
   }
 
-  const isPublished = event.status === 'approved' || event.status === 'approved-modified';
+  const isPublished = event.status === 'approved' || event.status === 'approved-modified' || event.status === 'Validé';
   const isRejected = event.status === 'rejected';
   const isPending = event.status === 'pending';
 
@@ -145,6 +148,57 @@ const EventDetails = () => {
   const displayLocation = event.modifiedLocation || event.location;
   const displayCategory = event.modifiedCategory || event.category;
   const displayRegistrationLink = event.modifiedRegistrationLink || event.registrationLink;
+
+  const exportToPDF = () => {
+    try {
+      console.log("Starting PDF Export...");
+      // Handle different jspdf import versions
+      const DocConstructor = jsPDF.jsPDF || jsPDF;
+      const doc = new DocConstructor();
+    
+    // Titre du PDF
+    doc.setFontSize(20);
+    doc.setTextColor(249, 115, 22); // Orange 500
+    doc.text(`Liste des Participants: ${displayTitle}`, 14, 22);
+    
+    // Infos de l'événement
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text(`Date: ${formatDate(displayDate)}`, 14, 32);
+    doc.text(`Lieu: ${displayLocation}`, 14, 38);
+    doc.text(`Catégorie: ${displayCategory}`, 14, 44);
+    doc.text(`Total Inscrits: ${inscriptionCount}`, 14, 50);
+
+    // Tableau des participants
+    const tableColumn = ["Participant", "Email", "Date Inscription", "Statut"];
+    const tableRows = [];
+
+    event.participants.forEach(p => {
+      const studentData = [
+        p.student?.fullName || "Non spécifié",
+        p.student?.email || "Non spécifié",
+        p.registrationDate ? new Date(p.registrationDate).toLocaleDateString('fr-FR') : "-",
+        p.attendanceStatus === 'present' ? "Présent" : "Absent"
+      ];
+      tableRows.push(studentData);
+    });
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 60,
+      theme: 'grid',
+      headStyles: { fillColor: [249, 115, 22] }, // Orange 500
+      styles: { fontSize: 9 },
+    });
+
+    doc.save(`Participants_${displayTitle.replace(/\s+/g, '_')}.pdf`);
+      console.log("PDF Exported successfully");
+    } catch (error) {
+      console.error("PDF Export Error:", error);
+      alert("Erreur lors de la génération du PDF. Vérifiez la console pour plus de détails.");
+    }
+  };
 
   return (
     <div className="flex h-screen overflow-hidden font-sans bg-[#0f172a]">
@@ -408,7 +462,10 @@ const EventDetails = () => {
                 </div>
 
                 {isPublished && inscriptionCount > 0 && (
-                  <button className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-white text-slate-900 font-black text-xs uppercase tracking-widest hover:bg-orange-500 hover:text-white transition-all shadow-[0_10px_20px_rgba(0,0,0,0.2)] active:scale-95 group/btn">
+                  <button 
+                    onClick={exportToPDF}
+                    className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-white text-slate-900 font-black text-xs uppercase tracking-widest hover:bg-orange-500 hover:text-white transition-all shadow-[0_10px_20px_rgba(0,0,0,0.2)] active:scale-95 group/btn"
+                  >
                     <FileDown size={18} strokeWidth={2.5} className="group-hover/btn:translate-y-0.5 transition-transform" />
                     Exporter PDF
                   </button>
