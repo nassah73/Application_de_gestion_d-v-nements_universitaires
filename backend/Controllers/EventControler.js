@@ -91,6 +91,8 @@ const GetOrganizerStats = async (req, res) => {
         const events = await Event.find({ organizer: organizerId });
 
         const totalEvents = events.length;
+        const pendingEvents = events.filter(e => e.status === 'pending').length;
+        const approvedEvents = events.filter(e => e.status === 'approved' || e.status === 'approved-modified').length;
         
         // Get all registrations for these events
         const eventIds = events.map(e => e._id);
@@ -98,14 +100,20 @@ const GetOrganizerStats = async (req, res) => {
 
         const totalInscriptions = registrations.length;
         const totalPresent = registrations.filter(r => r.attendanceStatus === 'present').length;
+        const totalVolunteers = registrations.filter(r => r.role === 'volunteer').length;
 
         const stats = {
             totalEvents,
+            pendingEvents,
+            approvedEvents,
             totalInscriptions,
             totalPresent,
+            totalVolunteers,
             attendanceRate: totalInscriptions > 0 ? (totalPresent / totalInscriptions * 100).toFixed(1) : 0,
             events: events.map(e => ({
+                id: e._id,
                 title: e.title,
+                status: e.status,
                 inscriptions: registrations.filter(r => r.event.toString() === e._id.toString()).length,
                 presents: registrations.filter(r => r.event.toString() === e._id.toString() && r.attendanceStatus === 'present').length
             }))
@@ -113,6 +121,7 @@ const GetOrganizerStats = async (req, res) => {
 
         res.status(200).json(stats);
     } catch (error) {
+        console.error("Stats Error:", error);
         res.status(500).json({ message: "Erreur lors de la recuperation des statistiques" });
     }
 };

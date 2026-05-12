@@ -15,66 +15,73 @@ import {
 
 const OrganizerDashboard = () => {
   const navigate = useNavigate();
-  const stats = [
-    { 
-      label: 'Événements Actifs', 
-      value: '12', 
-      icon: <Calendar size={20} />, 
-      trend: '+20%', 
-      color: 'blue',
-      gradient: 'from-blue-500/20 to-blue-600/5',
-      iconColor: 'text-blue-400'
-    },
-    { 
-      label: 'Total Participants', 
-      value: '450', 
-      icon: <Users size={20} />, 
-      trend: '+12%', 
-      color: 'green',
-      gradient: 'from-green-500/20 to-green-600/5',
-      iconColor: 'text-green-400'
-    },
-    { 
-      label: 'Scans Aujourd\'hui', 
-      value: '28', 
-      icon: <QrCode size={20} />, 
-      trend: '+5%', 
-      color: 'orange',
-      gradient: 'from-orange-500/20 to-orange-600/5',
-      iconColor: 'text-orange-400'
-    },
-    { 
-      label: 'Taux de présence', 
-      value: '85%', 
-      icon: <TrendingUp size={20} />, 
-      trend: '+2%', 
-      color: 'purple',
-      gradient: 'from-purple-500/20 to-purple-600/5',
-      iconColor: 'text-purple-400'
-    },
-  ];
-
+  const [statsData, setStatsData] = React.useState(null);
   const [recentEvents, setRecentEvents] = React.useState([]);
   const [loading, setLoading] = React.useState(true);
 
   React.useEffect(() => {
-    const fetchStats = async () => {
+    const fetchDashboardData = async () => {
       try {
         const user = JSON.parse(localStorage.getItem('user') || '{}');
         const organizerId = user._id || user.id;
         if (!organizerId) return;
 
-        const res = await fetch(`http://localhost:5000/Event/organizer/${organizerId}`);
-        const data = await res.json();
-        setRecentEvents(data.slice(0, 3));
+        // Fetch Stats
+        const statsRes = await fetch(`http://localhost:5000/Event/stats/${organizerId}`);
+        const stats = await statsRes.json();
+        setStatsData(stats);
+
+        // Fetch Recent Events
+        const eventsRes = await fetch(`http://localhost:5000/Event/organizer/${organizerId}`);
+        const events = await eventsRes.json();
+        setRecentEvents(events.slice(0, 3));
       } catch (err) {
         console.error(err);
       } finally {
         setLoading(false);
       }
     };
-    fetchStats();
+    fetchDashboardData();
   }, []);
+
+  const stats = [
+    { 
+      label: 'Événements Totaux', 
+      value: statsData?.totalEvents || '0', 
+      icon: <Calendar size={20} />, 
+      trend: statsData?.approvedEvents ? `${statsData.approvedEvents} Validés` : '0 Validés', 
+      color: 'blue',
+      gradient: 'from-blue-500/20 to-blue-600/5',
+      iconColor: 'text-blue-400'
+    },
+    { 
+      label: 'Total Inscriptions', 
+      value: statsData?.totalInscriptions || '0', 
+      icon: <Users size={20} />, 
+      trend: statsData?.totalVolunteers ? `${statsData.totalVolunteers} Staffs` : '0 Staffs', 
+      color: 'green',
+      gradient: 'from-green-500/20 to-green-600/5',
+      iconColor: 'text-green-400'
+    },
+    { 
+      label: 'Présences', 
+      value: statsData?.totalPresent || '0', 
+      icon: <QrCode size={20} />, 
+      trend: statsData?.attendanceRate ? `${statsData.attendanceRate}% Taux` : '0% Taux', 
+      color: 'orange',
+      gradient: 'from-orange-500/20 to-orange-600/5',
+      iconColor: 'text-orange-400'
+    },
+    { 
+      label: 'En Attente', 
+      value: statsData?.pendingEvents || '0', 
+      icon: <TrendingUp size={20} />, 
+      trend: 'Demandes', 
+      color: 'purple',
+      gradient: 'from-purple-500/20 to-purple-600/5',
+      iconColor: 'text-purple-400'
+    },
+  ];
 
   return (
     <div className="flex h-screen overflow-hidden font-sans bg-[#0f172a]">
