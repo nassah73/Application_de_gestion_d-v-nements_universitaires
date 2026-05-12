@@ -8,21 +8,26 @@ const MyEvents = () => {
   const [eventsList, setEventsList] = React.useState([]);
 
   React.useEffect(() => {
-    const getMyEvent = async () => {
-      try {
-        const userString = localStorage.getItem('user');
-        if (!userString) return;
-        const user = JSON.parse(userString);
-        
-        const res = await axios.get(`http://localhost:5000/Event/My_registers/${user._id}`);
-        // تأكد أن البيانات دائماً عبارة عن مصفوفة
-        setEventsList(Array.isArray(res.data) ? res.data : []);
-      } catch (error) {
-        console.error("Error fetching events:", error);
-      }
-    };
-    getMyEvent();
-  }, []);
+  const getMyEvent = async () => {
+    try {
+      const userString = localStorage.getItem('user');
+      if (!userString) return;
+      const user = JSON.parse(userString);
+      
+      const res = await axios.get(`http://localhost:5000/Event/My_registers/${user._id}`);
+      
+      
+      const validEvents = Array.isArray(res.data) 
+        ? res.data.filter(reg => reg.event !== null) 
+        : [];
+
+      setEventsList(validEvents);
+    } catch (error) {
+      console.error("Error fetching events:", error);
+    }
+  };
+  getMyEvent();
+}, []);
 
   const handleDelete = async (id) => {
     try {

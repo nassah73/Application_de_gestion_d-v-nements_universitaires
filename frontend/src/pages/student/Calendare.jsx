@@ -10,6 +10,20 @@ export default function Main() {
     const [value, setvalue] = useState(new Date());
     const [eventsList, setEventsList] = useState([]);
 
+    
+const getTileClassName = ({ date, view }) => {
+    
+    if (view === 'month') {
+        const dateStr = formatDate(date);
+  
+        const hasEvent = eventsList.some(reg => 
+            reg.event?.date && formatDate(new Date(reg.event.date)) === dateStr
+        );
+        
+       
+        return hasEvent ? 'highlight-event' : null;
+    }
+};
   
     useEffect(() => {
         const getMySchedule = async () => {
@@ -71,6 +85,7 @@ export default function Main() {
                                 className="custom-calendar" 
                                 onChange={handleDateChange} 
                                 value={value} 
+                                tileClassName={getTileClassName}
                             />
                         </div>
                         <div className="mt-5 p-4 bg-white/5 backdrop-blur-md rounded-xl border border-white/10 shadow-lg text-white">

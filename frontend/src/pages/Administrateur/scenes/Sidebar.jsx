@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import { useTranslation } from "react-i18next";
-import { FaLayerGroup, FaUserPlus, FaChartBar, FaUsers, FaCogs } from "react-icons/fa";
+import { FaLayerGroup, FaUserPlus, FaChartBar, FaUsers, FaCogs , FaNewspaper } from "react-icons/fa";
 import { MdCalendarMonth, MdLogout } from "react-icons/md";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
@@ -141,6 +141,7 @@ const Sidebar = ({ isSidebar, isCollapsed, setIsCollapsed }) => {
             <Item title={t("Gestion Catégories")} to="/administrateur/categorie" icon={<FaLayerGroup size={17} />} selected={selected} setSelected={setSelected} />
             <Item title={t("Paramètres")} to="/administrateur/settings" icon={<FaCogs size={17} />} selected={selected} setSelected={setSelected} />
             <Item title={t("Calendrier")} to="/administrateur/calendar" icon={<MdCalendarMonth size={19} />} selected={selected} setSelected={setSelected} />
+            <Item title={t("News Hub")} to="/administrateur/news" icon={<FaNewspaper size={19} />} selected={selected} setSelected={setSelected} />
           </Box>
         </Menu>
 

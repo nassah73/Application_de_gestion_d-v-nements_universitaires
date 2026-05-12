@@ -12,6 +12,7 @@ import ActivityLog from "./scenes/ActivityLog";
 import { CssBaseline, ThemeProvider, Box } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import Calendar from "./scenes/Calendar";
+import NewsManager from "./scenes/NewsManager";
 import "./i18n";
 
 function App() {
@@ -49,6 +50,7 @@ function App() {
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/activity" element={<ActivityLog />} />
                 <Route path="/calendar" element={<Calendar />} />
+                <Route path="/news" element={<NewsManager />} />
               </Routes>
             </Box>
           </main>
