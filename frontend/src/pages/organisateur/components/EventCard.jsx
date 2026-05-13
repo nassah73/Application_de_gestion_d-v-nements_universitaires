@@ -108,7 +108,7 @@ const EventCard = ({ event }) => {
               <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
             </Link>
 
-            {event.status === 'modification_requested' && (
+            {(event.status === 'modification_requested' || event.status === 'approved' || event.status === 'Validé' || event.status === 'approved-modified') && (
               <Link 
                 to={`/organisateur/editer-evenement/${id}`} 
                 className="flex items-center gap-2 text-xs font-black text-orange-500 uppercase tracking-widest hover:text-orange-400 transition-colors"

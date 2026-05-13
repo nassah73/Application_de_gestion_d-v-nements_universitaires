@@ -523,15 +523,27 @@ const EventDetails = () => {
                   </div>
                 </div>
 
-                {isPublished && inscriptionCount > 0 && (
-                  <button 
-                    onClick={exportToPDF}
-                    className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-white text-slate-900 font-black text-xs uppercase tracking-widest hover:bg-orange-500 hover:text-white transition-all shadow-[0_10px_20px_rgba(0,0,0,0.2)] active:scale-95 group/btn"
-                  >
-                    <FileDown size={18} strokeWidth={2.5} className="group-hover/btn:translate-y-0.5 transition-transform" />
-                    Exporter PDF
-                  </button>
-                )}
+                <div className="flex items-center gap-4">
+                  {isPublished && (
+                    <Link 
+                      to={`/organisateur/editer-evenement/${id}`}
+                      className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-500 font-black text-xs uppercase tracking-widest hover:bg-orange-500 hover:text-white transition-all shadow-lg active:scale-95 group/edit"
+                    >
+                      <RotateCcw size={18} strokeWidth={2.5} className="group-hover/edit:rotate-180 transition-transform duration-500" />
+                      Modifier l'événement
+                    </Link>
+                  )}
+
+                  {isPublished && inscriptionCount > 0 && (
+                    <button 
+                      onClick={exportToPDF}
+                      className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-white text-slate-900 font-black text-xs uppercase tracking-widest hover:bg-orange-500 hover:text-white transition-all shadow-[0_10px_20px_rgba(0,0,0,0.2)] active:scale-95 group/btn"
+                    >
+                      <FileDown size={18} strokeWidth={2.5} className="group-hover/btn:translate-y-0.5 transition-transform" />
+                      Exporter PDF
+                    </button>
+                  )}
+                </div>
               </div>
               
               <div className="p-8">
