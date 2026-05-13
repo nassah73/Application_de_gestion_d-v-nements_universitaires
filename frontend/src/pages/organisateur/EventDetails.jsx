@@ -65,6 +65,7 @@ const EventDetails = () => {
       case 'approved-modified': return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
       case 'pending':           return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20';
       case 'rejected':          return 'bg-red-500/10 text-red-400 border-red-500/20';
+      case 'modification_requested': return 'bg-orange-500/10 text-orange-400 border-orange-500/20';
       default:                  return 'bg-gray-500/10 text-gray-400 border-gray-500/20';
     }
   };
@@ -75,6 +76,7 @@ const EventDetails = () => {
       case 'approved-modified': return 'Validé avec modification';
       case 'pending':           return 'En cours';
       case 'rejected':          return 'Refusé';
+      case 'modification_requested': return 'Modification requise';
       default:                  return status;
     }
   };
@@ -85,6 +87,7 @@ const EventDetails = () => {
       case 'approved-modified': return <RotateCcw size={14} />;
       case 'pending':           return <Clock size={14} />;
       case 'rejected':          return <XCircle size={14} />;
+      case 'modification_requested': return <RotateCcw size={14} />;
       default:                  return <Info size={14} />;
     }
   };
@@ -149,6 +152,7 @@ const EventDetails = () => {
   const isPublished = event.status === 'approved' || event.status === 'approved-modified' || event.status === 'Validé';
   const isRejected = event.status === 'rejected';
   const isPending = event.status === 'pending';
+  const isModifRequested = event.status === 'modification_requested';
 
   const inscriptionCount = event.participants?.length || 0;
   const fillRate = event.capacity > 0 ? (inscriptionCount / event.capacity) * 100 : 0;
@@ -271,6 +275,34 @@ const EventDetails = () => {
                       <Info size={14} />
                       Veuillez créer un nouvel événement en tenant compte des motifs ci-dessus.
                     </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {isModifRequested && (
+              <div className="p-8 rounded-[2rem] border border-orange-500/20 bg-orange-500/5 backdrop-blur-xl animate-in fade-in slide-in-from-top-6 duration-700 shadow-2xl">
+                <div className="flex items-start gap-6">
+                  <div className="p-4 rounded-[1.5rem] bg-orange-500/10 text-orange-500 border border-orange-500/20 shadow-lg shadow-orange-500/10">
+                    <RotateCcw size={32} strokeWidth={2.5} />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-black text-white uppercase tracking-tight">Modification demandée</h3>
+                    <div className="mt-4 p-5 rounded-2xl bg-[#0f172a]/40 border border-white/5 backdrop-blur-sm">
+                      <p className="text-sm text-white/70 leading-relaxed">
+                        <span className="text-orange-400 font-black uppercase text-[10px] block mb-2 tracking-[0.2em] opacity-70">Message de l'administration</span>
+                        {event.rejectionReason || 'L\'administration a demandé des modifications pour cet événement.'}
+                      </p>
+                    </div>
+                    <div className="mt-6 flex gap-4">
+                      <Link 
+                        to={`/organisateur/editer-evenement/${id}`}
+                        className="flex items-center gap-3 px-6 py-3 rounded-xl bg-orange-500 text-white font-black uppercase tracking-widest text-xs hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/20"
+                      >
+                        <RotateCcw size={16} strokeWidth={3} />
+                        Modifier l'événement
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -411,6 +443,21 @@ const EventDetails = () => {
                       </div>
                       <p className="text-2xl font-black text-white uppercase tracking-tighter">En cours</p>
                       <p className="text-sm text-white/40 mt-3 font-medium">En attente de validation administrative avant publication.</p>
+                    </div>
+                  ) : isModifRequested ? (
+                    <div className="text-center py-10">
+                      <div className="w-20 h-20 rounded-[1.5rem] bg-orange-500/10 text-orange-500 flex items-center justify-center mx-auto mb-6 border border-orange-500/20 shadow-xl shadow-orange-500/5">
+                        <RotateCcw size={40} strokeWidth={2.5} />
+                      </div>
+                      <p className="text-2xl font-black text-white uppercase tracking-tighter">Modif. Requise</p>
+                      <p className="text-sm text-white/40 mt-3 font-medium mb-8">L'administration a demandé des corrections.</p>
+                      <Link 
+                        to={`/organisateur/editer-evenement/${id}`}
+                        className="flex items-center justify-center gap-3 w-full py-4 rounded-2xl bg-orange-500 text-white font-black uppercase tracking-widest text-xs hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/20"
+                      >
+                        <RotateCcw size={18} strokeWidth={3} />
+                        Modifier
+                      </Link>
                     </div>
                   ) : (
                     <div className="space-y-10">

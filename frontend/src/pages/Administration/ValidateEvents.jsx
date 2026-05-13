@@ -14,7 +14,7 @@ const INITIAL_NOTIFS = [
   { id: 2, icon: <CalendarCheck size={16} />, iconBg: 'rgba(99,102,241,0.18)', iconColor: '#6366F1', title: 'Événement en attente', desc: '"Science Fair" attend validation.', read: false },
 ];
 
-const TABS = ['All Events', 'Soumis', 'approved', 'Publié', 'Rejeté'];
+const TABS = ['All Events', 'pending', 'approved', 'rejected', 'modification_requested'];
 
 export default function ValidateEvents() {
    const [showModifModal, setShowModifModal] = useState(false);
@@ -179,7 +179,7 @@ if (loading) {
                             <Eye size={16} />
                           </button>
                           
-                          {event.status === 'pending' && (
+                          {(event.status === 'pending' || event.status === 'modification_requested') && (
       
                             <button onClick={() => handelAccept(event._id)} className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-md border border-emerald-50" title="Accepter">
                               <Check size={16} />
@@ -197,9 +197,11 @@ if (loading) {
                               <span className="text-[7px] font-black uppercase">Modif</span>
                             </button>
 
-                          <button onClick={() => handleReject(event._id)} className="p-1.5 text-red-400 hover:bg-red-50 rounded-md" title="Refuser">
-                            <X size={16} />
-                          </button>
+                          {(event.status === 'pending' || event.status === 'modification_requested') && (
+                            <button onClick={() => handleReject(event._id)} className="p-1.5 text-red-400 hover:bg-red-50 rounded-md" title="Refuser">
+                              <X size={16} />
+                            </button>
+                          )}
                         </div>
                       </td>
 

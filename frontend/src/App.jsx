@@ -69,7 +69,7 @@ function App() {
       <Route path="/organisateur/events/:id" element={<EventDetails />} />
 
       {/* Organizer Event Management (sous-dossiers) */}
-      <Route path="/organisateur/editer-evenement" element={<EditEventRequest />} />
+      <Route path="/organisateur/editer-evenement/:id" element={<EditEventRequest />} />
       <Route path="/organisateur/participants/:eventId" element={<ParticipantList />} />
       <Route path="/organisateur/participants/liste" element={<ParticipantList />} />
       <Route path="/organisateur/scanner" element={<Scanner />} />

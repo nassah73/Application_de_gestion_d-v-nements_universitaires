@@ -25,6 +25,12 @@ const EventCard = ({ event }) => {
           icon: <XCircle size={12} />,
           style: 'bg-red-500/10 text-red-400 border-red-500/20'
         };
+      case 'modification_requested':
+        return {
+          label: 'Modification Requise',
+          icon: <RotateCcw size={12} />,
+          style: 'bg-orange-500/10 text-orange-400 border-orange-500/20'
+        };
       case 'approved-modified':
         return {
           label: 'Modifié',
@@ -93,13 +99,25 @@ const EventCard = ({ event }) => {
         </div>
 
         <div className="flex items-center justify-between pt-5 border-t border-white/5">
-          <Link 
-            to={`/organisateur/events/${id}`} 
-            className="flex items-center gap-2 text-xs font-black text-white uppercase tracking-widest hover:text-orange-500 transition-colors"
-          >
-            Détails
-            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link 
+              to={`/organisateur/events/${id}`} 
+              className="flex items-center gap-2 text-xs font-black text-white uppercase tracking-widest hover:text-orange-500 transition-colors"
+            >
+              Détails
+              <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+            </Link>
+
+            {event.status === 'modification_requested' && (
+              <Link 
+                to={`/organisateur/editer-evenement/${id}`} 
+                className="flex items-center gap-2 text-xs font-black text-orange-500 uppercase tracking-widest hover:text-orange-400 transition-colors"
+              >
+                Modifier
+                <RotateCcw size={14} />
+              </Link>
+            )}
+          </div>
           <span className="text-[10px] font-black text-white/10 uppercase tracking-widest">
             #{id?.toString().slice(-6)}
           </span>

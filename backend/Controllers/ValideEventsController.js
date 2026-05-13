@@ -68,7 +68,12 @@ const requestModification = async (req, res) => {
         const { id } = req.params;
         const { message } = req.body;
         
-        const event = await Event_db.findById(id);
+        const event = await Event_db.findByIdAndUpdate(
+            id, 
+            { status: 'modification_requested', rejectionReason: message },
+            { new: true } 
+        );
+
         if (!event) {
             return res.status(404).json({ message: "Event non trouvé" });
         }
@@ -83,7 +88,7 @@ const requestModification = async (req, res) => {
         });
         await notification.save();
 
-        res.status(200).json({ message: "Demande de modification envoyée" });
+        res.status(200).json({ message: "Demande de modification envoyée", event });
     } catch (error) {
         res.status(500).json({ message: "Erreur serveur", error });
     }

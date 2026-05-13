@@ -127,14 +127,51 @@ const GetOrganizerStats = async (req, res) => {
 };
 
 const UpdateEvent = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const updatedEvent = await Event.findByIdAndUpdate(id, req.body, { new: true });
-        if (!updatedEvent) return res.status(404).json({ message: "Evenement non trouve" });
-        res.status(200).json(updatedEvent);
-    } catch (error) {
-        res.status(500).json({ message: "Erreur lors de la modification de l'evenement" });
-    }
+    upload(req, res, async (err) => {
+        if (err) {
+            return res.status(500).json({ message: "Erreur lors de l'upload de l'image" });
+        }
+
+        try {
+            const { id } = req.params;
+            const updateData = { ...req.body };
+            
+            // Si une nouvelle image est uploadée
+            if (req.file) {
+                updateData.coverImage = req.file.path;
+            }
+
+            // Réinitialiser le statut à 'pending' car l'événement a été modifié
+            updateData.status = 'pending';
+            
+            // Effacer le motif de refus/modification car l'organisateur a fait les changements
+            updateData.rejectionReason = "";
+            
+            // Effacer les champs modifiés par l'administration (si présents) pour utiliser les nouvelles valeurs de l'organisateur
+            const adminFields = [
+                'modifiedTitle', 'modifiedDescription', 'modifiedCategory', 
+                'modifiedCapacity', 'modifiedDate', 'modifiedLocation', 
+                'modifiedRegistrationLink'
+            ];
+            adminFields.forEach(field => {
+                updateData[field] = undefined;
+            });
+
+            const updatedEvent = await Event.findByIdAndUpdate(id, updateData, { new: true });
+            
+            if (!updatedEvent) {
+                return res.status(404).json({ message: "Evenement non trouve" });
+            }
+
+            res.status(200).json({ 
+                message: "Evenement mis a jour avec succes. En attente de nouvelle validation.",
+                event: updatedEvent 
+            });
+        } catch (error) {
+            console.error("Update Error:", error);
+            res.status(500).json({ message: "Erreur lors de la modification de l'evenement" });
+        }
+    });
 };
 
 const DeleteEvent = async (req, res) => {
