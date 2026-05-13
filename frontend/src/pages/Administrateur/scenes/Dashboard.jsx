@@ -77,7 +77,7 @@ const Dashboard = () => {
             Bienvenue sur votre espace d'administration centralisé
           </Typography>
         </Box>
-        <Button
+        {/*<Button
           sx={{
             backgroundColor: colors.greenAccent[500],
             color: "#fff",
@@ -92,7 +92,7 @@ const Dashboard = () => {
         >
           <DownloadOutlinedIcon sx={{ mr: "10px" }} />
           Télécharger Rapports
-        </Button>
+        </Button>*/}
       </Box>
 
       {/* Stat Cards Row */}
