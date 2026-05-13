@@ -223,3 +223,54 @@ exports.checkStaffStatus = async (req, res) => {
         res.status(500).json({ message: "Erreur lors de la vérification du statut", error: error.message });
     }
 };
+
+exports.getProfile = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const organizer = await Organisateur.findById(id).select('-password');
+        if (!organizer) {
+            return res.status(404).json({ message: "Organisateur non trouvé." });
+        }
+        res.status(200).json(organizer);
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
+exports.updateProfile = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { prenom, nom, telephone, nomClub, email, currentPassword, newPassword } = req.body;
+
+        const organizer = await Organisateur.findById(id);
+        if (!organizer) {
+            return res.status(404).json({ message: "Organisateur non trouvé." });
+        }
+
+        // Si on veut changer le mot de passe
+        if (currentPassword && newPassword) {
+            const isMatch = await bcrypt.compare(currentPassword, organizer.password);
+            if (!isMatch) {
+                return res.status(400).json({ message: "Mot de passe actuel incorrect." });
+            }
+            organizer.password = await bcrypt.hash(newPassword, 10);
+        }
+
+        // Mettre à jour les autres champs
+        if (prenom) organizer.prenom = prenom;
+        if (nom) organizer.nom = nom;
+        if (telephone) organizer.telephone = telephone;
+        if (nomClub) organizer.nomClub = nomClub;
+        if (email) organizer.email = email;
+
+        await organizer.save();
+        
+        // Retourner l'objet mis à jour sans le password
+        const updatedOrganizer = organizer.toObject();
+        delete updatedOrganizer.password;
+        
+        res.status(200).json({ message: "Profil mis à jour avec succès !", user: updatedOrganizer });
+    } catch (error) {
+        res.status(500).json({ message: "Erreur lors de la mise à jour", error: error.message });
+    }
+};

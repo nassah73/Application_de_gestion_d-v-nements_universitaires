@@ -15,4 +15,8 @@ router.post('/respond-staff-request', organisateurController.respondToStaffReque
 router.get('/check-staff-status/:studentId', organisateurController.checkStaffStatus);
 router.get('/check-staff/:studentId', organisateurController.checkStaffStatus); // Alias demandé par l'utilisateur
 
+// Profil
+router.get('/profile/:id', organisateurController.getProfile);
+router.put('/profile/:id', organisateurController.updateProfile);
+
 module.exports = router;
