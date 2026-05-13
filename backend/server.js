@@ -47,6 +47,8 @@ const startServer = async () => {
             console.error('Erreur lors de la population de la DB:', populateErr);
         }
     }
+    const analyticsRoutes = require('./Routes/analytics');
+
 
     const studentRoutes = require('./Routes/studentRoutes');
     const organisateurRoutes = require('./Routes/organisateurRoutes');
@@ -68,6 +70,8 @@ const startServer = async () => {
     app.use('/api/notifications', notificationRoutes);
    
 app.use('/api/news', newsRoutes);
+    app.use('/api/analytics', analyticsRoutes);
+    app.use('/api/news', newsRoutes);
     
     app.use( '/api/administrateur',addAdmin)
     const csrfProtection = csrf({ cookie: true });
