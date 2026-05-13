@@ -213,25 +213,119 @@ if (loading) {
         </div>
       </main>
 
-      {/* Modal Detail (Simplified) */}
+      {/* Modal Detail (Enhanced) */}
       {viewEvent && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl p-8 w-full max-w-lg shadow-2xl animate-in zoom-in">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold">{viewEvent.title}</h3>
-              <button onClick={() => setViewEvent(null)}><X /></button>
-            </div>
-            <p className="text-slate-600 mb-6">{viewEvent.description}</p>
-            <div className="grid grid-cols-2 gap-4 mb-8">
-              <div><p className="text-[10px] font-bold text-slate-400 uppercase">Lieu</p><p className="font-semibold">{viewEvent.location}</p></div>
-              <div><p className="text-[10px] font-bold text-slate-400 uppercase">Date</p><p className="font-semibold">{viewEvent.date}</p></div>
-            </div>
-            {viewEvent.status === 'Soumis' && (
-              <div className="flex gap-3">
-                <button onClick={() => handleApprove(viewEvent.id)} className="flex-1 py-3 bg-emerald-500 text-white font-bold rounded-xl">Approuver</button>
-                <button onClick={() => setViewEvent(null)} className="flex-1 py-3 bg-red-500 text-white font-bold rounded-xl">Rejeter</button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-white rounded-[2rem] w-full max-w-2xl shadow-2xl animate-in zoom-in duration-300 my-8 overflow-hidden">
+            {/* Header with Cover Image */}
+            <div className="relative h-48 bg-slate-100">
+              {viewEvent.coverImage ? (
+                <img 
+                  src={`http://localhost:5000/${viewEvent.coverImage}`} 
+                  alt={viewEvent.title} 
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200">
+                  <CalendarCheck size={48} className="text-slate-300" />
+                </div>
+              )}
+              <button 
+                onClick={() => setViewEvent(null)}
+                className="absolute top-4 right-4 p-2 bg-black/20 hover:bg-black/40 text-white rounded-full transition-colors backdrop-blur-md"
+              >
+                <X size={20} />
+              </button>
+              <div className="absolute bottom-4 left-6">
+                <StatusBadge status={viewEvent.status} />
               </div>
-            )}
+            </div>
+
+            <div className="p-8">
+              <div className="flex justify-between items-start mb-6">
+                <div>
+                  <h3 className="text-2xl font-black text-slate-800 uppercase tracking-tight mb-2">{viewEvent.title}</h3>
+                  <div className="flex items-center gap-2 text-orange-500 font-bold text-sm uppercase tracking-wider">
+                    <Tag size={16} />
+                    {viewEvent.category}
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 text-slate-600">
+                    <div className="p-2 bg-slate-50 rounded-lg text-slate-400">
+                      <CalendarCheck size={18} />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Date et Heure</p>
+                      <p className="font-semibold text-sm">{new Date(viewEvent.date).toLocaleString('fr-FR')}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 text-slate-600">
+                    <div className="p-2 bg-slate-50 rounded-lg text-slate-400">
+                      <MapPin size={18} />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Lieu</p>
+                      <p className="font-semibold text-sm">{viewEvent.location}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 text-slate-600">
+                    <div className="p-2 bg-slate-50 rounded-lg text-slate-400">
+                      <Users size={18} />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Capacité</p>
+                      <p className="font-semibold text-sm">{viewEvent.capacity} places</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-3 text-slate-600">
+                    <div className="p-2 bg-slate-50 rounded-lg text-slate-400">
+                      <User size={18} />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Organisateur</p>
+                      <p className="font-semibold text-sm">
+                        {viewEvent.organizer ? `${viewEvent.organizer.prenom} ${viewEvent.organizer.nom}` : "Inconnu"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mb-8">
+                <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Description</h4>
+                <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                  <p className="text-slate-600 text-sm leading-relaxed whitespace-pre-line">
+                    {viewEvent.description}
+                  </p>
+                </div>
+              </div>
+
+              {(viewEvent.status === 'pending' || viewEvent.status === 'modification_requested') && (
+                 <div className="flex gap-4">
+                   <button 
+                     onClick={() => { handelAccept(viewEvent._id); setViewEvent(null); }}
+                     className="flex-1 py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black uppercase tracking-widest text-xs rounded-2xl transition-all shadow-lg shadow-emerald-200"
+                   >
+                     Approuver l'événement
+                   </button>
+                   <button 
+                     onClick={() => { handleReject(viewEvent._id); setViewEvent(null); }}
+                     className="flex-1 py-4 bg-red-500 hover:bg-red-600 text-white font-black uppercase tracking-widest text-xs rounded-2xl transition-all shadow-lg shadow-red-200"
+                   >
+                     Rejeter
+                   </button>
+                 </div>
+               )}
+            </div>
           </div>
         </div>
       )}
