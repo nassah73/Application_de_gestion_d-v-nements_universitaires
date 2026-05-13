@@ -7,7 +7,8 @@ import {
   QrCode, 
   Users, 
   User, 
-  LogOut 
+  LogOut,
+  Bell
 } from 'lucide-react';
 
 const NavItem = ({ path, icon, label, active }) => (
@@ -42,6 +43,7 @@ const OrgSidebar = () => {
     { name: 'Dashboard', path: '/organisateur', icon: <LayoutDashboard size={20}/> },
     { name: 'Créer Événement', path: '/organisateur/create-event', icon: <CalendarPlus size={20}/> },
     { name: 'Mes Événements', path: '/organisateur/events', icon: <CalendarDays size={20}/> },
+    { name: 'Notifications', path: '/organisateur/notifications', icon: <Bell size={20}/> },
     { name: 'Scanner QR', path: '/organisateur/scanner', icon: <QrCode size={20}/> },
     { name: 'Gestion Équipe', path: '/organisateur/equipe', icon: <Users size={20}/> },
     { name: 'Profil', path: '/organisateur/profile', icon: <User size={20}/> },

@@ -71,6 +71,22 @@ if (loading) {
       console.log('erreu '+error)
     }
   }
+
+  const handleReject = async (Event_id) => {
+    const reason = prompt("Veuillez saisir le motif du refus :");
+    if (reason === null) return; // Annulé
+
+    try {
+      const res = await axios.put(`http://localhost:5000/api/valide/reject/${Event_id}`, { reason });
+      setEvents(prev => prev.map(e => 
+        e._id === Event_id ? { ...e, status: 'rejected' } : e
+      ));
+      alert(res.data.message);
+    } catch (error) {
+      console.error("Error rejecting event:", error);
+      alert("Erreur lors du refus de l'événement");
+    }
+  };
   return (
     <div className="flex h-screen bg-[#0f172a] overflow-hidden font-sans">
       <Sidebar />
@@ -250,12 +266,16 @@ if (loading) {
             Annuler
           </button>
           <button 
-            onClick={() => {
-              // هنا غاتعيط للـ API ديالك باش تصيفط الـ feedback
-              console.log("Sending to organizer:", { eventId: selectedEvent._id, message: feedback });
-              alert("Message envoyé à l'organisateur !");
-              setShowModifModal(false);
-              setFeedback("");
+            onClick={async () => {
+              try {
+                const res = await axios.post(`http://localhost:5000/api/valide/request-modification/${selectedEvent._id}`, { message: feedback });
+                alert(res.data.message);
+                setShowModifModal(false);
+                setFeedback("");
+              } catch (error) {
+                console.error(error);
+                alert("Erreur lors de l'envoi");
+              }
             }}
             className="flex-1 py-2.5 text-sm font-semibold text-white bg-purple-600 rounded-xl hover:bg-purple-700 shadow-lg shadow-purple-200 transition-all"
           >

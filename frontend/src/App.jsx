@@ -18,6 +18,7 @@ import OrganizerEvents from './pages/organisateur/Events';
 import OrganizerCreateEvent from './pages/organisateur/CreateEvent';
 import OrganizerProfile from './pages/organisateur/Profile';
 import EventDetails from './pages/organisateur/EventDetails';
+import OrganizerNotifications from './pages/organisateur/Notifications';
 
 // Organizer Event Management (from EventManagement folder)
 import EditEventRequest from './pages/organisateur/EventManagement/EditEventRequest';
@@ -62,6 +63,7 @@ function App() {
       {/* --- Organizer Routes --- */}
       <Route path="/organisateur" element={<OrganizerDashboard />} />
       <Route path="/organisateur/events" element={<OrganizerEvents />} />
+      <Route path="/organisateur/notifications" element={<OrganizerNotifications />} />
       <Route path="/organisateur/create-event" element={<OrganizerCreateEvent />} />
       <Route path="/organisateur/profile" element={<OrganizerProfile />} />
       <Route path="/organisateur/events/:id" element={<EventDetails />} />

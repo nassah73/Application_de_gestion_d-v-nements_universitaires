@@ -19,6 +19,7 @@ const Student_Events= async(req,res)=>{
 
 }
 const Registration = require('../models/My_Events'); 
+const Notification = require('../models/Notification');
 
 const setMyEvent = async (req, res) => {
     try {
@@ -42,10 +43,22 @@ const setMyEvent = async (req, res) => {
         
         await newRegistration.save();
 
-        // LOGIQUE SUPPLÉMENTAIRE POUR LE VOLONTARIAT
-        if (type === 'volunteer') {
-            const event = await Events_db.findById(eventId);
-            if (event && event.organizer) {
+        // LOGIQUE SUPPLÉMENTAIRE POUR LE VOLONTARIAT ET LES NOTIFICATIONS
+        const event = await Events_db.findById(eventId);
+        if (event && event.organizer) {
+            // Créer une notification pour l'organisateur
+            const notification = new Notification({
+                recipient: event.organizer,
+                title: type === 'volunteer' ? "Nouvelle demande de staff" : "Nouvelle inscription",
+                message: type === 'volunteer' 
+                    ? `Un étudiant souhaite rejoindre votre équipe pour l'événement "${event.title}"`
+                    : `Un nouvel étudiant s'est inscrit à votre événement "${event.title}"`,
+                type: 'registration',
+                relatedEvent: eventId
+            });
+            await notification.save();
+
+            if (type === 'volunteer') {
                 const organizer = await Organisateur.findById(event.organizer);
                 if (organizer) {
                     // Vérifier si une demande existe déjà pour éviter les doublons dans staffRequests

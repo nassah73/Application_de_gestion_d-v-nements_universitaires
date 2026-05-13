@@ -56,6 +56,7 @@ const startServer = async () => {
     const CreateEvent=require('./Routes/CreateEvent')
     const ValideEvent=require('./Routes/ValideEvents')
      const newsRoutes = require('./Routes/NewsRoutes');
+    const notificationRoutes = require('./Routes/NotificationRoutes');
     app.use('/api/students', studentRoutes);
     app.use('/api/organisateurs', organisateurRoutes);
     app.use('/organisateur', organisateurRoutes); // Ajout du préfixe demandé par l'utilisateur
@@ -64,6 +65,7 @@ const startServer = async () => {
     app.use('/api/auth', authRoutes);
     app.use('/Event', CreateEvent);
     app.use('/api/valide',ValideEvent)
+    app.use('/api/notifications', notificationRoutes);
    
 app.use('/api/news', newsRoutes);
     

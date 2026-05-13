@@ -1,4 +1,5 @@
 const Organisateur = require('../models/Organisateur');
+const Notification = require('../models/Notification');
 
 exports.getPendingOrganizers = async (req, res) => {
     try {
@@ -17,6 +18,15 @@ exports.validateOrganizer = async (req, res) => {
         if (!organizer) {
             return res.status(404).json({ message: "Organisateur non trouvé" });
         }
+
+        // Notification pour l'organisateur
+        const notification = new Notification({
+            recipient: id,
+            title: "Compte validé",
+            message: "Votre compte organisateur a été validé. Vous pouvez maintenant créer des événements.",
+            type: 'system'
+        });
+        await notification.save();
         
         res.status(200).json({ message: "Compte validé avec succès" });
     } catch (err) {
@@ -32,6 +42,15 @@ exports.rejectOrganizer = async (req, res) => {
         if (!organizer) {
             return res.status(404).json({ message: "Organisateur non trouvé" });
         }
+
+        // Notification pour l'organisateur
+        const notification = new Notification({
+            recipient: id,
+            title: "Compte rejeté",
+            message: "Votre demande de compte organisateur a été rejetée par l'administration.",
+            type: 'system'
+        });
+        await notification.save();
         
         res.status(200).json({ message: "Compte rejeté avec succès" });
     } catch (err) {
