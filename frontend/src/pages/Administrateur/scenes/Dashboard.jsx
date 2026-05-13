@@ -177,23 +177,7 @@ const Dashboard = () => {
           </Box>
         </Box>
 
-        {/* Quick Actions */}
-        <Box sx={{ backgroundColor: "rgba(255, 255, 255, 0.03)", borderRadius: "20px", border: `1px solid ${colors.grey[800]}`, p: "24px", display: "flex", flexDirection: "column" }}>
-          <Typography variant="h3" sx={{ fontWeight: 800, color: colors.grey[100], mb: "20px" }}>Actions Rapides</Typography>
-          <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "15px" }}>
-            {[
-              { label: "Ajouter un Événement", icon: <AddBoxIcon />, color: colors.greenAccent[500] },
-              { label: "Valider Organisateurs", icon: <RuleIcon />, color: colors.blueAccent[500] },
-              { label: "Paramètres Système", icon: <SettingsIcon />, color: colors.grey[400] },
-              { label: "Générer Rapport", icon: <AssessmentIcon />, color: colors.greenAccent[400] },
-            ].map((action) => (
-              <Button key={action.label} variant="outlined" sx={{ display: "flex", flexDirection: "column", gap: "10px", p: "20px", borderRadius: "15px", borderColor: "rgba(255, 255, 255, 0.1)", color: colors.grey[100], "&:hover": { borderColor: action.color, backgroundColor: "rgba(255, 255, 255, 0.05)" } }}>
-                <Box sx={{ color: action.color }}>{action.icon}</Box>
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>{action.label}</Typography>
-              </Button>
-            ))}
-          </Box>
-        </Box>
+        
       </Box>
     </Box>
   );
