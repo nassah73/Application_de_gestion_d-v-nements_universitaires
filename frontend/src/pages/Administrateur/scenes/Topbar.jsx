@@ -107,7 +107,7 @@ const UserMenu = () => (
     boxShadow: "0 16px 40px rgba(0,0,0,0.4)",
   }}>
     {/* Header */}
-    <Box sx={{ p: "14px 16px", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: "10px" }}>
+ {/*<Box sx={{ p: "14px 16px", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", gap: "10px" }}>
       <Box sx={{ position: "relative" }}>
         <Box sx={{ width: 36, height: 36, borderRadius: "9px", background: "#cd7329", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "14px", fontWeight: 700, color: "#fff" }}>
           SA
@@ -118,9 +118,9 @@ const UserMenu = () => (
         <Typography sx={{ fontSize: "13px", fontWeight: 600, color: "#fff", lineHeight: 1.2 }}>SUPER ADMINISTRATEUR</Typography>
         <Typography sx={{ fontSize: "11px", color: "rgba(255,255,255,0.4)" }}>///</Typography>
       </Box>
-    </Box>
+    </Box>*/}
     {/* Items */}
-    {[
+    {/*{[
       { icon: <IconUser />, label: "Mon profil", color: "rgba(255,255,255,0.7)" },
       { icon: <IconSettings />, label: "Paramètres", color: "rgba(255,255,255,0.7)" },
     ].map((item) => (
@@ -133,15 +133,15 @@ const UserMenu = () => (
         <Typography sx={{ fontSize: "12px", color: item.color }}>{item.label}</Typography>
       </Box>
     ))}
-    <Box sx={{ mx: "12px", height: "1px", background: "rgba(255,255,255,0.06)", my: "4px" }} />
-    <Box sx={{
+    <Box sx={{ mx: "12px", height: "1px", background: "rgba(255,255,255,0.06)", my: "4px" }} />*/}
+    {/*<Box sx={{
       p: "9px 16px", display: "flex", alignItems: "center", gap: "10px",
       color: "#f87171", cursor: "pointer",
       "&:hover": { background: "rgba(248,113,113,0.06)" },
     }}>
       <IconLogout />
       <Typography sx={{ fontSize: "12px", color: "#f87171" }}>Déconnexion</Typography>
-    </Box>
+  </Box>*/}
   </Box>
 );
 
@@ -270,7 +270,7 @@ const Topbar = ({ isMobile }) => {
                 <IconChevron />
               </Box>
             </Box>
-            {menuOpen && <UserMenu />}
+            {menuOpen }  {/*&& <UserMenu />*/}
           </Box>
         )}
 
