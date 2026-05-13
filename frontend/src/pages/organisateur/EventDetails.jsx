@@ -95,8 +95,14 @@ const EventDetails = () => {
         <OrgSidebar />
         <div className="flex-1 flex flex-col h-screen overflow-y-auto relative">
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/5 rounded-full blur-[120px] pointer-events-none"></div>
-          <OrgNavbar />
-          <main className="flex-1 p-8 flex items-center justify-center relative z-10">
+          
+          {/* 1. عطينا للـ Navbar طبقة عالية */}
+          <div className="relative z-[100]">
+            <OrgNavbar />
+          </div>
+    
+          {/* 2. الـ main رديناه z-0 باش ما يغطيش على الجرس */}
+          <main className="flex-1 p-8 flex items-center justify-center relative z-0">
             <div className="text-center">
               <div className="w-16 h-16 border-4 border-orange-500/20 border-t-orange-500 rounded-full animate-spin mx-auto mb-6 shadow-[0_0_20px_rgba(249,115,22,0.2)]"></div>
               <p className="text-white/40 font-black uppercase tracking-widest text-xs">Chargement des détails...</p>
@@ -113,8 +119,13 @@ const EventDetails = () => {
         <OrgSidebar />
         <div className="flex-1 flex flex-col h-screen overflow-y-auto relative">
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-red-500/5 rounded-full blur-[120px] pointer-events-none"></div>
-          <OrgNavbar />
-          <main className="flex-1 p-8 relative z-10">
+          
+          {/* نطبقو نفس الـ z-index هنا باش الجرس يخدم حتى فـ صفحة الخطأ */}
+          <div className="relative z-[100]">
+            <OrgNavbar />
+          </div>
+  
+          <main className="flex-1 p-8 relative z-0">
             <div className="max-w-2xl mx-auto p-12 rounded-[2rem] border border-red-500/20 bg-red-500/5 backdrop-blur-xl text-center shadow-2xl">
               <div className="w-20 h-20 bg-red-500/10 rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 border border-red-500/20">
                 <AlertCircle size={40} className="text-red-500" />
@@ -202,15 +213,19 @@ const EventDetails = () => {
 
   return (
     <div className="flex h-screen overflow-hidden font-sans bg-[#0f172a]">
-      <OrgSidebar />
-      <div className="flex-1 flex flex-col h-screen overflow-y-auto relative">
-        {/* Decorative background elements */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-[150px] pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none"></div>
-        
-        <OrgNavbar />
-        
-        <main className="flex-1 p-8 relative z-10">
+  <OrgSidebar />
+  <div className="flex-1 flex flex-col h-screen overflow-y-auto relative">
+    {/* Decorative background elements */}
+    <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-[150px] pointer-events-none"></div>
+    <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+    
+    {/* 1. نغلفو الـ Navbar بـ div عندها z-index عالي بزاف */}
+    <div className="relative z-[100]">
+      <OrgNavbar />
+    </div>
+    
+    {/* 2. الـ main نردوه z-0 أو نحيدو ليه الـ z-index كاع */}
+    <main className="flex-1 p-8 relative z-0">
           {/* Breadcrumbs / Back button */}
           <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <Link 
