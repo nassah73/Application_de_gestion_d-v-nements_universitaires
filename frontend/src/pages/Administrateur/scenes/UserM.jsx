@@ -415,7 +415,7 @@ const UserManagement = () => {
             Gestion des membres de l'équipe et des accès système
           </Typography>
         </Box>
-        <Button
+        {/*<Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={() => handleOpenDialog()}
@@ -431,7 +431,7 @@ const UserManagement = () => {
           }}
         >
           Ajouter un Administration
-        </Button>
+        </Button>*/}
       </Box>
 
       {/* Stat Cards */}
