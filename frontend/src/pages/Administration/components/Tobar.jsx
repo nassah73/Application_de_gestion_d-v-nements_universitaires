@@ -1,5 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
@@ -98,10 +99,55 @@ const NotifPanel = ({ onClear }) => (
 
 // ─── User Menu ────────────────────────────────────────────────────────────────
 
-const UserMenu = () => (
+const UserMenu = () => {
+  const navigate = useNavigate();
 
-   <div></div>
-);
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    navigate('/auth/login');
+  };
+
+  return (
+    <Box sx={{
+      position: "absolute", top: "calc(100% + 8px)", right: 0,
+      width: 200, background: "#111c35",
+      border: "1px solid rgba(255,255,255,0.08)", borderRadius: "12px",
+      overflow: "hidden", zIndex: 999,
+      boxShadow: "0 16px 40px rgba(0,0,0,0.4)",
+    }}>
+      <Box sx={{ p: "8px" }}>
+        <Box onClick={() => navigate('/responsable/settings')} sx={{
+          p: "10px 12px", display: "flex", alignItems: "center", gap: "10px",
+          borderRadius: "8px", cursor: "pointer", color: "rgba(255,255,255,0.8)",
+          "&:hover": { background: "rgba(205,115,41,0.1)" },
+        }}>
+          <IconUser />
+          <Typography sx={{ fontSize: "12px", fontWeight: 500 }}>Mon Profil</Typography>
+        </Box>
+        
+        <Box onClick={() => navigate('/responsable/settings')} sx={{
+          p: "10px 12px", display: "flex", alignItems: "center", gap: "10px",
+          borderRadius: "8px", cursor: "pointer", color: "rgba(255,255,255,0.8)",
+          "&:hover": { background: "rgba(205,115,41,0.1)" },
+        }}>
+          <IconSettings />
+          <Typography sx={{ fontSize: "12px", fontWeight: 500 }}>Sécurité</Typography>
+        </Box>
+        
+        <Box sx={{ height: 1, background: "rgba(255,255,255,0.06)", my: "4px" }} />
+        
+        <Box onClick={handleLogout} sx={{
+          p: "10px 12px", display: "flex", alignItems: "center", gap: "10px",
+          borderRadius: "8px", cursor: "pointer", color: "#ef4444",
+          "&:hover": { background: "rgba(239,68,68,0.1)" },
+        }}>
+          <IconLogout />
+          <Typography sx={{ fontSize: "12px", fontWeight: 500 }}>Déconnexion</Typography>
+        </Box>
+      </Box>
+    </Box>
+  );
+};
 
 // ─── Topbar ───────────────────────────────────────────────────────────────────
 
@@ -231,7 +277,7 @@ const Topbar = ({ isMobile }) => {
                 <IconChevron />
               </Box>
             </Box>
-            {menuOpen }  {/*&& <UserMenu />*/}
+            {menuOpen && <UserMenu />}
           </Box>
         )}
 

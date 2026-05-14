@@ -48,7 +48,7 @@ const AdminSettings = () => {
         const userStr = localStorage.getItem("user");
 
         if (!userStr) {
-          navigate("/login");
+          navigate("/auth/login");
           return;
         }
 
@@ -339,9 +339,6 @@ const AdminSettings = () => {
                           {profileForm.nom}
                         </h2>
 
-                        <p className="text-orange-400 text-sm font-semibold">
-                          SUPER ADMINISTRATEUR
-                        </p>
                       </div>
                     </div>
 
