@@ -151,7 +151,7 @@ const Topbar = ({ isMobile }) => {
       }}>
         <IconSearch />
         <Typography component="input"
-          placeholder={isMobile ? "Rechercher..." : "Rechercher des événements, participants..."}
+          placeholder={isMobile ? "Rechercher..." : "Rechercher ..."}
           sx={{
             background: "none", border: "none", outline: "none",
             color: "rgba(255,255,255,0.5)", fontSize: "13px",
@@ -208,7 +208,7 @@ const Topbar = ({ isMobile }) => {
                   display: "flex", alignItems: "center", justifyContent: "center",
                   fontSize: "12px", fontWeight: 700, color: "#fff",
                 }}>
-                  SA
+                  A
                 </Box>
                 <Box sx={{
                   position: "absolute", bottom: -2, right: -2,
@@ -218,7 +218,7 @@ const Topbar = ({ isMobile }) => {
               </Box>
               <Box>
                 <Typography sx={{ fontSize: "12px", fontWeight: 600, color: "#fff", lineHeight: 1.2 }}>
-                SUPER ADMINISTRATEUR
+                ADMINISTRATION
                 </Typography>
                 <Typography sx={{ fontSize: "10px", color: "#22c55e" }}>
                   ● en ligne
