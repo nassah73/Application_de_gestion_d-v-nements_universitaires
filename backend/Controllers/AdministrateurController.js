@@ -69,6 +69,41 @@ exports.getAllAdministrations = async (req, res) => {
     }
 };
 
+exports.updateAdministrateur = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { email, password } = req.body;
+        
+        const updateData = {};
+        if (email) updateData.email = email;
+        if (password) updateData.password = await bcrypt.hash(password, 10);
+        
+        await Administrateur.findByIdAndUpdate(id, updateData);
+        res.status(200).json({ message: "Administrateur mis à jour avec succès!" });
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
+exports.updateAdministration = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { prenom, nom, telephone, email, password } = req.body;
+        
+        const updateData = {};
+        if (prenom) updateData.prenom = prenom;
+        if (nom) updateData.nom = nom;
+        if (telephone) updateData.telephone = telephone;
+        if (email) updateData.email = email;
+        if (password) updateData.password = await bcrypt.hash(password, 10);
+        
+        await Administration.findByIdAndUpdate(id, updateData);
+        res.status(200).json({ message: "Compte administration mis à jour avec succès!" });
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
 exports.deleteAdministrateur = async (req, res) => {
     try {
         const { id } = req.params;

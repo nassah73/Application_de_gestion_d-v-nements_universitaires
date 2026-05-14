@@ -2,7 +2,59 @@ const express = require('express');
 const router = express.Router();
 const Registration = require('../models/My_Events'); 
 const Student = require('../models/Student'); 
+const Event = require('../models/Event');
+const Organisateur = require('../models/Organisateur');
 const mongoose = require('mongoose');
+
+router.get('/admin-stats', async (req, res) => {
+    try {
+        const totalEvents = await Event.countDocuments();
+        const activeStudents = await Student.countDocuments();
+        const totalOrganizers = await Organisateur.countDocuments();
+        const pendingEvents = await Event.countDocuments({ status: 'pending' });
+
+        // Stats by category for the pie chart
+        const categoryStats = await Event.aggregate([
+            { $group: { _id: '$category', value: { $sum: 1 } } }
+        ]);
+
+        // Colors for the pie chart categories
+        const colors = ['#cd7329', '#6366F1', '#10B981', '#F59E0B', '#EC4899', '#06B6D4'];
+        const formattedCategories = categoryStats.map((item, index) => ({
+            name: item._id,
+            value: item.value,
+            color: colors[index % colors.length]
+        }));
+
+        // Monthly engagement (registrations per month)
+        const monthlyStats = await Registration.aggregate([
+            { 
+                $group: { 
+                    _id: { $month: "$registrationDate" },
+                    engagement: { $sum: 1 } 
+                } 
+            },
+            { $sort: { "_id": 1 } }
+        ]);
+
+        const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        const formattedMonthly = monthlyStats.map(item => ({
+            name: monthNames[item._id - 1], 
+            engagement: item.engagement
+        }));
+
+        res.json({
+            totalEvents,
+            activeStudents,
+            totalOrganizers,
+            pendingEvents,
+            categoryStats: formattedCategories,
+            monthlyActivity: formattedMonthly
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
 router.get('/my-stats', async (req, res) => {
     try {

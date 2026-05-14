@@ -6,6 +6,8 @@ router.post('/create-administrateur', administrateurController.createAdministrat
 router.post('/create-administration', administrateurController.createAdministration);
 router.get('/administrateurs', administrateurController.getAllAdministrateurs);
 router.get('/administrations', administrateurController.getAllAdministrations);
+router.put('/administrateur/:id', administrateurController.updateAdministrateur);
+router.put('/administration/:id', administrateurController.updateAdministration);
 router.delete('/administrateur/:id', administrateurController.deleteAdministrateur);
 router.delete('/administration/:id', administrateurController.deleteAdministration);
 

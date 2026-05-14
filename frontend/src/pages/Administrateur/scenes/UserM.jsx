@@ -21,12 +21,12 @@ import {
   Fade,
   InputAdornment,
   LinearProgress,
+  CircularProgress
 } from "@mui/material";
 import axios from 'axios';
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../theme";
-import { loadUsers, saveUsers } from "../data/userStorage";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useEffect } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
@@ -34,11 +34,10 @@ import SearchIcon from "@mui/icons-material/Search";
 import PeopleAltIcon from "@mui/icons-material/PeopleAlt";
 import BadgeIcon from "@mui/icons-material/Badge";
 import ComputerIcon from "@mui/icons-material/Computer";
-import CodeIcon from "@mui/icons-material/Code";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
+import LockIcon from "@mui/icons-material/Lock";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import LockIcon from "@mui/icons-material/Lock";
 
 // ── Helpers ──────────────────────────────────────────────────────────────
 const getInitials = (name) => {
@@ -50,6 +49,11 @@ const getInitials = (name) => {
 };
 
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
+const maskPassword = (pw) => {
+  if (!pw) return "";
+  return "•".repeat(8);
+};
 
 const getPasswordStrength = (password) => {
   if (!password) return { score: 0, label: "", color: "#64748b" };
@@ -67,12 +71,9 @@ const getPasswordStrength = (password) => {
   return { score: 100, label: "Très fort", color: "#10b981" };
 };
 
-const ROLE_OPTIONS = ["Administration", "IT", "Développeur", "...."];
+const ROLE_OPTIONS = ["Administrateur", "Administration"];
 
-const maskPassword = (pw) => {
-  if (!pw) return "";
-  return "•".repeat(pw.length);
-};
+const API_BASE_URL = "http://localhost:5000";
 
 // ── Stat Card ────────────────────────────────────────────────────────────
 const StatCard = ({ icon, label, value, accentColor, bgColor }) => (
@@ -116,84 +117,79 @@ const StatCard = ({ icon, label, value, accentColor, bgColor }) => (
 
 // ── Main Component ───────────────────────────────────────────────────────
 const UserManagement = () => {
-
-   const handelclick = async () => {
-  // 1. Validation بسيطة قبل ما نصيفطو
-  if (!formData.name || !formData.email || (!editMode && !formData.password) || !formData.role) {
-    setSnackbar({
-      open: true,
-      message: "Veuillez remplir tous les champs obligatoires",
-      severity: "error",
-    });
-    return;
-  }
-
-  try {
-    // 2. إعداد البيانات والـ URL
-    const url = editMode 
-      ? `http://localhost:5000/api/administrateur/updateAdmin/${formData.id}` 
-      : "http://localhost:5000/api/administrateur/ajoutAdmin";
-
-    // 3. عيط لـ Axios (POST للزيادة، PUT للتعديل)
-    const response = editMode 
-      ? await axios.put(url, formData) 
-      : await axios.post(url, formData);
-
-    // 4. Axios كيحط النتيجة ديما فـ response.data
-    if (response.status === 200 || response.status === 201) {
-      setSnackbar({
-        open: true,
-        message: editMode ? "Modifié avec succès !" : "Ajouté avec succès !",
-        severity: "success",
-      });
-
-      // هنا خاصك تزيد الـ logic باش تحدد الـ List (مثلا عيط لـ fetchUsers ثانية)
-      // fetchUsers(); 
-
-      handleCloseDialog(); // سد الـ Form
-    }
-  } catch (error) {
-    // 5. تدبير الأخطاء (مثلا إلا الـ Server طافي ولا Email ديجا كاين)
-    const errorMsg = error.response?.data?.message || "Erreur lors de l'opération";
-    
-    setSnackbar({
-      open: true,
-      message: errorMsg,
-      severity: "error",
-    });
-    console.error("API Error:", error);
-  }
-};
-
-
-
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const [users, setUsers] = useState(() => loadUsers());
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  const [formData, setFormData] = useState({ name: "", email: "", role: "", password: "" });
+  const [formData, setFormData] = useState({ prenom: "", nom: "", telephone: "", email: "", role: "Administration", password: "" });
   const [revealedPasswords, setRevealedPasswords] = useState({});
-  const [showPassword, setShowPassword] = useState(false);
   const [formErrors, setFormErrors] = useState({});
-  const [deleteConfirm, setDeleteConfirm] = useState({ open: false, userId: null });
+  const [deleteConfirm, setDeleteConfirm] = useState({ open: false, user: null });
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
   const [searchText, setSearchText] = useState("");
 
-  // ── Stats ────────────────────────────────────────────────────────────
-  const stats = useMemo(() => {
-    const total = users.length;
-    const adminCount = users.filter((u) => u.role === "Administration" || u.role === "Administrateur").length;
-    const itCount = users.filter((u) => u.role === "IT").length;
-    const devCount = users.filter((u) => u.role === "Developer").length;
-    return { total, adminCount, itCount, devCount };
-  }, [users]);
+  // ── Fetch Users ────────────────────────────────────────────────────────
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const [adminsRes, administrationsRes] = await Promise.all([
+        axios.get(`${API_BASE_URL}/api/administrateur/administrateurs`),
+        axios.get(`${API_BASE_URL}/api/administrateur/administrations`)
+      ]);
+
+      const admins = adminsRes.data.map((admin, index) => ({
+        id: index + 1,
+        _id: admin._id,
+        name: "Administrateur",
+        email: admin.email,
+        role: "Administrateur",
+        type: "administrateur"
+      }));
+
+      const administrations = administrationsRes.data.map((admin, index) => ({
+        id: adminsRes.data.length + index + 1,
+        _id: admin._id,
+        name: `${admin.prenom} ${admin.nom}`,
+        prenom: admin.prenom,
+        nom: admin.nom,
+        telephone: admin.telephone,
+        email: admin.email,
+        role: "Administration",
+        type: "administration"
+      }));
+
+      setUsers([...admins, ...administrations]);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      setSnackbar({
+        open: true,
+        message: "Erreur lors du chargement des utilisateurs",
+        severity: "error"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   const togglePasswordVisibility = (id) => {
     setRevealedPasswords((prev) => ({ ...prev, [id]: !prev[id] }));
   };
+
+  // ── Stats ────────────────────────────────────────────────────────────
+  const stats = useMemo(() => {
+    const total = users.length;
+    const adminCount = users.filter((u) => u.role === "Administrateur").length;
+    const adminTeamCount = users.filter((u) => u.role === "Administration").length;
+    return { total, adminCount, adminTeamCount };
+  }, [users]);
 
   // ── Dialog handlers ──────────────────────────────────────────────────
   const handleOpenDialog = (user = null) => {
@@ -201,82 +197,100 @@ const UserManagement = () => {
     if (user) {
       setEditMode(true);
       setCurrentUser(user);
-      setFormData({ name: user.name, email: user.email, role: user.role, password: "" });
+      if (user.type === "administrateur") {
+        setFormData({ email: user.email, role: "Administrateur", password: "" });
+      } else {
+        setFormData({
+          prenom: user.prenom,
+          nom: user.nom,
+          telephone: user.telephone,
+          email: user.email,
+          role: "Administration",
+          password: ""
+        });
+      }
     } else {
       setEditMode(false);
       setCurrentUser(null);
-      setFormData({ name: "", email: "", role: "", password: "" });
+      setFormData({ prenom: "", nom: "", telephone: "", email: "", role: "Administration", password: "" });
     }
     setOpenDialog(true);
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
-    setFormData({ name: "", email: "", role: "", password: "" });
-    setShowPassword(false);
+    setFormData({ prenom: "", nom: "", telephone: "", email: "", role: "Administration", password: "" });
     setFormErrors({});
     setCurrentUser(null);
   };
 
-  // ── Validation & Save ────────────────────────────────────────────────
-  const validate = () => {
+  // ── Save User ────────────────────────────────────────────────────────
+  const handleSave = async () => {
     const errors = {};
-    if (!formData.name.trim()) errors.name = "Le nom est requis";
+    if (formData.role === "Administration") {
+      if (!formData.prenom.trim()) errors.prenom = "Le prénom est requis";
+      if (!formData.nom.trim()) errors.nom = "Le nom est requis";
+      if (!formData.telephone.trim()) errors.telephone = "Le téléphone est requis";
+    }
     if (!formData.email.trim()) errors.email = "L'email est requis";
     else if (!isValidEmail(formData.email)) errors.email = "Email invalide";
-    if (!formData.role) errors.role = "Le rôle est requis";
-
-    // Password: required on create, optional on edit
     if (!editMode && !formData.password) errors.password = "Le mot de passe est requis";
     else if (formData.password && formData.password.length < 6) errors.password = "Minimum 6 caractères";
 
-    // Check for duplicate email (exclude current user in edit mode)
-    const duplicate = users.find(
-      (u) => u.email.toLowerCase() === formData.email.toLowerCase() && (!editMode || u.id !== currentUser?.id)
-    );
-    if (duplicate) errors.email = "Cet email est déjà utilisé";
-
     setFormErrors(errors);
-    return Object.keys(errors).length === 0;
-  };
+    if (Object.keys(errors).length > 0) return;
 
-  const handleSave = () => {
-    if (!validate()) return;
-
-    if (editMode && currentUser) {
-      const updateData = { ...formData };
-      if (!updateData.password) delete updateData.password; // keep existing password if blank
-      setUsers((prev) => {
-        const updated = prev.map((u) => (u.id === currentUser.id ? { ...u, ...updateData } : u));
-        saveUsers(updated);
-        return updated;
-      });
-      setSnackbar({ open: true, message: "Utilisateur mis à jour avec succès", severity: "success" });
-    } else {
-      const newUser = { id: Math.max(0, ...users.map((u) => u.id)) + 1, ...formData };
-      setUsers((prev) => {
-        const updated = [...prev, newUser];
-        saveUsers(updated);
-        return updated;
-      });
-      setSnackbar({ open: true, message: "Utilisateur ajouté avec succès", severity: "success" });
+    try {
+      if (editMode && currentUser) {
+        const updateData = { ...formData };
+        if (!updateData.password) delete updateData.password;
+        
+        if (currentUser.type === "administrateur") {
+          await axios.put(`${API_BASE_URL}/api/administrateur/administrateur/${currentUser._id}`, updateData);
+        } else {
+          await axios.put(`${API_BASE_URL}/api/administrateur/administration/${currentUser._id}`, updateData);
+        }
+        
+        setSnackbar({ open: true, message: "Utilisateur mis à jour avec succès", severity: "success" });
+      } else {
+        if (formData.role === "Administrateur") {
+          await axios.post(`${API_BASE_URL}/api/administrateur/create-administrateur`, { email: formData.email, password: formData.password });
+        } else {
+          await axios.post(`${API_BASE_URL}/api/administrateur/create-administration`, formData);
+        }
+        
+        setSnackbar({ open: true, message: "Utilisateur ajouté avec succès", severity: "success" });
+      }
+      
+      handleCloseDialog();
+      fetchUsers();
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || "Erreur lors de l'opération";
+      setSnackbar({ open: true, message: errorMsg, severity: "error" });
+      console.error("API Error:", error);
     }
-    handleCloseDialog();
   };
 
   // ── Delete ───────────────────────────────────────────────────────────
-  const handleDeleteClick = (id) => setDeleteConfirm({ open: true, userId: id });
+  const handleDeleteClick = (user) => setDeleteConfirm({ open: true, user });
 
-  const handleConfirmDelete = () => {
-    setUsers((prev) => {
-      const filtered = prev.filter((u) => u.id !== deleteConfirm.userId);
-      // Re-index IDs sequentially: 1, 2, 3, ...
-      const updated = filtered.map((u, index) => ({ ...u, id: index + 1 }));
-      saveUsers(updated);
-      return updated;
-    });
-    setSnackbar({ open: true, message: "Utilisateur supprimé avec succès", severity: "success" });
-    setDeleteConfirm({ open: false, userId: null });
+  const handleConfirmDelete = async () => {
+    try {
+      if (deleteConfirm.user.type === "administrateur") {
+        await axios.delete(`${API_BASE_URL}/api/administrateur/administrateur/${deleteConfirm.user._id}`);
+      } else {
+        await axios.delete(`${API_BASE_URL}/api/administrateur/administration/${deleteConfirm.user._id}`);
+      }
+      
+      setSnackbar({ open: true, message: "Utilisateur supprimé avec succès", severity: "success" });
+      fetchUsers();
+    } catch (error) {
+      const errorMsg = error.response?.data?.message || "Erreur lors de la suppression";
+      setSnackbar({ open: true, message: errorMsg, severity: "error" });
+      console.error("API Error:", error);
+    } finally {
+      setDeleteConfirm({ open: false, user: null });
+    }
   };
 
   // ── Filtering ────────────────────────────────────────────────────────
@@ -323,12 +337,23 @@ const UserManagement = () => {
         </Box>
       ),
     },
-    { field: "role", headerName: "Rôle", flex: 0.7, minWidth: 120 },
+    { field: "role", headerName: "Rôle", flex: 0.6, minWidth: 120 },
+    {
+      field: "telephone",
+      headerName: "Téléphone",
+      flex: 0.7,
+      minWidth: 140,
+      renderCell: ({ row }) => (
+        <Typography sx={{ fontSize: "13px", color: colors.grey[300] }}>
+          {row.telephone || "-"}
+        </Typography>
+      ),
+    },
     {
       field: "password",
       headerName: "Mot de passe",
-      flex: 1,
-      minWidth: 180,
+      flex: 0.8,
+      minWidth: 160,
       sortable: false,
       renderCell: ({ row }) => {
         const isRevealed = revealedPasswords[row.id];
@@ -346,20 +371,8 @@ const UserManagement = () => {
                 userSelect: isRevealed ? "text" : "none",
               }}
             >
-              {isRevealed ? row.password : maskPassword(row.password)}
+              {isRevealed ? "Mot de passe visible" : maskPassword("password")}
             </Typography>
-            <Tooltip title={isRevealed ? "Masquer" : "Afficher"} arrow>
-              <IconButton
-                size="small"
-                onClick={() => togglePasswordVisibility(row.id)}
-                sx={{
-                  color: isRevealed ? colors.greenAccent[400] : colors.grey[500],
-                  "&:hover": { backgroundColor: colors.grey[700] + "30" },
-                }}
-              >
-                {isRevealed ? <VisibilityOffIcon sx={{ fontSize: 16 }} /> : <VisibilityIcon sx={{ fontSize: 16 }} />}
-              </IconButton>
-            </Tooltip>
           </Box>
         );
       },
@@ -367,42 +380,67 @@ const UserManagement = () => {
     {
       field: "actions",
       headerName: "Actions",
-      width: 120,
+      width: 220,
       sortable: false,
-      renderCell: (params) => (
-        <Box sx={{ display: "flex", gap: "6px" }}>
-          <Tooltip title="Modifier" arrow>
-            <IconButton
-              size="small"
-              onClick={() => handleOpenDialog(params.row)}
-              sx={{
-                color: colors.blueAccent[400],
-                backgroundColor: colors.blueAccent[400] + "12",
-                "&:hover": { backgroundColor: colors.blueAccent[400] + "25" },
-              }}
-            >
-              <EditIcon sx={{ fontSize: 18 }} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Supprimer" arrow>
-            <IconButton
-              size="small"
-              onClick={() => handleDeleteClick(params.row.id)}
-              sx={{
-                color: "#ef4444",
-                backgroundColor: "#ef444412",
-                "&:hover": { backgroundColor: "#ef444425" },
-              }}
-            >
-              <DeleteIcon sx={{ fontSize: 18 }} />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      ),
+      renderCell: (params) => {
+        const isRevealed = revealedPasswords[params.row.id];
+        
+        return (
+          <Box sx={{ display: "flex", gap: "6px" }}>
+            <Tooltip title={isRevealed ? "Masquer le mot de passe" : "Afficher le mot de passe"} arrow>
+              <IconButton
+                size="small"
+                onClick={() => togglePasswordVisibility(params.row.id)}
+                sx={{
+                  color: colors.grey[400],
+                  backgroundColor: colors.grey[400] + "12",
+                  "&:hover": { backgroundColor: colors.grey[400] + "25" },
+                }}
+              >
+                {isRevealed ? <VisibilityOffIcon sx={{ fontSize: 18 }} /> : <VisibilityIcon sx={{ fontSize: 18 }} />}
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Modifier" arrow>
+              <IconButton
+                size="small"
+                onClick={() => handleOpenDialog(params.row)}
+                sx={{
+                  color: colors.blueAccent[400],
+                  backgroundColor: colors.blueAccent[400] + "12",
+                  "&:hover": { backgroundColor: colors.blueAccent[400] + "25" },
+                }}
+              >
+                <EditIcon sx={{ fontSize: 18 }} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Supprimer" arrow>
+              <IconButton
+                size="small"
+                onClick={() => handleDeleteClick(params.row)}
+                sx={{
+                  color: "#ef4444",
+                  backgroundColor: "#ef444412",
+                  "&:hover": { backgroundColor: "#ef444425" },
+                }}
+              >
+                <DeleteIcon sx={{ fontSize: 18 }} />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        );
+      },
     },
   ];
 
   // ── Render ───────────────────────────────────────────────────────────
+  if (loading) {
+    return (
+      <Box sx={{ p: "24px", minHeight: "100%", backgroundColor: colors.primary[500], display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   return (
     <Box sx={{ p: "24px", height: "100%", display: "flex", flexDirection: "column", backgroundColor: colors.primary[500] }}>
       {/* Header */}
@@ -415,7 +453,7 @@ const UserManagement = () => {
             Gestion des membres de l'équipe et des accès système
           </Typography>
         </Box>
-        {/*<Button
+        <Button
           variant="contained"
           startIcon={<AddIcon />}
           onClick={() => handleOpenDialog()}
@@ -430,16 +468,15 @@ const UserManagement = () => {
             "&:hover": { backgroundColor: colors.greenAccent[700], boxShadow: `0 6px 20px ${colors.greenAccent[600]}50` },
           }}
         >
-          Ajouter un Administration
-        </Button>*/}
+          Ajouter un utilisateur
+        </Button>
       </Box>
 
       {/* Stat Cards */}
       <Box sx={{ display: "flex", gap: "16px", mb: "24px", flexWrap: "wrap" }}>
-        <StatCard icon={<PeopleAltIcon />} label="Total administrations" value={stats.total} accentColor="#cd7329" bgColor={colors.primary[400]} />
-        <StatCard icon={<BadgeIcon />} label="Administration" value={stats.adminCount} accentColor="#10b981" bgColor={colors.primary[400]} />
-        <StatCard icon={<ComputerIcon />} label="IT" value={stats.itCount} accentColor="#6366f1" bgColor={colors.primary[400]} />
-        <StatCard icon={<CodeIcon />} label="Développeurs" value={stats.devCount} accentColor="#94a3b8" bgColor={colors.primary[400]} />
+        <StatCard icon={<PeopleAltIcon />} label="Total" value={stats.total} accentColor="#cd7329" bgColor={colors.primary[400]} />
+        <StatCard icon={<BadgeIcon />} label="Administrateurs" value={stats.adminCount} accentColor="#10b981" bgColor={colors.primary[400]} />
+        <StatCard icon={<ComputerIcon />} label="Équipe Admin" value={stats.adminTeamCount} accentColor="#6366f1" bgColor={colors.primary[400]} />
       </Box>
 
       {/* Search bar */}
@@ -544,19 +581,72 @@ const UserManagement = () => {
         </DialogTitle>
         <DialogContent sx={{ pt: "20px !important" }}>
           <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-            <TextField
-              fullWidth
-              label="Nom complet"
-              variant="filled"
-              value={formData.name}
-              error={!!formErrors.name}
-              helperText={formErrors.name}
-              onChange={(e) => {
-                setFormData({ ...formData, name: e.target.value });
-                if (formErrors.name) setFormErrors({ ...formErrors, name: "" });
-              }}
-              sx={{ "& .MuiFilledInput-root": { backgroundColor: colors.primary[500], borderRadius: "8px", "&:before, &:after": { display: "none" } } }}
-            />
+            <FormControl fullWidth variant="filled" error={!!formErrors.role}>
+              <InputLabel>Rôle</InputLabel>
+              <Select
+                value={formData.role}
+                onChange={(e) => {
+                  setFormData({ ...formData, role: e.target.value });
+                  if (formErrors.role) setFormErrors({ ...formErrors, role: "" });
+                }}
+                sx={{ backgroundColor: colors.primary[500], borderRadius: "8px" }}
+              >
+                {ROLE_OPTIONS.map((r) => (
+                  <MenuItem key={r} value={r}>
+                    {r}
+                  </MenuItem>
+                ))}
+              </Select>
+              {formErrors.role && (
+                <Typography sx={{ color: "#ef4444", fontSize: "12px", mt: "4px", ml: "14px" }}>
+                  {formErrors.role}
+                </Typography>
+              )}
+            </FormControl>
+
+            {formData.role === "Administration" && (
+              <>
+                <TextField
+                  fullWidth
+                  label="Prénom"
+                  variant="filled"
+                  value={formData.prenom}
+                  error={!!formErrors.prenom}
+                  helperText={formErrors.prenom}
+                  onChange={(e) => {
+                    setFormData({ ...formData, prenom: e.target.value });
+                    if (formErrors.prenom) setFormErrors({ ...formErrors, prenom: "" });
+                  }}
+                  sx={{ "& .MuiFilledInput-root": { backgroundColor: colors.primary[500], borderRadius: "8px", "&:before, &:after": { display: "none" } } }}
+                />
+                <TextField
+                  fullWidth
+                  label="Nom"
+                  variant="filled"
+                  value={formData.nom}
+                  error={!!formErrors.nom}
+                  helperText={formErrors.nom}
+                  onChange={(e) => {
+                    setFormData({ ...formData, nom: e.target.value });
+                    if (formErrors.nom) setFormErrors({ ...formErrors, nom: "" });
+                  }}
+                  sx={{ "& .MuiFilledInput-root": { backgroundColor: colors.primary[500], borderRadius: "8px", "&:before, &:after": { display: "none" } } }}
+                />
+                <TextField
+                  fullWidth
+                  label="Téléphone"
+                  variant="filled"
+                  value={formData.telephone}
+                  error={!!formErrors.telephone}
+                  helperText={formErrors.telephone}
+                  onChange={(e) => {
+                    setFormData({ ...formData, telephone: e.target.value });
+                    if (formErrors.telephone) setFormErrors({ ...formErrors, telephone: "" });
+                  }}
+                  sx={{ "& .MuiFilledInput-root": { backgroundColor: colors.primary[500], borderRadius: "8px", "&:before, &:after": { display: "none" } } }}
+                />
+              </>
+            )}
             <TextField
               fullWidth
               label="Email"
@@ -575,7 +665,7 @@ const UserManagement = () => {
               <TextField
                 fullWidth
                 label={editMode ? "Nouveau mot de passe (optionnel)" : "Mot de passe"}
-                type={showPassword ? "text" : "password"}
+                type="password"
                 variant="filled"
                 value={formData.password}
                 error={!!formErrors.password}
@@ -588,18 +678,6 @@ const UserManagement = () => {
                   startAdornment: (
                     <InputAdornment position="start">
                       <LockIcon sx={{ color: colors.grey[400], fontSize: 20 }} />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
-                        edge="end"
-                        size="small"
-                        sx={{ color: colors.grey[400] }}
-                      >
-                        {showPassword ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}
-                      </IconButton>
                     </InputAdornment>
                   ),
                 }}
@@ -630,29 +708,6 @@ const UserManagement = () => {
                 );
               })()}
             </Box>
-            <FormControl fullWidth variant="filled" error={!!formErrors.role}>
-              <InputLabel>Rôle</InputLabel>
-              <Select
-                value={formData.role}
-                onChange={(e) => {
-                  setFormData({ ...formData, role: e.target.value });
-                  if (formErrors.role) setFormErrors({ ...formErrors, role: "" });
-                }}
-                sx={{ backgroundColor: colors.primary[500], borderRadius: "8px" }}
-              >
-                {ROLE_OPTIONS.map((r) => (
-                  <MenuItem key={r} value={r}>
-                    {r}
-                  </MenuItem>
-                ))}
-              </Select>
-              {formErrors.role && (
-                <Typography sx={{ color: "#ef4444", fontSize: "12px", mt: "4px", ml: "14px" }}>
-                  {formErrors.role}
-                </Typography>
-              )}
-            </FormControl>
-
           </Box>
         </DialogContent>
         <DialogActions sx={{ p: 3, gap: "8px" }}>
@@ -683,7 +738,7 @@ const UserManagement = () => {
       {/* ── Delete Confirmation Dialog ────────────────────────────────── */}
       <Dialog
         open={deleteConfirm.open}
-        onClose={() => setDeleteConfirm({ open: false, userId: null })}
+        onClose={() => setDeleteConfirm({ open: false, user: null })}
         TransitionComponent={Fade}
         slotProps={{
           paper: {
@@ -708,7 +763,7 @@ const UserManagement = () => {
         </DialogContent>
         <DialogActions sx={{ p: 3, gap: "8px" }}>
           <Button
-            onClick={() => setDeleteConfirm({ open: false, userId: null })}
+            onClick={() => setDeleteConfirm({ open: false, user: null })}
             sx={{ color: colors.grey[400], borderRadius: "10px", px: 3, "&:hover": { backgroundColor: colors.grey[700] + "30" } }}
           >
             Annuler

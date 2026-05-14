@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import axios from 'axios';
 import OrgSidebar from './components/OrgSidebar';
 import OrgNavbar from './components/OrgNavbar';
@@ -20,8 +20,21 @@ const CreateEvent = ({ setActiveTab }) => {
   needsHelp: 'no', 
 });
 
+  const [categories, setCategories] = useState([]);
   const [coverImage, setCoverImage] = useState({ url: null, rawFile: null });
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await axios.get('http://localhost:5000/api/categories');
+        setCategories(res.data);
+      } catch (err) {
+        console.error("Erreur chargement catégories:", err);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -135,17 +148,12 @@ const handleSubmit = async (e) => {
                   </label>
                   <select name="category" required className="w-full px-6 py-4 rounded-2xl border border-white/5 bg-gray-700 outline-none appearance-none cursor-pointer" onChange={handleChange}>
                     <option value="">Choisir une catégorie...</option>
-                    <option value="Informatique">Informatique</option>
-                    <option value="Académique">Académique</option>
-                    <option value="Sciences">Sciences</option>
-                    <option value="Culturel">Culturel</option>
-                    <option value="Sportif">Sportif</option>
-                    <option value="Économique">Économique</option>
-                    <option value="الشريعة">الشريعة</option>
-                    <option value="Environnement">Environnement</option>
-                    <option value="Développement personnel">Développement personnel</option>
-                    <option value="Social">Social</option>
-                </select>
+                    {categories.map((cat) => (
+                      <option key={cat._id || cat} value={cat.name || cat}>
+                        {cat.name || cat}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div className="space-y-3">
