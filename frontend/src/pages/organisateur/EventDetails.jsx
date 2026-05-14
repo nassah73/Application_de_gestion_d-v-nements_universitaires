@@ -21,7 +21,8 @@ import {
   CheckCircle2,
   XCircle,
   RotateCcw,
-  Layout
+  Layout,
+  ScanQrCode
 } from 'lucide-react';
 
 const EventDetails = () => {
@@ -526,6 +527,16 @@ const EventDetails = () => {
                 </div>
 
                 <div className="flex items-center gap-4">
+                  {isPublished && (
+                    <Link 
+                      to={`/organisateur/scanner/${id}`}
+                      className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-orange-500 text-white font-black text-xs uppercase tracking-widest hover:bg-orange-600 transition-all shadow-lg active:scale-95 group/scan"
+                    >
+                      <ScanQrCode size={18} strokeWidth={2.5} className="group-hover/scan:scale-110 transition-transform" />
+                      Scanner Présences
+                    </Link>
+                  )}
+
                   {isPublished && (
                     <Link 
                       to={`/organisateur/editer-evenement/${id}`}
