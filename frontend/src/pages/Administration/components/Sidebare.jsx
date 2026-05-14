@@ -67,7 +67,7 @@ export default function Sidebare() {
         <div
           onClick={() => navigate('/auth/login')}
           className="flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all"
-          style={{ color: '#e07a20' }}
+          style={{ color: 'red' }}
           onMouseEnter={e => e.currentTarget.style.background = 'rgba(224,122,32,0.1)'}
           onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
         >
