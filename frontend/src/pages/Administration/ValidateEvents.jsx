@@ -366,6 +366,20 @@ if (loading) {
                       </p>
                     </div>
                   </div>
+
+                  {viewEvent.registrationLink && (
+                    <div className="flex items-center gap-3 text-slate-600">
+                      <div className="p-2 bg-slate-50 rounded-lg text-slate-400">
+                        <ExternalLink size={18} />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Lien Inscription</p>
+                        <a href={viewEvent.registrationLink} target="_blank" rel="noopener noreferrer" className="text-orange-500 font-semibold text-sm hover:underline">
+                          Voir le lien
+                        </a>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
