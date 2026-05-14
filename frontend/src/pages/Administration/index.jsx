@@ -261,20 +261,6 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-
-          {/* Recent Activity */}
-          <div className="rounded-2xl border overflow-hidden" style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.08)' }}>
-            <div className="px-6 py-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
-              <h3 className="font-bold text-white text-sm uppercase tracking-wider">Recent Activity</h3>
-            </div>
-            <div className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
-              <ActivityItem icon={<CheckCircle />} iconColor="#10B981" title="Event Validated"       desc="Science Fair 2026 approved by Administration"     time="5 min ago" />
-              <ActivityItem icon={<UserPlus   />} iconColor={ORANGE}   title="New Organizer Request" desc="Computer Science Club requested organizer status"  time="12 min ago" />
-              <ActivityItem icon={<XCircle    />} iconColor="#ef4444"  title="Event Cancelled"       desc="Basketball Tournament postponed"                   time="1 hour ago" />
-              <ActivityItem icon={<CalendarCheck/>} iconColor="#6366F1" title="Event Published"      desc="Cultural Night 2026 is now live for registration" time="2 hours ago" />
-            </div>
-          </div>
-
         </div>
       </main>
     </div>
