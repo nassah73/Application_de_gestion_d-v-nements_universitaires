@@ -432,7 +432,7 @@ const UserManagement = () => {
     },
   ];
 
-  // ── Render ───────────────────────────────────────────────────────────
+  // ── Render ─────────────────── ────────────────────────────────────────
   if (loading) {
     return (
       <Box sx={{ p: "24px", minHeight: "100%", backgroundColor: colors.primary[500], display: "flex", justifyContent: "center", alignItems: "center" }}>
@@ -444,33 +444,7 @@ const UserManagement = () => {
   return (
     <Box sx={{ p: "24px", height: "100%", display: "flex", flexDirection: "column", backgroundColor: colors.primary[500] }}>
       {/* Header */}
-      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: "24px" }}>
-        <Box>
-          <Typography variant="h1" sx={{ fontWeight: 900, color: colors.grey[100], mb: "6px", letterSpacing: "-1px" }}>
-            ADMINISTRATION
-          </Typography>
-          <Typography variant="h5" sx={{ color: colors.grey[400] }}>
-            Gestion des membres de l'équipe et des accès système
-          </Typography>
-        </Box>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => handleOpenDialog()}
-          sx={{
-            backgroundColor: colors.greenAccent[600],
-            color: "#fff",
-            borderRadius: "12px",
-            padding: "10px 24px",
-            fontWeight: 700,
-            textTransform: "none",
-            boxShadow: `0 4px 14px ${colors.greenAccent[600]}40`,
-            "&:hover": { backgroundColor: colors.greenAccent[700], boxShadow: `0 6px 20px ${colors.greenAccent[600]}50` },
-          }}
-        >
-          Ajouter un utilisateur
-        </Button>
-      </Box>
+
 
       {/* Stat Cards */}
       <Box sx={{ display: "flex", gap: "16px", mb: "24px", flexWrap: "wrap" }}>
