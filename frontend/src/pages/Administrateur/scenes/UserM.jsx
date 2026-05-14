@@ -36,6 +36,8 @@ import BadgeIcon from "@mui/icons-material/Badge";
 import ComputerIcon from "@mui/icons-material/Computer";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import LockIcon from "@mui/icons-material/Lock";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
 // ── Helpers ──────────────────────────────────────────────────────────────
 const getInitials = (name) => {
@@ -335,12 +337,23 @@ const UserManagement = () => {
         </Box>
       ),
     },
-    { field: "role", headerName: "Rôle", flex: 0.7, minWidth: 120 },
+    { field: "role", headerName: "Rôle", flex: 0.6, minWidth: 120 },
+    {
+      field: "telephone",
+      headerName: "Téléphone",
+      flex: 0.7,
+      minWidth: 140,
+      renderCell: ({ row }) => (
+        <Typography sx={{ fontSize: "13px", color: colors.grey[300] }}>
+          {row.telephone || "-"}
+        </Typography>
+      ),
+    },
     {
       field: "password",
       headerName: "Mot de passe",
-      flex: 1,
-      minWidth: 180,
+      flex: 0.8,
+      minWidth: 160,
       sortable: false,
       renderCell: ({ row }) => {
         const isRevealed = revealedPasswords[row.id];
@@ -351,14 +364,14 @@ const UserManagement = () => {
             <Typography
               sx={{
                 fontSize: "13px",
-                fontFamily: "monospace",
-                color: colors.grey[400],
-                letterSpacing: "2px",
+                fontFamily: isRevealed ? "'Source Sans Pro', sans-serif" : "monospace",
+                color: isRevealed ? colors.greenAccent[300] : colors.grey[400],
+                letterSpacing: isRevealed ? "0" : "2px",
                 flex: 1,
-                userSelect: "none",
+                userSelect: isRevealed ? "text" : "none",
               }}
             >
-              {maskPassword("password")}
+              {isRevealed ? "Mot de passe visible" : maskPassword("password")}
             </Typography>
           </Box>
         );
@@ -367,38 +380,55 @@ const UserManagement = () => {
     {
       field: "actions",
       headerName: "Actions",
-      width: 120,
+      width: 220,
       sortable: false,
-      renderCell: (params) => (
-        <Box sx={{ display: "flex", gap: "6px" }}>
-          <Tooltip title="Modifier" arrow>
-            <IconButton
-              size="small"
-              onClick={() => handleOpenDialog(params.row)}
-              sx={{
-                color: colors.blueAccent[400],
-                backgroundColor: colors.blueAccent[400] + "12",
-                "&:hover": { backgroundColor: colors.blueAccent[400] + "25" },
-              }}
-            >
-              <EditIcon sx={{ fontSize: 18 }} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Supprimer" arrow>
-            <IconButton
-              size="small"
-              onClick={() => handleDeleteClick(params.row)}
-              sx={{
-                color: "#ef4444",
-                backgroundColor: "#ef444412",
-                "&:hover": { backgroundColor: "#ef444425" },
-              }}
-            >
-              <DeleteIcon sx={{ fontSize: 18 }} />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      ),
+      renderCell: (params) => {
+        const isRevealed = revealedPasswords[params.row.id];
+        
+        return (
+          <Box sx={{ display: "flex", gap: "6px" }}>
+            <Tooltip title={isRevealed ? "Masquer le mot de passe" : "Afficher le mot de passe"} arrow>
+              <IconButton
+                size="small"
+                onClick={() => togglePasswordVisibility(params.row.id)}
+                sx={{
+                  color: colors.grey[400],
+                  backgroundColor: colors.grey[400] + "12",
+                  "&:hover": { backgroundColor: colors.grey[400] + "25" },
+                }}
+              >
+                {isRevealed ? <VisibilityOffIcon sx={{ fontSize: 18 }} /> : <VisibilityIcon sx={{ fontSize: 18 }} />}
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Modifier" arrow>
+              <IconButton
+                size="small"
+                onClick={() => handleOpenDialog(params.row)}
+                sx={{
+                  color: colors.blueAccent[400],
+                  backgroundColor: colors.blueAccent[400] + "12",
+                  "&:hover": { backgroundColor: colors.blueAccent[400] + "25" },
+                }}
+              >
+                <EditIcon sx={{ fontSize: 18 }} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Supprimer" arrow>
+              <IconButton
+                size="small"
+                onClick={() => handleDeleteClick(params.row)}
+                sx={{
+                  color: "#ef4444",
+                  backgroundColor: "#ef444412",
+                  "&:hover": { backgroundColor: "#ef444425" },
+                }}
+              >
+                <DeleteIcon sx={{ fontSize: 18 }} />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        );
+      },
     },
   ];
 
