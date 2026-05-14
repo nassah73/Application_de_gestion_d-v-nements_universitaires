@@ -4,7 +4,8 @@ import axios from 'axios'; // زيد هادي
 import ProfileImg from './bg.jpg';
 import { 
   Bell, UserCircle, Mail, Phone, UserSquare, 
-  GraduationCap, PencilLine, LogOut, Calendar 
+  GraduationCap, PencilLine, LogOut, Calendar,
+  ScanQrCode
 } from 'lucide-react';
 
 export default function Navbar() {
@@ -17,6 +18,7 @@ export default function Navbar() {
   const [profilOpen, setProfilOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [isStaff, setIsStaff] = useState(false);
   
   // --- الجديدة: State ديال الإعلانات ---
   const [announcements, setAnnouncements] = useState([]);
@@ -27,7 +29,20 @@ export default function Navbar() {
     if (storedUser) {
       try {
         const parsedUser = JSON.parse(storedUser);
-        setUserData(parsedUser?.user || parsedUser);
+        const user = parsedUser?.user || parsedUser;
+        setUserData(user);
+
+        // Check if student is staff/volunteer
+        const checkStaff = async () => {
+          try {
+            const res = await axios.get(`http://localhost:5000/api/organisateurs/check-staff/${user._id || user.id}`);
+            setIsStaff(res.data.isStaff);
+          } catch (error) {
+            console.error("Error checking staff status:", error);
+          }
+        };
+        if (user._id || user.id) checkStaff();
+
       } catch (error) { console.error(error); }
     }
 
@@ -81,6 +96,23 @@ export default function Navbar() {
 
       <div className='flex gap-12 relative right-20 items-center'>
         
+        {/* Scan Button for Volunteers */}
+        {isStaff && (
+          <NavLink 
+            to="/organisateur/scanner" 
+            className={({ isActive }) => 
+              `flex items-center gap-2 px-4 py-2 rounded-xl transition-all duration-300 ${
+                isActive 
+                  ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/20' 
+                  : 'text-slate-400 hover:text-orange-500 hover:bg-orange-500/10'
+              }`
+            }
+          >
+            <ScanQrCode size={20} />
+            <span className="text-xs font-black uppercase tracking-widest hidden lg:block">Scanner</span>
+          </NavLink>
+        )}
+
         {/* --- Notifications Dropdown (DYNAMIC) --- */}
         <div className='relative' ref={notificationRef}>
           <div className='relative cursor-pointer group' onClick={() => { setNotificationsOpen(!notificationsOpen); setProfilOpen(false); }}>
