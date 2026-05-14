@@ -60,6 +60,19 @@ exports.getAllAdministrateurs = async (req, res) => {
     }
 };
 
+exports.getAdministrationById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const admin = await Administration.findById(id, { password: 0 });
+        if (!admin) {
+            return res.status(404).json({ message: "Administration non trouvé" });
+        }
+        res.status(200).json(admin);
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
+
 exports.getAllAdministrations = async (req, res) => {
     try {
         const admins = await Administration.find({}, { password: 0 });
