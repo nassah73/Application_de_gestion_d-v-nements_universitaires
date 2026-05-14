@@ -87,6 +87,11 @@ exports.login = async (req, res) => {
             email: user.email,
             role: role, 
             staffOf: staffOf,
+            
+            cne: user.cne || null,
+            phone: user.phone || null,
+            filiere: user.filiere || null,
+            niveau: user.niveau || null,
             message: "Bienvenue"
         });
 
