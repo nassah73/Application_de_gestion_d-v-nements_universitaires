@@ -194,6 +194,13 @@ const handleSubmit = async (e) => {
 
                 <div className="md:col-span-2 space-y-3">
                   <label className="text-xs font-black text-white/40 uppercase tracking-[0.2em] flex items-center gap-2">
+                    <Send size={14} className="text-orange-500" /> Lien d'inscription (Optionnel)
+                  </label>
+                  <input type="url" name="registrationLink" placeholder="https://example.com" className="w-full px-6 py-4 rounded-2xl border border-white/5 bg-white/[0.03] outline-none" onChange={handleChange} />
+                </div>
+
+                <div className="md:col-span-2 space-y-3">
+                  <label className="text-xs font-black text-white/40 uppercase tracking-[0.2em] flex items-center gap-2">
                     <ImageIcon size={14} className="text-orange-500" /> Affiche
                   </label>
                   <div onClick={() => fileInputRef.current.click()} className="border-2 border-dashed border-white/10 rounded-[2rem] p-8 flex flex-col items-center justify-center cursor-pointer">

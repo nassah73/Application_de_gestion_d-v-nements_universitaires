@@ -68,6 +68,7 @@ const Notifications = () => {
     switch (type) {
       case 'registration': return { icon: <UserPlus size={24} />, bg: 'bg-green-500/10', color: 'text-green-500' };
       case 'event_status': return { icon: <RefreshCw size={24} />, bg: 'bg-blue-500/10', color: 'text-blue-500' };
+      case 'system': return { icon: <CheckCircle size={24} />, bg: 'bg-yellow-500/10', color: 'text-yellow-500' };
       default: return { icon: <AlertCircle size={24} />, bg: 'bg-orange-500/10', color: 'text-orange-500' };
     }
   };

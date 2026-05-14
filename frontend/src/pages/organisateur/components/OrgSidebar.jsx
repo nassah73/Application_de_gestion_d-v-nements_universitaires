@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import axios from 'axios';
 import { 
   LayoutDashboard, 
   CalendarPlus, 
@@ -11,7 +12,7 @@ import {
   Bell
 } from 'lucide-react';
 
-const NavItem = ({ path, icon, label, active }) => (
+const NavItem = ({ path, icon, label, active, badge }) => (
   <Link
     to={path}
     className={`flex items-center gap-3.5 px-5 py-3.5 rounded-2xl transition-all duration-300 group relative overflow-hidden ${
@@ -33,17 +34,43 @@ const NavItem = ({ path, icon, label, active }) => (
     }`}>
       {label}
     </span>
+    {badge > 0 && (
+      <span className="ml-auto bg-orange-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full border border-white/20 shadow-lg">
+        {badge}
+      </span>
+    )}
   </Link>
 );
 
 const OrgSidebar = () => {
   const location = useLocation();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    const fetchUnreadCount = async () => {
+      try {
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const organizerId = user._id || user.id;
+        if (!organizerId) return;
+
+        const res = await axios.get(`http://localhost:5000/api/notifications/${organizerId}`);
+        const count = res.data.filter(n => !n.isRead).length;
+        setUnreadCount(count);
+      } catch (error) {
+        console.error("Erreur unread count:", error);
+      }
+    };
+
+    fetchUnreadCount();
+    const interval = setInterval(fetchUnreadCount, 30000);
+    return () => clearInterval(interval);
+  }, []);
   
   const menuItems = [
     { name: 'Dashboard', path: '/organisateur', icon: <LayoutDashboard size={20}/> },
     { name: 'Créer Événement', path: '/organisateur/create-event', icon: <CalendarPlus size={20}/> },
     { name: 'Mes Événements', path: '/organisateur/events', icon: <CalendarDays size={20}/> },
-    { name: 'Notifications', path: '/organisateur/notifications', icon: <Bell size={20}/> },
+    { name: 'Notifications', path: '/organisateur/notifications', icon: <Bell size={20}/>, badge: unreadCount },
     { name: 'Scanner QR', path: '/organisateur/scanner', icon: <QrCode size={20}/> },
     { name: 'Gestion Équipe', path: '/organisateur/equipe', icon: <Users size={20}/> },
     { name: 'Profil', path: '/organisateur/profile', icon: <User size={20}/> },
@@ -75,6 +102,7 @@ const OrgSidebar = () => {
             icon={item.icon}
             label={item.name}
             active={location.pathname === item.path}
+            badge={item.badge}
           />
         ))}
       </nav>

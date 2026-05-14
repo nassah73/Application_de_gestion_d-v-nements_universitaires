@@ -398,10 +398,12 @@ const EventDetails = () => {
                         <p className="text-[10px] font-black text-white/20 uppercase tracking-[0.2em] mb-1.5">Inscription</p>
                         {displayRegistrationLink ? (
                           <a href={displayRegistrationLink} target="_blank" rel="noopener noreferrer" className="text-orange-500 font-black hover:text-orange-400 flex items-center gap-2 transition-colors">
-                            Ouvrir le portail <ExternalLink size={14} strokeWidth={3} />
+                            Lien Externe <ExternalLink size={14} strokeWidth={3} />
                           </a>
                         ) : (
-                          <p className="text-white/30 font-black italic">Non spécifié</p>
+                          <p className="text-green-500 font-black text-sm uppercase tracking-wider flex items-center gap-2">
+                            <CheckCircle2 size={14} /> Interne (Plateforme)
+                          </p>
                         )}
                       </div>
                     </div>
