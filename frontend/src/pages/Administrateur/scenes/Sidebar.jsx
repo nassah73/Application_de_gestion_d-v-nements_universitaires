@@ -117,7 +117,7 @@ const Sidebar = ({ isSidebar, isCollapsed, setIsCollapsed }) => {
                       mt: "4px",
                     }}
                   >
-                    Administration
+                    Administrateur
                   </Typography>
                 </Box>
                 <IconButton onClick={() => setIsCollapsed(true)} sx={{ color: "#8b93a7" }}>
