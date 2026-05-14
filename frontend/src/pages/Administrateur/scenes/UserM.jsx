@@ -48,6 +48,11 @@ const getInitials = (name) => {
 
 const isValidEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 
+const maskPassword = (pw) => {
+  if (!pw) return "";
+  return "•".repeat(8);
+};
+
 const getPasswordStrength = (password) => {
   if (!password) return { score: 0, label: "", color: "#64748b" };
   let score = 0;
@@ -119,6 +124,7 @@ const UserManagement = () => {
   const [editMode, setEditMode] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [formData, setFormData] = useState({ prenom: "", nom: "", telephone: "", email: "", role: "Administration", password: "" });
+  const [revealedPasswords, setRevealedPasswords] = useState({});
   const [formErrors, setFormErrors] = useState({});
   const [deleteConfirm, setDeleteConfirm] = useState({ open: false, user: null });
   const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
@@ -170,6 +176,10 @@ const UserManagement = () => {
   useEffect(() => {
     fetchUsers();
   }, []);
+
+  const togglePasswordVisibility = (id) => {
+    setRevealedPasswords((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
   // ── Stats ────────────────────────────────────────────────────────────
   const stats = useMemo(() => {
@@ -326,6 +336,34 @@ const UserManagement = () => {
       ),
     },
     { field: "role", headerName: "Rôle", flex: 0.7, minWidth: 120 },
+    {
+      field: "password",
+      headerName: "Mot de passe",
+      flex: 1,
+      minWidth: 180,
+      sortable: false,
+      renderCell: ({ row }) => {
+        const isRevealed = revealedPasswords[row.id];
+        
+        return (
+          <Box sx={{ display: "flex", alignItems: "center", gap: "8px", width: "100%" }}>
+            <LockIcon sx={{ fontSize: 16, color: colors.grey[500] }} />
+            <Typography
+              sx={{
+                fontSize: "13px",
+                fontFamily: "monospace",
+                color: colors.grey[400],
+                letterSpacing: "2px",
+                flex: 1,
+                userSelect: "none",
+              }}
+            >
+              {maskPassword("password")}
+            </Typography>
+          </Box>
+        );
+      },
+    },
     {
       field: "actions",
       headerName: "Actions",
