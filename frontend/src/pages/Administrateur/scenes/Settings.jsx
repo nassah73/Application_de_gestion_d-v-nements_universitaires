@@ -33,7 +33,7 @@ const Settings = () => {
     emailNotifications: true,
     pushNotifications: false,
     defaultLanguage: "fr",
-    sessionTimeout: "30",
+    sessionTimeout: "15",
   });
 
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -97,32 +97,6 @@ const Settings = () => {
             </Box>
             
             <Stack spacing={3}>
-              <TextField
-                fullWidth
-                label="Nom du Site"
-                name="siteName"
-                value={settings.siteName}
-                onChange={handleChange}
-                variant="filled"
-                sx={{ 
-                  "& .MuiFilledInput-root": { backgroundColor: colors.primary[400] },
-                  "& .MuiInputLabel-root": { color: colors.grey[400] },
-                  "& .MuiInputBase-input": { color: colors.grey[100] }
-                }}
-              />
-              <TextField
-                fullWidth
-                label="URL du Site"
-                name="siteUrl"
-                value={settings.siteUrl}
-                onChange={handleChange}
-                variant="filled"
-                sx={{ 
-                  "& .MuiFilledInput-root": { backgroundColor: colors.primary[400] },
-                  "& .MuiInputLabel-root": { color: colors.grey[400] },
-                  "& .MuiInputBase-input": { color: colors.grey[100] }
-                }}
-              />
               <FormControlLabel
                 control={
                   <Switch
@@ -283,8 +257,6 @@ const Settings = () => {
                   }}
                 >
                   <MenuItem value="fr">Français</MenuItem>
-                  <MenuItem value="en">English</MenuItem>
-                  <MenuItem value="ar">العربية</MenuItem>
                 </TextField>
               </Box>
             </Box>

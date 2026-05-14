@@ -207,7 +207,7 @@ const Form = () => {
                     fullWidth
                     variant="filled"
                     type={showPassword ? "text" : "password"}
-                    label="Mot de passe"
+                    label="Mot de passe : (^A-Za-z0-9)"
                     onBlur={handleBlur}
                     onChange={handleChange}
                     value={values.password}
@@ -260,19 +260,6 @@ const Form = () => {
                     );
                   })()}
                 </Box>
-                <TextField
-                  fullWidth
-                  variant="filled"
-                  type="password"
-                  label="Mot de passe"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.password}
-                  name="password"
-                  error={!!touched.password && !!errors.password}
-                  helperText={touched.password && errors.password}
-                  sx={{ gridColumn: "span 4", ...inputStyles ,pb: "10px"}}
-                />
               </Box>
               <Box sx={{ display: "flex", justifyContent: "end", mt: "40px" }}>
                 <Button

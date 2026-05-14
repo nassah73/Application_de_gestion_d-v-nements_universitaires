@@ -65,6 +65,7 @@ const EventDetails = () => {
       case 'approved-modified': return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
       case 'pending':           return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20';
       case 'rejected':          return 'bg-red-500/10 text-red-400 border-red-500/20';
+      case 'modification_requested': return 'bg-orange-500/10 text-orange-400 border-orange-500/20';
       default:                  return 'bg-gray-500/10 text-gray-400 border-gray-500/20';
     }
   };
@@ -75,6 +76,7 @@ const EventDetails = () => {
       case 'approved-modified': return 'Validé avec modification';
       case 'pending':           return 'En cours';
       case 'rejected':          return 'Refusé';
+      case 'modification_requested': return 'Modification requise';
       default:                  return status;
     }
   };
@@ -85,6 +87,7 @@ const EventDetails = () => {
       case 'approved-modified': return <RotateCcw size={14} />;
       case 'pending':           return <Clock size={14} />;
       case 'rejected':          return <XCircle size={14} />;
+      case 'modification_requested': return <RotateCcw size={14} />;
       default:                  return <Info size={14} />;
     }
   };
@@ -95,8 +98,14 @@ const EventDetails = () => {
         <OrgSidebar />
         <div className="flex-1 flex flex-col h-screen overflow-y-auto relative">
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/5 rounded-full blur-[120px] pointer-events-none"></div>
-          <OrgNavbar />
-          <main className="flex-1 p-8 flex items-center justify-center relative z-10">
+          
+          {/* 1. عطينا للـ Navbar طبقة عالية */}
+          <div className="relative z-[100]">
+            <OrgNavbar />
+          </div>
+    
+          {/* 2. الـ main رديناه z-0 باش ما يغطيش على الجرس */}
+          <main className="flex-1 p-8 flex items-center justify-center relative z-0">
             <div className="text-center">
               <div className="w-16 h-16 border-4 border-orange-500/20 border-t-orange-500 rounded-full animate-spin mx-auto mb-6 shadow-[0_0_20px_rgba(249,115,22,0.2)]"></div>
               <p className="text-white/40 font-black uppercase tracking-widest text-xs">Chargement des détails...</p>
@@ -113,8 +122,13 @@ const EventDetails = () => {
         <OrgSidebar />
         <div className="flex-1 flex flex-col h-screen overflow-y-auto relative">
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-red-500/5 rounded-full blur-[120px] pointer-events-none"></div>
-          <OrgNavbar />
-          <main className="flex-1 p-8 relative z-10">
+          
+          {/* نطبقو نفس الـ z-index هنا باش الجرس يخدم حتى فـ صفحة الخطأ */}
+          <div className="relative z-[100]">
+            <OrgNavbar />
+          </div>
+  
+          <main className="flex-1 p-8 relative z-0">
             <div className="max-w-2xl mx-auto p-12 rounded-[2rem] border border-red-500/20 bg-red-500/5 backdrop-blur-xl text-center shadow-2xl">
               <div className="w-20 h-20 bg-red-500/10 rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 border border-red-500/20">
                 <AlertCircle size={40} className="text-red-500" />
@@ -138,6 +152,7 @@ const EventDetails = () => {
   const isPublished = event.status === 'approved' || event.status === 'approved-modified' || event.status === 'Validé';
   const isRejected = event.status === 'rejected';
   const isPending = event.status === 'pending';
+  const isModifRequested = event.status === 'modification_requested';
 
   const inscriptionCount = event.participants?.length || 0;
   const fillRate = event.capacity > 0 ? (inscriptionCount / event.capacity) * 100 : 0;
@@ -202,15 +217,19 @@ const EventDetails = () => {
 
   return (
     <div className="flex h-screen overflow-hidden font-sans bg-[#0f172a]">
-      <OrgSidebar />
-      <div className="flex-1 flex flex-col h-screen overflow-y-auto relative">
-        {/* Decorative background elements */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-[150px] pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none"></div>
-        
-        <OrgNavbar />
-        
-        <main className="flex-1 p-8 relative z-10">
+  <OrgSidebar />
+  <div className="flex-1 flex flex-col h-screen overflow-y-auto relative">
+    {/* Decorative background elements */}
+    <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-500/5 rounded-full blur-[150px] pointer-events-none"></div>
+    <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+    
+    {/* 1. نغلفو الـ Navbar بـ div عندها z-index عالي بزاف */}
+    <div className="relative z-[100]">
+      <OrgNavbar />
+    </div>
+    
+    {/* 2. الـ main نردوه z-0 أو نحيدو ليه الـ z-index كاع */}
+    <main className="flex-1 p-8 relative z-0">
           {/* Breadcrumbs / Back button */}
           <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <Link 
@@ -256,6 +275,34 @@ const EventDetails = () => {
                       <Info size={14} />
                       Veuillez créer un nouvel événement en tenant compte des motifs ci-dessus.
                     </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {isModifRequested && (
+              <div className="p-8 rounded-[2rem] border border-orange-500/20 bg-orange-500/5 backdrop-blur-xl animate-in fade-in slide-in-from-top-6 duration-700 shadow-2xl">
+                <div className="flex items-start gap-6">
+                  <div className="p-4 rounded-[1.5rem] bg-orange-500/10 text-orange-500 border border-orange-500/20 shadow-lg shadow-orange-500/10">
+                    <RotateCcw size={32} strokeWidth={2.5} />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-xl font-black text-white uppercase tracking-tight">Modification demandée</h3>
+                    <div className="mt-4 p-5 rounded-2xl bg-[#0f172a]/40 border border-white/5 backdrop-blur-sm">
+                      <p className="text-sm text-white/70 leading-relaxed">
+                        <span className="text-orange-400 font-black uppercase text-[10px] block mb-2 tracking-[0.2em] opacity-70">Message de l'administration</span>
+                        {event.rejectionReason || 'L\'administration a demandé des modifications pour cet événement.'}
+                      </p>
+                    </div>
+                    <div className="mt-6 flex gap-4">
+                      <Link 
+                        to={`/organisateur/editer-evenement/${id}`}
+                        className="flex items-center gap-3 px-6 py-3 rounded-xl bg-orange-500 text-white font-black uppercase tracking-widest text-xs hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/20"
+                      >
+                        <RotateCcw size={16} strokeWidth={3} />
+                        Modifier l'événement
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -397,6 +444,21 @@ const EventDetails = () => {
                       <p className="text-2xl font-black text-white uppercase tracking-tighter">En cours</p>
                       <p className="text-sm text-white/40 mt-3 font-medium">En attente de validation administrative avant publication.</p>
                     </div>
+                  ) : isModifRequested ? (
+                    <div className="text-center py-10">
+                      <div className="w-20 h-20 rounded-[1.5rem] bg-orange-500/10 text-orange-500 flex items-center justify-center mx-auto mb-6 border border-orange-500/20 shadow-xl shadow-orange-500/5">
+                        <RotateCcw size={40} strokeWidth={2.5} />
+                      </div>
+                      <p className="text-2xl font-black text-white uppercase tracking-tighter">Modif. Requise</p>
+                      <p className="text-sm text-white/40 mt-3 font-medium mb-8">L'administration a demandé des corrections.</p>
+                      <Link 
+                        to={`/organisateur/editer-evenement/${id}`}
+                        className="flex items-center justify-center gap-3 w-full py-4 rounded-2xl bg-orange-500 text-white font-black uppercase tracking-widest text-xs hover:bg-orange-600 transition-all shadow-xl shadow-orange-500/20"
+                      >
+                        <RotateCcw size={18} strokeWidth={3} />
+                        Modifier
+                      </Link>
+                    </div>
                   ) : (
                     <div className="space-y-10">
                       <div className="relative">
@@ -461,15 +523,27 @@ const EventDetails = () => {
                   </div>
                 </div>
 
-                {isPublished && inscriptionCount > 0 && (
-                  <button 
-                    onClick={exportToPDF}
-                    className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-white text-slate-900 font-black text-xs uppercase tracking-widest hover:bg-orange-500 hover:text-white transition-all shadow-[0_10px_20px_rgba(0,0,0,0.2)] active:scale-95 group/btn"
-                  >
-                    <FileDown size={18} strokeWidth={2.5} className="group-hover/btn:translate-y-0.5 transition-transform" />
-                    Exporter PDF
-                  </button>
-                )}
+                <div className="flex items-center gap-4">
+                  {isPublished && (
+                    <Link 
+                      to={`/organisateur/editer-evenement/${id}`}
+                      className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-orange-500/10 border border-orange-500/20 text-orange-500 font-black text-xs uppercase tracking-widest hover:bg-orange-500 hover:text-white transition-all shadow-lg active:scale-95 group/edit"
+                    >
+                      <RotateCcw size={18} strokeWidth={2.5} className="group-hover/edit:rotate-180 transition-transform duration-500" />
+                      Modifier l'événement
+                    </Link>
+                  )}
+
+                  {isPublished && inscriptionCount > 0 && (
+                    <button 
+                      onClick={exportToPDF}
+                      className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-white text-slate-900 font-black text-xs uppercase tracking-widest hover:bg-orange-500 hover:text-white transition-all shadow-[0_10px_20px_rgba(0,0,0,0.2)] active:scale-95 group/btn"
+                    >
+                      <FileDown size={18} strokeWidth={2.5} className="group-hover/btn:translate-y-0.5 transition-transform" />
+                      Exporter PDF
+                    </button>
+                  )}
+                </div>
               </div>
               
               <div className="p-8">

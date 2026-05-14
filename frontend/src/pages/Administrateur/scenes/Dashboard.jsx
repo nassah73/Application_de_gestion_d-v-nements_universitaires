@@ -77,7 +77,7 @@ const Dashboard = () => {
             Bienvenue sur votre espace d'administration centralisé
           </Typography>
         </Box>
-        <Button
+        {/*<Button
           sx={{
             backgroundColor: colors.greenAccent[500],
             color: "#fff",
@@ -92,7 +92,7 @@ const Dashboard = () => {
         >
           <DownloadOutlinedIcon sx={{ mr: "10px" }} />
           Télécharger Rapports
-        </Button>
+        </Button>*/}
       </Box>
 
       {/* Stat Cards Row */}
@@ -157,44 +157,7 @@ const Dashboard = () => {
             ))}
           </Box>
         </Box>
-      </Box>
-
-      {/* Second Row Grid */}
-      <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", lg: "1fr 1fr" }, gap: "20px" }}>
-        {/* Recent Activity List */}
-        <Box sx={{ backgroundColor: "rgba(255, 255, 255, 0.03)", borderRadius: "20px", border: `1px solid ${colors.grey[800]}`, p: "24px", display: "flex", flexDirection: "column" }}>
-          <Typography variant="h3" sx={{ fontWeight: 800, color: colors.grey[100], mb: "20px" }}>Activités Récentes</Typography>
-          <Box sx={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-            {recentActivities.map((activity) => (
-              <Box key={activity.id} sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", pb: "15px", borderBottom: `1px solid ${colors.grey[800]}`, "&:last-child": { borderBottom: "none" } }}>
-                <Box>
-                  <Typography variant="h5" sx={{ fontWeight: 700, color: colors.greenAccent[500] }}>{activity.user}</Typography>
-                  <Typography variant="h6" sx={{ color: colors.grey[100] }}>{activity.action}</Typography>
-                </Box>
-                <Typography variant="h6" sx={{ color: colors.grey[400], fontStyle: "italic" }}>{activity.time}</Typography>
-              </Box>
-            ))}
-          </Box>
-        </Box>
-
-        {/* Quick Actions */}
-        <Box sx={{ backgroundColor: "rgba(255, 255, 255, 0.03)", borderRadius: "20px", border: `1px solid ${colors.grey[800]}`, p: "24px", display: "flex", flexDirection: "column" }}>
-          <Typography variant="h3" sx={{ fontWeight: 800, color: colors.grey[100], mb: "20px" }}>Actions Rapides</Typography>
-          <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "15px" }}>
-            {[
-              { label: "Ajouter un Événement", icon: <AddBoxIcon />, color: colors.greenAccent[500] },
-              { label: "Valider Organisateurs", icon: <RuleIcon />, color: colors.blueAccent[500] },
-              { label: "Paramètres Système", icon: <SettingsIcon />, color: colors.grey[400] },
-              { label: "Générer Rapport", icon: <AssessmentIcon />, color: colors.greenAccent[400] },
-            ].map((action) => (
-              <Button key={action.label} variant="outlined" sx={{ display: "flex", flexDirection: "column", gap: "10px", p: "20px", borderRadius: "15px", borderColor: "rgba(255, 255, 255, 0.1)", color: colors.grey[100], "&:hover": { borderColor: action.color, backgroundColor: "rgba(255, 255, 255, 0.05)" } }}>
-                <Box sx={{ color: action.color }}>{action.icon}</Box>
-                <Typography variant="h6" sx={{ fontWeight: 600 }}>{action.label}</Typography>
-              </Button>
-            ))}
-          </Box>
-        </Box>
-      </Box>
+      </Box>       
     </Box>
   );
 };

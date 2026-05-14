@@ -160,22 +160,35 @@ const QRScanner = () => {
   if (isStudent) {
     return (
       <div className="min-h-screen bg-slate-950">
-        <NavBar />
-        <div className="pt-20">
-          <ScannerContent />
-        </div>
-      </div>
+  {/* 1. ضروري الـ NavBar ياخد z-index عالي باش الـ Notifications يبانو فوق الـ Scanner */}
+  <div className="relative z-[100]">
+    <NavBar />
+  </div>
+
+  {/* 2. المحتوى ديال الـ Scanner خليه z-0 */}
+  <div className="pt-20 relative z-0">
+    <ScannerContent />
+  </div>
+</div>
     );
   }
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#0a0f1d]">
-      <OrgSidebar />
-      <div className="flex-1 flex flex-col h-screen overflow-y-auto">
-        <OrgNavbar />
-        <ScannerContent />
-      </div>
+  <OrgSidebar />
+  
+  <div className="flex-1 flex flex-col h-screen overflow-y-auto relative">
+    {/* 1. ضروري الـ Navbar ياخد z-index عالي باش يكون هو الطبقة الفوقانية */}
+    <div className="relative z-[100]">
+      <OrgNavbar />
     </div>
+
+    {/* 2. الـ ScannerContent خليه فـ طبقة عادية z-0 */}
+    <main className="flex-1 relative z-0">
+      <ScannerContent />
+    </main>
+  </div>
+</div>
   );
 };
 

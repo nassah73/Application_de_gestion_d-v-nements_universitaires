@@ -85,14 +85,20 @@ const OrganizerDashboard = () => {
 
   return (
     <div className="flex h-screen overflow-hidden font-sans bg-[#0f172a]">
-      <OrgSidebar />
-      <div className="flex-1 flex flex-col h-screen overflow-y-auto relative">
-        {/* Background glow effects */}
-        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
+  <OrgSidebar />
+  
+  <div className="flex-1 flex flex-col h-screen overflow-y-auto relative">
+    {/* Background glow effects - خليهم هما اللخرين كاع بـ -z-10 */}
+    <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
+    <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
 
-        <OrgNavbar />
-        <main className="flex-1 p-8">
+    {/* 1. الـ Navbar خاصو يكون هو "الفوقاني" ديما */}
+    <div className="relative z-[100]">
+      <OrgNavbar />
+    </div>
+    
+    {/* 2. الـ main خليه z-0 باش ما يتناطحش مع الجرس */}
+    <main className="flex-1 p-8 relative z-0">
           <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
               <h1 className="text-4xl font-black text-white uppercase tracking-tighter">

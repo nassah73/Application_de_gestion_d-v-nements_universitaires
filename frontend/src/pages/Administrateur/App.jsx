@@ -45,7 +45,7 @@ function App() {
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/UserM" element={<User />} />
                 <Route path="/create" element={<Create />} />
-                <Route path="/categorie" element={<CategoryManagement />} />
+                {/*<Route path="/categorie" element={<CategoryManagement />} />*/}
                 <Route path="/moderation" element={<Moderation />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/activity" element={<ActivityLog />} />

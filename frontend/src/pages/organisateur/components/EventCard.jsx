@@ -25,6 +25,12 @@ const EventCard = ({ event }) => {
           icon: <XCircle size={12} />,
           style: 'bg-red-500/10 text-red-400 border-red-500/20'
         };
+      case 'modification_requested':
+        return {
+          label: 'Modification Requise',
+          icon: <RotateCcw size={12} />,
+          style: 'bg-orange-500/10 text-orange-400 border-orange-500/20'
+        };
       case 'approved-modified':
         return {
           label: 'Modifié',
@@ -45,12 +51,24 @@ const EventCard = ({ event }) => {
   const location = event.lieu || event.location;
   const date = event.date;
   const id = event._id || event.id;
+  
 
   return (
     <div className="group relative bg-white/[0.03] border border-white/[0.08] rounded-2xl overflow-hidden hover:bg-white/[0.05] transition-all duration-300 hover:shadow-[0_0_30px_rgba(0,0,0,0.3)] hover:scale-[1.02]">
-      {/* Event Image Placeholder/Visual */}
+      {/* Event Image */}
       <div className="h-40 bg-gradient-to-br from-orange-500/20 to-orange-600/5 relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors"></div>
+        {event.coverImage ? (
+          <img 
+            src={`http://localhost:5000/${event.coverImage}`} 
+            alt={title} 
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <Calendar size={40} className="text-white/10" />
+          </div>
+        )}
+        <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors"></div>
         <div className="absolute top-4 right-4">
           <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border backdrop-blur-md ${statusConfig.style}`}>
             {statusConfig.icon}
@@ -81,13 +99,25 @@ const EventCard = ({ event }) => {
         </div>
 
         <div className="flex items-center justify-between pt-5 border-t border-white/5">
-          <Link 
-            to={`/organisateur/events/${id}`} 
-            className="flex items-center gap-2 text-xs font-black text-white uppercase tracking-widest hover:text-orange-500 transition-colors"
-          >
-            Détails
-            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link 
+              to={`/organisateur/events/${id}`} 
+              className="flex items-center gap-2 text-xs font-black text-white uppercase tracking-widest hover:text-orange-500 transition-colors"
+            >
+              Détails
+              <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+            </Link>
+
+            {(event.status === 'modification_requested' || event.status === 'approved' || event.status === 'Validé' || event.status === 'approved-modified') && (
+              <Link 
+                to={`/organisateur/editer-evenement/${id}`} 
+                className="flex items-center gap-2 text-xs font-black text-orange-500 uppercase tracking-widest hover:text-orange-400 transition-colors"
+              >
+                Modifier
+                <RotateCcw size={14} />
+              </Link>
+            )}
+          </div>
           <span className="text-[10px] font-black text-white/10 uppercase tracking-widest">
             #{id?.toString().slice(-6)}
           </span>

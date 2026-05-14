@@ -24,6 +24,16 @@ export const eventService = {
         });
         if (!response.ok) throw new Error('Erreur lors de la validation de la presence');
         return response.json();
+    },
+
+    // Mettre à jour un événement
+    updateEvent: async (eventId, eventData) => {
+        const response = await fetch(`${API_URL}/${eventId}`, {
+            method: 'PUT',
+            body: eventData // eventData sera un FormData pour gérer l'image
+        });
+        if (!response.ok) throw new Error('Erreur lors de la modification de l\'événement');
+        return response.json();
     }
 };
 

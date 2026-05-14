@@ -99,20 +99,25 @@ const handleSubmit = async (e) => {
 
   return (
     <div className="flex h-screen overflow-hidden font-sans bg-[#0f172a] text-white">
-      <OrgSidebar />
-      <div className="flex-1 flex flex-col h-screen overflow-y-auto relative">
+    <OrgSidebar />
+    
+    <div className="flex-1 flex flex-col h-screen overflow-y-auto relative">
+      {/* 1. نأكدوا أن الـ Navbar عندو z-index طالع بزاف باش يبقى ديما فوق الـ main */}
+      <div className="sticky top-0 z-[100]"> 
         <OrgNavbar />
-        
-        <main className="flex-1 p-8 relative z-10">
-          <div className="max-w-4xl mx-auto">
-            <div className="mb-10">
-              <h1 className="text-4xl font-black uppercase tracking-tighter flex items-center gap-4">
-                <div className="p-3 rounded-2xl bg-orange-500/10 border border-orange-500/20 shadow-lg shadow-orange-500/10">
-                  <PlusCircle size={32} className="text-orange-500" />
-                </div>
-                Créer un Événement <span className="text-orange-500">.</span>
-              </h1>
-            </div>
+      </div>
+      
+      {/* 2. نحيدو z-10 من الـ main باش ما يغطيش على الـ Dropdowns ديال الـ Navbar */}
+      <main className="flex-1 p-8 relative z-0"> 
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-10">
+            <h1 className="text-4xl font-black uppercase tracking-tighter flex items-center gap-4">
+              <div className="p-3 rounded-2xl bg-orange-500/10 border border-orange-500/20 shadow-lg shadow-orange-500/10">
+                <PlusCircle size={32} className="text-orange-500" />
+              </div>
+              Créer un Événement <span className="text-orange-500">.</span>
+            </h1>
+          </div>
             
             <form onSubmit={handleSubmit} className="p-10 rounded-[2.5rem] border border-white/5 bg-white/[0.02] backdrop-blur-xl shadow-2xl space-y-10">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

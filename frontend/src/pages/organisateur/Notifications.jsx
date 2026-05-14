@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import OrgSidebar from './components/OrgSidebar';
 import OrgNavbar from './components/OrgNavbar';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 import { 
   Bell, 
@@ -152,6 +153,14 @@ const Notifications = () => {
                         </p>
                         
                         <div className="flex items-center gap-4">
+                          {notif.relatedEvent && (
+                            <Link 
+                              to={`/organisateur/events/${notif.relatedEvent}`}
+                              className="text-[10px] font-black text-blue-500 uppercase tracking-widest hover:underline"
+                            >
+                              Voir l'événement
+                            </Link>
+                          )}
                           {!notif.isRead && (
                             <button 
                               onClick={() => markAsRead(notif._id)}
