@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
 import {
   LineChart, Line, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
@@ -43,11 +44,30 @@ const Dashboard = () => {
   const notifRef = useRef(null);
   const profileRef = useRef(null);
 
+  const [stats, setStats] = useState({
+    totalEvents: 0,
+    activeStudents: 0,
+    totalOrganizers: 0,
+    pendingEvents: 0,
+    categoryStats: [],
+    monthlyActivity: []
+  });
+
   const unreadCount = notifications.filter(n => !n.read).length;
   const markAllRead = () => setNotifications(prev => prev.map(n => ({ ...n, read: true })));
   const dismiss = (id) => setNotifications(prev => prev.filter(n => n.id !== id));
 
   useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await axios.get('http://localhost:5000/api/analytics/admin-stats');
+        setStats(response.data);
+      } catch (err) {
+        console.error("Erreur stats:", err);
+      }
+    };
+    fetchStats();
+
     const handleClickOutside = (e) => {
       if (notifRef.current && !notifRef.current.contains(e.target)) setNotifOpen(false);
       if (profileRef.current && !profileRef.current.contains(e.target)) setProfileOpen(false);
@@ -196,10 +216,10 @@ const Dashboard = () => {
 
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-            <StatCard icon={<CalendarCheck size={22} />} label="Total Events"        value="247"   trend="+12%" accent={ORANGE}     />
-            <StatCard icon={<Users         size={22} />} label="Active Students"     value="3,842" trend="+8%"  accent="#10B981"    />
-            <StatCard icon={<TrendingUp    size={22} />} label="Participation Rate"  value="68%"   trend="+18%" accent="#6366F1"    />
-            <StatCard icon={<CalendarCheck size={22} />} label="Pending Validations" value="12"    alert="3 urgent" accent="#F59E0B" />
+            <StatCard icon={<CalendarCheck size={22} />} label="Total Events"        value={stats.totalEvents}   accent={ORANGE}     />
+            <StatCard icon={<Users         size={22} />} label="Active Students"     value={stats.activeStudents} accent="#10B981"    />
+            <StatCard icon={<TrendingUp    size={22} />} label="Total Organizers"    value={stats.totalOrganizers} accent="#6366F1"    />
+            <StatCard icon={<CalendarCheck size={22} />} label="Pending Validations" value={stats.pendingEvents} alert={stats.pendingEvents > 0 ? `${stats.pendingEvents} en attente` : null} accent="#F59E0B" />
           </div>
 
           {/* Charts */}
@@ -208,7 +228,7 @@ const Dashboard = () => {
               <h3 className="font-bold text-white mb-6 text-sm uppercase tracking-wider">Student Engagement</h3>
               <div className="h-56">
                 <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={lineData}>
+                  <LineChart data={stats.monthlyActivity}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.05)" />
                     <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.35)' }} />
                     <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: 'rgba(255,255,255,0.35)' }} />
@@ -224,14 +244,14 @@ const Dashboard = () => {
               <div className="h-56 flex items-center">
                 <ResponsiveContainer width="55%" height="100%">
                   <PieChart>
-                    <Pie data={pieData} innerRadius={50} outerRadius={72} paddingAngle={4} dataKey="value">
-                      {pieData.map((e, i) => <Cell key={i} fill={e.color} />)}
+                    <Pie data={stats.categoryStats} innerRadius={50} outerRadius={72} paddingAngle={4} dataKey="value">
+                      {stats.categoryStats.map((e, i) => <Cell key={i} fill={e.color} />)}
                     </Pie>
                     <Tooltip contentStyle={{ background: '#1e293b', border: 'none', borderRadius: '10px', color: '#fff', fontSize: '12px' }} />
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="flex-1 space-y-3 pl-2">
-                  {pieData.map(item => (
+                  {stats.categoryStats.map(item => (
                     <div key={item.name} className="flex items-center gap-2">
                       <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
                       <span className="text-xs text-white/50 truncate">{item.name}: <span className="text-white/80 font-bold">{item.value}</span></span>
