@@ -111,6 +111,9 @@ const Topbar = ({ isMobile }) => {
   const [notifCount, setNotifCount] = useState(3);
   const notifRef = useRef(null);
   const menuRef = useRef(null);
+  
+  // Get user from localStorage
+  const user = JSON.parse(localStorage.getItem('user'));
 
   // Close on outside click
   useEffect(() => {
@@ -208,7 +211,7 @@ const Topbar = ({ isMobile }) => {
                   display: "flex", alignItems: "center", justifyContent: "center",
                   fontSize: "12px", fontWeight: 700, color: "#fff",
                 }}>
-                  A
+                  {user?.displayName ? user.displayName.charAt(0).toUpperCase() : 'A'}
                 </Box>
                 <Box sx={{
                   position: "absolute", bottom: -2, right: -2,
@@ -218,10 +221,10 @@ const Topbar = ({ isMobile }) => {
               </Box>
               <Box>
                 <Typography sx={{ fontSize: "12px", fontWeight: 600, color: "#fff", lineHeight: 1.2 }}>
-                ADMINISTRATION
+                  {user?.displayName || 'ADMINISTRATION'}
                 </Typography>
                 <Typography sx={{ fontSize: "10px", color: "#22c55e" }}>
-                  ● en ligne
+                  {user?.role ? `● ${user.role}` : '● en ligne'}
                 </Typography>
               </Box>
               <Box sx={{ transform: menuOpen ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s", ml: "2px" }}>
