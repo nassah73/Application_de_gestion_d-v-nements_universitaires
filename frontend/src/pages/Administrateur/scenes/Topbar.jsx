@@ -59,9 +59,23 @@ const IconChevron = () => (
   </svg>
 );
 
+const IconTrash = () => (
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <polyline points="3 6 5 6 21 6" />
+    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+  </svg>
+);
+
 // ─── Notifications ────────────────────────────────────────────────────────────
 
-const notifications = [
+const initialNotifications = [
   {
     id: 1,
     text: (
@@ -93,14 +107,14 @@ const notifications = [
 
 // ─── Notification Panel ───────────────────────────────────────────────────────
 
-const NotifPanel = ({ onClear }) => (
+const NotifPanel = ({ notifications, onClear, onDeleteSingle }) => (
   <Box
     sx={{
       position: "absolute",
       top: "calc(100% + 12px)",
       right: 0,
 
-      width: 320,
+      width: 340,
 
       background:
         "linear-gradient(180deg, rgba(17,28,53,0.98), rgba(10,15,30,0.98))",
@@ -143,7 +157,7 @@ const NotifPanel = ({ onClear }) => (
         onClick={onClear}
         sx={{
           fontSize: "11px",
-          color: "#cd7329",
+          color: "#ef4444",
           cursor: "pointer",
           fontWeight: 700,
 
@@ -152,7 +166,7 @@ const NotifPanel = ({ onClear }) => (
           },
         }}
       >
-        Tout marquer lu
+        Supprimer tout
       </Typography>
     </Box>
 
@@ -167,8 +181,6 @@ const NotifPanel = ({ onClear }) => (
           alignItems: "flex-start",
 
           borderTop: "1px solid rgba(255,255,255,0.04)",
-
-          cursor: "pointer",
 
           transition: "0.25s",
 
@@ -192,7 +204,11 @@ const NotifPanel = ({ onClear }) => (
           }}
         />
 
-        <Box>
+        <Box
+          sx={{
+            flex: 1,
+          }}
+        >
           <Typography
             sx={{
               fontSize: "12px",
@@ -212,6 +228,30 @@ const NotifPanel = ({ onClear }) => (
           >
             {n.time}
           </Typography>
+        </Box>
+        
+        <Box
+          onClick={(e) => {
+            e.stopPropagation();
+            onDeleteSingle(n.id);
+          }}
+          sx={{
+            width: 28,
+            height: 28,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: "8px",
+            cursor: "pointer",
+            color: "#ef4444",
+            transition: "all 0.15s ease",
+            "&:hover": {
+              backgroundColor: "rgba(239,68,68,0.12)",
+              transform: "scale(1.05)"
+            }
+          }}
+        >
+          <IconTrash />
         </Box>
       </Box>
     ))}
@@ -252,6 +292,7 @@ const UserMenu = () => <div />;
 const Topbar = ({ isMobile }) => {
   const [notifOpen, setNotifOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [notifications, setNotifications] = useState(initialNotifications);
   const [notifCount, setNotifCount] = useState(3);
 
   const notifRef = useRef(null);
@@ -291,7 +332,13 @@ const Topbar = ({ isMobile }) => {
     setNotifOpen(false);
   };
 
+  const deleteSingleNotif = (id) => {
+    setNotifications((prev) => prev.filter((n) => n.id !== id));
+    setNotifCount((prev) => Math.max(0, prev - 1));
+  };
+
   const clearNotifs = () => {
+    setNotifications([]);
     setNotifCount(0);
     setNotifOpen(false);
   };
@@ -312,16 +359,16 @@ const Topbar = ({ isMobile }) => {
         top: 0,
         zIndex: 50,
 
-        background: "rgba(13,21,38,0.82)",
         backdropFilter: "blur(20px)",
+        background: "rgba(13,21,38,0.82)",
 
         borderBottom:
           "1px solid rgba(255,255,255,0.06)",
 
-        boxShadow: "0 10px 30px rgba(0,0,0,0.25)",
+        boxShadow: "0 10px 40px rgba(0,0,0,0.25)",
       }}
     >
-      {/* Logo */}
+      {/* Mobile Logo */}
       {isMobile && (
         <Typography
           sx={{
@@ -419,6 +466,7 @@ const Topbar = ({ isMobile }) => {
 
             "&::placeholder": {
               color: "rgba(255,255,255,0.35)",
+              opacity: 1,
             },
           }}
         />
@@ -426,7 +474,7 @@ const Topbar = ({ isMobile }) => {
 
       </Box>
 
-      {/* Right actions */}
+      {/* Actions */}
       <Box
         sx={{
           display: "flex",
@@ -456,7 +504,7 @@ const Topbar = ({ isMobile }) => {
               color: "#fff",
 
               background: notifOpen
-                ? "rgba(205,115,41,0.14)"
+                ? "rgba(205,115,41,0.15)"
                 : "rgba(255,255,255,0.04)",
 
               border: `1px solid ${
@@ -465,7 +513,7 @@ const Topbar = ({ isMobile }) => {
                   : "rgba(255,255,255,0.06)"
               }`,
 
-              transition: "all .25s ease",
+              transition: "0.25s",
 
               "&:hover": {
                 transform: "translateY(-2px)",
@@ -514,7 +562,11 @@ const Topbar = ({ isMobile }) => {
           </Box>
 
           {notifOpen && (
-            <NotifPanel onClear={clearNotifs} />
+            <NotifPanel 
+              notifications={notifications} 
+              onClear={clearNotifs} 
+              onDeleteSingle={deleteSingleNotif} 
+            />
           )}
         </Box>
 
@@ -548,7 +600,7 @@ const Topbar = ({ isMobile }) => {
                     : "rgba(255,255,255,0.06)"
                 }`,
 
-                transition: "all .25s ease",
+                transition: "0.25s",
 
                 "&:hover": {
                   transform: "translateY(-2px)",
@@ -612,12 +664,12 @@ const Topbar = ({ isMobile }) => {
                 />
               </Box>
 
-              {/* User info */}
+              {/* Info */}
               <Box>
                 <Typography
                   sx={{
                     fontSize: "12px",
-                    fontWeight: 800,
+                    fontWeight: 700,
                     color: "#fff",
                     lineHeight: 1.2,
                   }}
@@ -673,7 +725,7 @@ const Topbar = ({ isMobile }) => {
               border:
                 "1px solid rgba(255,255,255,0.06)",
 
-              transition: "all .25s ease",
+              transition: "0.25s",
 
               "&:hover": {
                 borderColor:
