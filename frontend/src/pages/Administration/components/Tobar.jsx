@@ -329,16 +329,6 @@ const UserMenu = () => {
         >
           Mon Compte
         </Typography>
-
-        <Typography
-          sx={{
-            color: "rgba(255,255,255,0.45)",
-            fontSize: "11px",
-            fontWeight: 500,
-          }}
-        >
-          Gérez votre profil et sécurité
-        </Typography>
       </Box>
 
       {/* Menu */}
@@ -396,14 +386,6 @@ const UserMenu = () => {
               Mon Profil
             </Typography>
 
-            <Typography
-              sx={{
-                color: "rgba(255,255,255,0.35)",
-                fontSize: "10px",
-              }}
-            >
-              Informations personnelles
-            </Typography>
           </Box>
         </Box>
 
@@ -460,14 +442,6 @@ const UserMenu = () => {
               Sécurité
             </Typography>
 
-            <Typography
-              sx={{
-                color: "rgba(255,255,255,0.35)",
-                fontSize: "10px",
-              }}
-            >
-              Mot de passe et accès
-            </Typography>
           </Box>
         </Box>
 
@@ -534,14 +508,6 @@ const UserMenu = () => {
               Déconnexion
             </Typography>
 
-            <Typography
-              sx={{
-                color: "rgba(239,68,68,0.45)",
-                fontSize: "10px",
-              }}
-            >
-              Quitter la session
-            </Typography>
           </Box>
         </Box>
       </Box>
