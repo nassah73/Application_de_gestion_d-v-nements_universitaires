@@ -447,44 +447,103 @@ const UserManagement = () => {
 
 
       {/* Stat Cards */}
-      <Box sx={{ display: "flex", gap: "16px", mb: "24px", flexWrap: "wrap" }}>
+      {/*<Box sx={{ display: "flex", gap: "16px", mb: "24px", flexWrap: "wrap" }}>
         <StatCard icon={<PeopleAltIcon />} label="Total" value={stats.total} accentColor="#cd7329" bgColor={colors.primary[400]} />
         <StatCard icon={<BadgeIcon />} label="Administrateurs" value={stats.adminCount} accentColor="#10b981" bgColor={colors.primary[400]} />
         <StatCard icon={<ComputerIcon />} label="Équipe Admin" value={stats.adminTeamCount} accentColor="#6366f1" bgColor={colors.primary[400]} />
-      </Box>
+  </Box>*/}
 
-      {/* Search bar */}
-      <Box sx={{ mb: "20px", display: "flex", gap: "10px"}}>
-        <TextField
-          variant="filled"
-          placeholder="Rechercher par nom, email ou rôle…"
-          size="small"
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon sx={{ color: colors.grey[400] }} />
-              </InputAdornment>
-            ),
-          }}
+{/* Search bar */}
+<Box
+  sx={{
+    mb: "25px",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    flexWrap: "wrap",
+    gap: "15px",
+  }}
+>
+  <TextField
+    variant="filled"
+    placeholder="Rechercher par nom, email ou rôle..."
+    size="small"
+    value={searchText}
+    onChange={(e) => setSearchText(e.target.value)}
+    InputProps={{
+      startAdornment: (
+        <InputAdornment position="start">
+          <SearchIcon
+            sx={{
+              color: colors.grey[300],
+              transition: "0.3s",
+            }}
+          />
+        </InputAdornment>
+      ),
+    }}
+    sx={{
+      width: "400px",
+
+      "& .MuiFilledInput-root": {
+        backgroundColor: colors.primary[400],
+        borderRadius: "14px",
+        paddingLeft: "8px",
+        overflow: "hidden",
+        transition: "all 0.3s ease",
+
+        "&:hover": {
+          backgroundColor: colors.primary[500],
+          boxShadow: `0 0 10px ${colors.greenAccent[500]}33`,
+        },
+
+        "&.Mui-focused": {
+          backgroundColor: colors.primary[500],
+          boxShadow: `0 0 0 2px ${colors.greenAccent[500]}`,
+        },
+
+        "&:before, &:after": {
+          display: "none",
+        },
+      },
+
+      "& input": {
+        padding: "12px 10px",
+        fontSize: "14px",
+        color: colors.grey[100],
+      },
+
+      "& input::placeholder": {
+        color: colors.grey[400],
+        opacity: 1,
+      },
+    }}
+  />
+
+  {searchText && (
+    <Fade in>
+      <Box
+        sx={{
+          backgroundColor: colors.primary[400],
+          px: "12px",
+          py: "6px",
+          borderRadius: "20px",
+        }}
+      >
+        <Typography
           sx={{
-            width: "380px",
-            "& .MuiFilledInput-root": {
-              backgroundColor: colors.primary[400],
-              borderRadius: "12px",
-              "&:before, &:after": { display: "none" },
-            },
+            fontSize: "13px",
+            color: colors.greenAccent[400],
+            fontWeight: "600",
           }}
-        />
-        {searchText && (
-          <Fade in>
-            <Typography sx={{ alignSelf: "center", fontSize: "13px", color: colors.grey[400] }}>
-              {filteredUsers.length} résultat{filteredUsers.length !== 1 ? "s" : ""}
-            </Typography>
-          </Fade>
-        )}
+        >
+          {filteredUsers.length} résultat
+          {filteredUsers.length !== 1 ? "s" : ""}
+        </Typography>
       </Box>
+    </Fade>
+  )}
+</Box>
 
       {/* DataGrid */}
       <Box
