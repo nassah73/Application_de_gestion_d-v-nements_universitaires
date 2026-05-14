@@ -119,6 +119,36 @@ const IconTrash = () => (
 
 // ─── Notifications ────────────────────────────────────────────────────────────
 
+const initialNotifications = [
+  {
+    id: 1,
+    text: (
+      <>
+        Nouvel événement créé par{" "}
+        <strong style={{ color: "#cd7329" }}>Sarah M.</strong>
+      </>
+    ),
+    time: "il y a 5 min",
+  },
+  {
+    id: 2,
+    text: (
+      <>
+        12 nouvelles inscriptions{" "}
+        <strong style={{ color: "#cd7329" }}>
+          Conf Tech 2026
+        </strong>
+      </>
+    ),
+    time: "il y a 23 min",
+  },
+  {
+    id: 3,
+    text: "Rapport mensuel disponible",
+    time: "il y a 1h",
+  },
+];
+
 // ─── Notification Panel ───────────────────────────────────────────────────────
 
 const NotifPanel = ({ notifications, onClear, onDeleteSingle }) => (
@@ -163,7 +193,7 @@ const NotifPanel = ({ notifications, onClear, onDeleteSingle }) => (
         onClick={onClear}
         sx={{
           fontSize: "11px",
-          color: "#cd7329",
+          color: "#ef4444",
           cursor: "pointer",
           fontWeight: 700,
 
@@ -172,7 +202,7 @@ const NotifPanel = ({ notifications, onClear, onDeleteSingle }) => (
           },
         }}
       >
-        Tout marquer lu
+        Supprimer tout
       </Typography>
     </Box>
 
@@ -541,77 +571,7 @@ const UserMenu = () => {
   );
 };
 
-// ─── Menu Item ────────────────────────────────────────────────────────────────
-
-const MenuItem = ({ icon, text, onClick, danger }) => (
-  <Box
-    onClick={onClick}
-    sx={{
-      p: "12px 14px",
-
-      display: "flex",
-      alignItems: "center",
-      gap: "12px",
-
-      borderRadius: "14px",
-
-      cursor: "pointer",
-
-      color: danger ? "#ef4444" : "rgba(255,255,255,0.85)",
-
-      transition: "0.25s",
-
-      "&:hover": {
-        background: danger
-          ? "rgba(239,68,68,0.12)"
-          : "rgba(205,115,41,0.08)",
-      },
-    }}
-  >
-    {icon}
-
-    <Typography
-      sx={{
-        fontSize: "12px",
-        fontWeight: 700,
-      }}
-    >
-      {text}
-    </Typography>
-  </Box>
-);
-
 // ─── Topbar ───────────────────────────────────────────────────────────────────
-
-const initialNotifications = [
-  {
-    id: 1,
-    text: (
-      <>
-        Nouvel événement créé par{" "}
-        <strong style={{ color: "#cd7329" }}>Sarah M.</strong>
-      </>
-    ),
-    time: "il y a 5 min",
-  },
-  {
-    id: 2,
-    text: (
-      <>
-        12 nouvelles inscriptions{" "}
-        <strong style={{ color: "#cd7329" }}>
-          Conf Tech 2026
-        </strong>
-      </>
-    ),
-    time: "il y a 23 min",
-  },
-  {
-    id: 3,
-    text: "Rapport mensuel disponible",
-    time: "il y a 1h",
-  },
-];
 
 const Topbar = ({ isMobile }) => {
   const [notifOpen, setNotifOpen] = useState(false);
