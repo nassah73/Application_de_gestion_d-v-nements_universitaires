@@ -43,6 +43,24 @@ const startServer = async () => {
                 await superAdmin.save();
                 console.log('✅ Compte Administrateur par défaut créé (Memory DB)');
             }
+
+            // Seed default categories
+            const Category = require('./models/Category');
+            const defaultCategories = [
+                { name: 'Informatique', color: '#6366F1' },
+                { name: 'Académique', color: '#10B981' },
+                { name: 'Culturel', color: '#8B5CF6' },
+                { name: 'Sportif', color: '#ef4444' },
+                { name: 'Scientifique', color: '#cd7329' }
+            ];
+
+            for (const cat of defaultCategories) {
+                const exists = await Category.findOne({ name: cat.name });
+                if (!exists) {
+                    await new Category(cat).save();
+                    console.log(`✅ Catégorie "${cat.name}" créée`);
+                }
+            }
         } catch (populateErr) {
             console.error('Erreur lors de la population de la DB:', populateErr);
         }
@@ -57,9 +75,9 @@ const startServer = async () => {
     const authRoutes = require('./Routes/authRoutes');  
     const CreateEvent=require('./Routes/CreateEvent')
     const ValideEvent=require('./Routes/ValideEvents')
-     const newsRoutes = require('./Routes/NewsRoutes');
+    const categoryRoutes = require('./Routes/CategoryRoutes');
+    const newsRoutes = require('./Routes/NewsRoutes');
     const notificationRoutes = require('./Routes/NotificationRoutes');
-    const DeleteMyEvent=require('./Routes/DeleteMyEvent')
     app.use('/api/students', studentRoutes);
     app.use('/api/organisateurs', organisateurRoutes);
     app.use('/organisateur', organisateurRoutes); // Ajout du préfixe demandé par l'utilisateur
@@ -68,11 +86,10 @@ const startServer = async () => {
     app.use('/api/auth', authRoutes);
     app.use('/Event', CreateEvent);
     app.use('/api/valide',ValideEvent)
+    app.use('/api/categories', categoryRoutes);
     app.use('/api/notifications', notificationRoutes);
-    app.use('/api/delete',DeleteMyEvent)
-app.use('/api/news', newsRoutes);
-    app.use('/api/analytics', analyticsRoutes);
     app.use('/api/news', newsRoutes);
+    app.use('/api/analytics', analyticsRoutes);
     
     app.use( '/api/administrateur',addAdmin)
     const csrfProtection = csrf({ cookie: true });

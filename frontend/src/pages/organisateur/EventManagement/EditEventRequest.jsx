@@ -18,11 +18,14 @@ import {
 import { useNavigate, useParams } from 'react-router-dom';
 import eventService from '../services/eventService';
 
+import axios from 'axios';
+
 const EditEventRequest = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [categories, setCategories] = useState([]);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -37,9 +40,17 @@ const EditEventRequest = () => {
   });
 
   useEffect(() => {
-    const fetchEvent = async () => {
+    const fetchInitialData = async () => {
       try {
-        const data = await eventService.getEventById(id);
+        // Fetch event data and categories in parallel
+        const [eventRes, categoriesRes] = await Promise.all([
+          eventService.getEventById(id),
+          axios.get('http://localhost:5000/api/categories')
+        ]);
+
+        const data = eventRes;
+        setCategories(categoriesRes.data);
+        
         setFormData({
           title: data.title || '',
           description: data.description || '',
@@ -50,17 +61,17 @@ const EditEventRequest = () => {
           registrationLink: data.registrationLink || '',
           needsHelp: data.needsHelp || 'no',
           rejectionReason: data.rejectionReason || '',
-          coverImage: null // On ne pré-remplit pas le fichier
+          coverImage: null
         });
       } catch (err) {
-        setError('Erreur lors de la récupération de l\'événement');
+        setError('Erreur lors de la récupération des données');
         console.error(err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchEvent();
+    fetchInitialData();
   }, [id]);
 
   const handleChange = (e) => {
@@ -189,10 +200,11 @@ const EditEventRequest = () => {
                     onChange={handleChange}
                   >
                     <option value="" disabled className="bg-slate-900">Choisir une catégorie</option>
-                    <option value="Culturel" className="bg-slate-900 text-white">Culturel</option>
-                    <option value="Sportif" className="bg-slate-900 text-white">Sportif</option>
-                    <option value="Scientifique" className="bg-slate-900 text-white">Scientifique</option>
-                    <option value="Autre" className="bg-slate-900 text-white">Autre</option>
+                    {categories.map((cat) => (
+                      <option key={cat._id || cat} value={cat.name || cat} className="bg-slate-900 text-white">
+                        {cat.name || cat}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
