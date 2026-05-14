@@ -56,7 +56,7 @@ const maskPassword = (pw) => {
 };
 
 const getPasswordStrength = (password) => {
-  if (!password) return { score: 0, label: "", color: "#64748b" };
+  if (!password) return { score: 0, label: "", color: "#506573ff" };
   let score = 0;
   if (password.length >= 6) score++;
   if (password.length >= 10) score++;
@@ -110,7 +110,7 @@ const StatCard = ({ icon, label, value, accentColor, bgColor }) => (
       <Typography sx={{ fontSize: "24px", fontWeight: 800, lineHeight: 1.1, color: "#f8fafc" }}>
         {value}
       </Typography>
-      <Typography sx={{ fontSize: "13px", color: "#94a3b8", mt: "2px" }}>{label}</Typography>
+      <Typography sx={{ fontSize: "13px", color: "#7d685eff", mt: "2px" }}>{label}</Typography>
     </Box>
   </Box>
 );
@@ -550,29 +550,62 @@ const UserManagement = () => {
         sx={{
           flex: 1,
           width: "100%",
-          "& .MuiDataGrid-root": { border: "none", backgroundColor: colors.primary[400], borderRadius: "16px" },
+          "& .MuiDataGrid-root": { 
+            border: "1px solid rgba(255,255,255,0.08)", 
+            backgroundColor: colors.primary[400], 
+            borderRadius: "20px",
+            overflow: "hidden",
+            boxShadow: "0 10px 40px rgba(0,0,0,0.25)",
+          },
           "& .MuiDataGrid-cell": {
             borderBottom: `1px solid ${colors.grey[800]}`,
             color: colors.grey[100],
             display: "flex",
             alignItems: "center",
+            px: "18px",
           },
           "& .name-column--cell": { color: colors.greenAccent[300] + " !important", fontWeight: "600" },
           "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.blueAccent[700],
-            borderBottom: "none",
-            borderTopLeftRadius: "16px",
-            borderTopRightRadius: "16px",
+            backgroundColor: "#cd7329",
+            borderBottom: `1px solid ${colors.grey[800]}`,
+            borderTopLeftRadius: "20px",
+            borderTopRightRadius: "20px",
+          },
+          "& .MuiDataGrid-columnHeader": {
+            color: "#fff",
+            fontWeight: 800,
+            fontSize: "12px",
+            textTransform: "uppercase",
+            letterSpacing: "0.5px",
           },
           "& .MuiDataGrid-virtualScroller": { backgroundColor: colors.primary[400] },
           "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
-            backgroundColor: colors.blueAccent[700],
-            borderBottomLeftRadius: "16px",
-            borderBottomRightRadius: "16px",
+            borderTop: `1px solid ${colors.grey[800]}`,
+            backgroundColor: "#cd7329",
+            borderBottomLeftRadius: "20px",
+            borderBottomRightRadius: "20px",
+          },
+          "& .MuiDataGrid-selectedRowCount": {
+            color: "#fff",
+            fontWeight: 600,
+          },
+          "& .MuiTablePagination-root": {
+            color: "#fff",
           },
           "& .MuiCheckbox-root": { color: `${colors.greenAccent[200]} !important` },
-          "& .MuiDataGrid-toolbarContainer .MuiButton-text": { color: `${colors.grey[100]} !important` },
+          "& .MuiDataGrid-toolbarContainer": {
+            backgroundColor: "rgba(205,115,41,0.15)",
+            borderBottom: `1px solid ${colors.grey[800]}`,
+            p: "12px 18px",
+          },
+          "& .MuiDataGrid-toolbarContainer .MuiButton-text": { 
+            color: `${colors.grey[100]} !important`,
+            fontWeight: 600,
+            borderRadius: "10px",
+            "&:hover": {
+              backgroundColor: "rgba(205,115,41,0.25)",
+            }
+          },
         }}
       >
         <DataGrid
@@ -581,11 +614,15 @@ const UserManagement = () => {
           slots={{ toolbar: GridToolbar }}
           initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
           pageSizeOptions={[5, 10, 25]}
-          rowHeight={60}
+          rowHeight={68}
           disableRowSelectionOnClick
           sx={{
+            "& .MuiDataGrid-row": {
+              transition: "background-color 0.2s ease, transform 0.15s ease",
+            },
             "& .MuiDataGrid-row:hover": {
-              backgroundColor: `${colors.primary[300]}50`,
+              backgroundColor: `${colors.primary[300]}70`,
+              transform: "translateX(2px)",
             },
           }}
         />
