@@ -44,7 +44,7 @@ const getInitials = (name) => {
   if (!name) return "?";
   const parts = name.trim().split(/\s+/);
   return parts.length >= 2
-    ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase()
+    ? (parts[0][0] + parts[1][0]).toUpperCase()
     : parts[0][0].toUpperCase();
 };
 
@@ -551,7 +551,7 @@ const UserManagement = () => {
           flex: 1,
           width: "100%",
           "& .MuiDataGrid-root": { 
-            border: "1px solid rgba(255,255,255,0.08)", 
+            border: "1px solid rgba(40, 202, 15, 0.08)", 
             backgroundColor: colors.primary[400], 
             borderRadius: "20px",
             overflow: "hidden",
@@ -594,16 +594,16 @@ const UserManagement = () => {
           },
           "& .MuiCheckbox-root": { color: `${colors.greenAccent[200]} !important` },
           "& .MuiDataGrid-toolbarContainer": {
-            backgroundColor: "rgba(205,115,41,0.15)",
+            backgroundColor: "#cd7329",
             borderBottom: `1px solid ${colors.grey[800]}`,
             p: "12px 18px",
           },
           "& .MuiDataGrid-toolbarContainer .MuiButton-text": { 
-            color: `${colors.grey[100]} !important`,
+            color: "#fff !important",
             fontWeight: 600,
             borderRadius: "10px",
             "&:hover": {
-              backgroundColor: "rgba(205,115,41,0.25)",
+              backgroundColor: "rgba(255,255,255,0.15)",
             }
           },
         }}
