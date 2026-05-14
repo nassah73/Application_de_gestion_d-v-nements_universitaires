@@ -1,14 +1,10 @@
-import { Box, useTheme, Typography, Button } from "@mui/material";
+import { Box, useTheme, Typography, Button, CircularProgress } from "@mui/material";
 import { tokens } from "../theme";
 import StatCard from "../components/StatCard";
 import PeopleIcon from "@mui/icons-material/People";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import EventIcon from "@mui/icons-material/Event";
 import AssessmentIcon from "@mui/icons-material/Assessment";
-import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
-import AddBoxIcon from "@mui/icons-material/AddBox";
-import RuleIcon from "@mui/icons-material/Rule";
-import SettingsIcon from "@mui/icons-material/Settings";
 import {
   LineChart,
   Line,
@@ -21,41 +17,47 @@ import {
   Pie,
   Cell,
 } from "recharts";
-
-const attendanceData = [
-  { month: "Jan", attendance: 245 },
-  { month: "Fév", attendance: 320 },
-  { month: "Mar", attendance: 275 },
-  { month: "Avr", attendance: 410 },
-  { month: "Mai", attendance: 380 },
-  { month: "Juin", attendance: 450 },
-  { month: "Juil", attendance: 525 },
-  { month: "Août", attendance: 480 },
-  { month: "Sep", attendance: 590 },
-  { month: "Oct", attendance: 630 },
-  { month: "Nov", attendance: 595 },
-  { month: "Déc", attendance: 655 },
-];
-
-const recentActivities = [
-  { id: 1, user: "Ahmed Alaoui", action: "Nouveau compte étudiant créé", time: "Il y a 2 min" },
-  { id: 2, user: "Bureau des Sports", action: "Événement 'Tournoi de Foot' publié", time: "Il y a 15 min" },
-  { id: 3, user: "Sanaa Bennani", action: "Paramètres système mis à jour", time: "Il y a 1h" },
-  { id: 4, user: "Club Info", action: "Nouvel organisateur en attente de validation", time: "Il y a 3h" },
-];
-
-const eventDistributionData = [
-  { name: "Sports", value: 400 },
-  { name: "Culture", value: 300 },
-  { name: "Éducation", value: 300 },
-  { name: "Social", value: 200 },
-];
+import { useState, useEffect } from "react";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+const API_BASE_URL = "http://localhost:5000";
 
 const Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [stats, setStats] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/analytics/admin-stats`);
+        const data = await response.json();
+        setStats(data);
+      } catch (error) {
+        console.error("Error fetching stats:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
+  if (loading) {
+    return (
+      <Box sx={{ p: "24px", minHeight: "100%", backgroundColor: colors.primary[500], display: "flex", justifyContent: "center", alignItems: "center" }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  const attendanceData = stats?.monthlyActivity?.map(item => ({
+    month: item.name,
+    attendance: item.engagement
+  })) || [];
+
+  const eventDistributionData = stats?.categoryStats || [];
 
   return (
     <Box sx={{ p: "24px", minHeight: "100%", backgroundColor: colors.primary[500] }}>
@@ -77,22 +79,6 @@ const Dashboard = () => {
             Bienvenue sur votre espace d'administration centralisé
           </Typography>
         </Box>
-        {/*<Button
-          sx={{
-            backgroundColor: colors.greenAccent[500],
-            color: "#fff",
-            fontSize: "14px",
-            fontWeight: "bold",
-            padding: "10px 20px",
-            borderRadius: "10px",
-            "&:hover": {
-              backgroundColor: colors.greenAccent[600],
-            },
-          }}
-        >
-          <DownloadOutlinedIcon sx={{ mr: "10px" }} />
-          Télécharger Rapports
-        </Button>*/}
       </Box>
 
       {/* Stat Cards Row */}
@@ -104,10 +90,10 @@ const Dashboard = () => {
           mb: "25px",
         }}
       >
-        <StatCard title="Total Étudiants" value="4,258" change="+12% ce mois" icon={<PeopleIcon sx={{ fontSize: "24px" }} />} color={colors.blueAccent[500]} />
-        <StatCard title="Organisateurs" value="12" change="+3 nouveaux" icon={<PersonAddIcon sx={{ fontSize: "24px" }} />} color={colors.greenAccent[500]} />
-        <StatCard title="Événements" value="45" change="+8 cette semaine" icon={<EventIcon sx={{ fontSize: "24px" }} />} color={colors.redAccent[500]} />
-        <StatCard title="Taux d'engagement" value="85%" change="+5.4% vs 2023" icon={<AssessmentIcon sx={{ fontSize: "24px" }} />} color={colors.blueAccent[400]} />
+        <StatCard title="Total Étudiants" value={stats?.activeStudents || 0} change="" icon={<PeopleIcon sx={{ fontSize: "24px" }} />} color={colors.blueAccent[500]} />
+        <StatCard title="Organisateurs" value={stats?.totalOrganizers || 0} change="" icon={<PersonAddIcon sx={{ fontSize: "24px" }} />} color={colors.greenAccent[500]} />
+        <StatCard title="Événements" value={stats?.totalEvents || 0} change="" icon={<EventIcon sx={{ fontSize: "24px" }} />} color={colors.redAccent[500]} />
+        <StatCard title="Événements en attente" value={stats?.pendingEvents || 0} change="" icon={<AssessmentIcon sx={{ fontSize: "24px" }} />} color={colors.blueAccent[400]} />
       </Box>
 
       {/* Main Content Grid */}
@@ -141,7 +127,7 @@ const Dashboard = () => {
               <PieChart>
                 <Pie data={eventDistributionData} cx="50%" cy="50%" innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value">
                   {eventDistributionData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell key={`cell-${index}`} fill={entry.color || COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip />
@@ -151,7 +137,7 @@ const Dashboard = () => {
           <Box sx={{ mt: "10px" }}>
             {eventDistributionData.map((entry, index) => (
               <Box key={entry.name} sx={{ display: "flex", alignItems: "center", mb: "5px" }}>
-                <Box sx={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: COLORS[index], mr: "10px" }} />
+                <Box sx={{ width: "12px", height: "12px", borderRadius: "50%", backgroundColor: entry.color || COLORS[index % COLORS.length], mr: "10px" }} />
                 <Typography sx={{ color: colors.grey[100], fontSize: "12px" }}>{entry.name}</Typography>
               </Box>
             ))}
