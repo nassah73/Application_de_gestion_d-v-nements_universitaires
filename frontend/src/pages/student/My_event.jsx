@@ -4,10 +4,9 @@ import axios from 'axios';
 import { Calendar, Clock, Users, Trash2, Ticket, ScanQrCode } from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from 'react-router-dom';
-
 const MyEvents = () => {
   const [eventsList, setEventsList] = React.useState([]);
-  const [staffOrganizerId, setStaffOrganizerId] = React.useState(null); // ID de l'organisateur pour lequel l'étudiant est staff
+  const [staffOrganizerId, setStaffOrganizerId] = React.useState(null); 
   const navigate = useNavigate();
 
   React.useEffect(() => {
@@ -17,14 +16,14 @@ const MyEvents = () => {
         if (!userString) return;
         const user = JSON.parse(userString);
         
-        // 1. جلب الأحداث اللي مسجل فيها الطالب
+        
         const resEvents = await axios.get(`http://localhost:5000/Event/My_registers/${user._id}`);
         const validEvents = Array.isArray(resEvents.data) 
           ? resEvents.data.filter(reg => reg.event !== null) 
           : [];
         setEventsList(validEvents);
 
-        // 2. التحقق من وضعية الـ Staff - récupérer l'ID de l'organisateur
+       
         const resStaff = await axios.get(`http://localhost:5000/organisateur/check-staff/${user._id}`);
         if (resStaff.data.isStaff) {
           setStaffOrganizerId(resStaff.data.organizerId);
@@ -37,12 +36,16 @@ const MyEvents = () => {
     fetchData();
   }, []);
 
-  const handleDelete = async (id) => {
+ const handleDelete = async (registrationId) => {
+    if (!window.confirm("Êtes-vous sûr de vouloir vous désinscrire de cet événement ?")) return;
+
     try {
-      // await axios.delete(`http://localhost:5000/Event/delete_registration/${id}`);
-      setEventsList(eventsList.filter(item => item._id !== id));
+      await axios.delete(`http://localhost:5000/api/delete/delete_registration/${registrationId}`);
+      setEventsList(eventsList.filter(item => item._id !== registrationId));
+      alert("vous avez été désinscrit de cet événement avec succès");
     } catch (err) {
-      alert("Error deleting event");
+      console.error("Error deleting registration:", err);
+      alert("Erreur lors de la désinscription. Veuillez réessayer.");
     }
   };
 
@@ -136,7 +139,7 @@ const MyEvents = () => {
                             </div>
                           </div>
 
-                          {/* Le bouton de scan n'apparaît que pour les événements de l'organisateur qui a accepté l'étudiant */}
+                        
                           {staffOrganizerId && eventData.organizer?._id === staffOrganizerId && (
                             <div className="mt-auto pt-4 border-t border-white/10 flex items-center justify-between">
                               <div className="flex items-center gap-2">
