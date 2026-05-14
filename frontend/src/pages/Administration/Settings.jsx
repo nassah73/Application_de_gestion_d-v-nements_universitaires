@@ -1,46 +1,19 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import {
-  Settings, User, Lock, Bell, Globe, Save,
-  LayoutDashboard, CalendarCheck, Users, LogOut, Tag, ShieldCheck,
-  CheckCircle2, X, AlertTriangle, CheckCheck
+  Settings, User, Lock, Globe, Save,
+  CheckCircle2, X
 } from 'lucide-react';
 import Sidebare from './components/Sidebare';
+import Tobar from './components/Tobar';
 
 const GLASS       = { background: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.08)' };
 const GLASS_INPUT = { background: 'rgba(15,23,42,0.5)',    borderColor: 'rgba(255,255,255,0.12)' };
 
-const ADMIN_NOTIFS = [
-  { id: 1, icon: <Users size={16} />, iconBg: 'rgba(205,115,41,0.18)', iconColor: '#cd7329', title: 'Nouvelle demande organisateur', desc: 'Le Club Informatique a demandé le statut organisateur.', time: 'Il y a 2 min', read: false },
-  { id: 2, icon: <CalendarCheck size={16} />, iconBg: 'rgba(99,102,241,0.18)', iconColor: '#6366F1', title: 'Événement en attente', desc: '"Science Fair 2026" attend votre validation.', time: 'Il y a 30 min', read: false },
-  { id: 3, icon: <AlertTriangle size={16} />, iconBg: 'rgba(245,158,11,0.18)', iconColor: '#F59E0B', title: 'Capacité critique', desc: 'Hackathon 2025 — seulement 2 places restantes.', time: 'Il y a 1h', read: false },
-  { id: 4, icon: <CheckCircle2 size={16} />, iconBg: 'rgba(16,185,129,0.18)', iconColor: '#10B981', title: 'Événement validé', desc: '"Cultural Night 2026" est maintenant en ligne.', time: 'Hier', read: true },
-];
-
 const AdminSettings = () => {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState('profile');
-
-  /* Dropdown States */
-  const [notifOpen, setNotifOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
-  const [notifications, setNotifications] = useState(ADMIN_NOTIFS);
-  const notifRef = useRef(null);
-  const profileRef = useRef(null);
-
-  const unreadCount = notifications.filter(n => !n.read).length;
-  const markAllRead = () => setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-  const dismiss = (id) => setNotifications(prev => prev.filter(n => n.id !== id));
-
-  useEffect(() => {
-    const h = (e) => {
-      if (notifRef.current && !notifRef.current.contains(e.target)) setNotifOpen(false);
-      if (profileRef.current && !profileRef.current.contains(e.target)) setProfileOpen(false);
-    };
-    document.addEventListener('mousedown', h);
-    return () => document.removeEventListener('mousedown', h);
-  }, []);
 
   const [toast, setToast] = useState(null);
   const showToast = (msg, type = 'success') => { setToast({ msg, type }); setTimeout(() => setToast(null), 3000); };
@@ -52,13 +25,7 @@ const AdminSettings = () => {
       <Sidebare />
 
       <main className="flex-1 flex flex-col overflow-hidden">
-        <header className="h-16 border-b flex items-center justify-between px-8 sticky top-0 z-10 shrink-0" style={{ background: 'rgba(15,23,42,0.85)', backdropFilter: 'blur(12px)', borderColor: 'rgba(255,255,255,0.08)' }}>
-          <h2 className="font-bold text-white flex items-center gap-2"><Settings size={18} className="text-orange-400"/> Paramètres</h2>
-          <div className="flex items-center gap-4">
-            <div className="relative" ref={notifRef}><button onClick={() => setNotifOpen(o => !o)} className="relative p-2 rounded-full transition-all" style={{ background: notifOpen ? 'rgba(205,115,41,0.2)' : 'rgba(255,255,255,0.06)', color: notifOpen ? '#cd7329' : 'rgba(255,255,255,0.5)' }}><Bell size={18} />{unreadCount > 0 && (<span className="absolute top-1 right-1 min-w-[16px] h-[16px] text-white text-[9px] font-bold rounded-full flex items-center justify-center shadow-md" style={{ background: '#cd7329' }}>{unreadCount}</span>)}</button>{notifOpen && (<div className="absolute right-0 top-[calc(100%+10px)] w-[360px] rounded-2xl shadow-2xl border border-white/10 overflow-hidden z-50 animate-in fade-in" style={{ background: '#1e293b' }}><div className="px-5 py-3 border-b border-white/5 font-bold text-white flex justify-between items-center text-sm">Notifications {unreadCount > 0 && <button onClick={markAllRead} className="text-[10px] text-orange-400">Tout marquer</button>}</div><div className="max-h-[320px] overflow-y-auto">{notifications.length === 0 ? <p className="py-10 text-center text-white/20">Rien à signaler.</p> : notifications.map(n => <div key={n.id} className="p-4" style={{ background: n.read ? 'transparent' : 'rgba(205,115,41,0.06)' }}><p className="font-bold text-white text-[13px]">{n.title}</p><p className="text-[11px] text-white/40">{n.desc}</p></div>)}</div></div>)}</div>
-            <div className="relative" ref={profileRef}><button onClick={() => setProfileOpen(o => !o)} className="flex items-center gap-3 border-l pl-4 outline-none transition-all hover:opacity-80" style={{ borderColor: 'rgba(255,255,255,0.1)' }}><div className="text-right hidden sm:block"><p className="text-sm font-semibold text-white uppercase tracking-widest font-bold">Admin</p><p className="text-[10px] text-white/40 uppercase">Super Admin</p></div><div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-black text-sm" style={{ background: 'linear-gradient(135deg,#cd7329,#eb8232)', transform: profileOpen ? 'scale(1.1)' : 'scale(1)' }}>A</div></button>{profileOpen && (<div className="absolute right-0 top-[calc(100%+10px)] w-56 rounded-2xl shadow-2xl border border-white/10 overflow-hidden z-50 animate-in fade-in" style={{ background: '#1e293b' }}><div className="px-5 py-4 border-b border-white/5 font-bold tracking-widest text-[10px] text-white/40 uppercase">Compte UIZ</div><div className="p-2"><button onClick={() => setProfileOpen(false)} className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-bold text-white/70 hover:bg-white/5 transition-all"><User size={16}/> Mon profil</button><button onClick={() => { setProfileOpen(false); navigate('/auth/login'); }} className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-bold text-red-500 hover:bg-red-500/10 transition-all font-bold"><LogOut size={16}/> Déconnexion</button></div></div>)}</div>
-          </div>
-        </header>
+        <Tobar />
 
         <div className="p-8 overflow-y-auto flex-1" style={{ background: '#0f172a' }}>
           <div className="max-w-4xl mx-auto"><div className="flex flex-col md:flex-row gap-8"><div className="w-full md:w-56 space-y-1 shrink-0">{[{ key: 'profile', icon: <User size={18}/>, label: 'Mon Profil' }, { key: 'security', icon: <Lock size={18}/>, label: 'Sécurité' }, { key: 'system', icon: <Globe size={18}/>, label: 'Préférences' }].map(({ key, icon, label }) => (<button key={key} onClick={() => setActiveSection(key)} className={`w-full flex items-center gap-3 px-4 py-3.5 rounded-2xl font-bold text-sm transition-all text-left border ${activeSection === key ? 'bg-orange-500/10 border-orange-500 text-orange-500' : 'bg-white/5 border-white/5 text-white/40'}`}>{icon} {label}</button>))}</div>

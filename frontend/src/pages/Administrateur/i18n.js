@@ -15,6 +15,8 @@ const resources = {
       "Calendrier": "Calendar",
       "RECHERCHER": "SEARCH",
       "Rechercher...": "Search...",
+      "Déconnexion": "Logout",
+      "News Hub": "News Hub"
     },
   },
   fr: {
@@ -29,6 +31,8 @@ const resources = {
       "Calendrier": "Calendrier",
       "RECHERCHER": "RECHERCHER",
       "Rechercher...": "Rechercher...",
+      "Déconnexion": "Déconnexion",
+      "News Hub": "News Hub"
     },
   },
 };

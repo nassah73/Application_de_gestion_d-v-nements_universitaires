@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from 'react';
 import Sidebar from './components/Sidebare'; 
-import AdminHeader from './components/AdminHeader';
+import Tobar from './components/Tobar';
 import StatusBadge from './components/StatusBadge';
 import axios from 'axios';
 import { 
@@ -8,12 +8,6 @@ import {
   Users, CalendarCheck, MapPin, Clock, User, Tag,
   Search, Filter, Calendar, ChevronRight
 } from 'lucide-react';
-
-
-const INITIAL_NOTIFS = [
-  { id: 1, icon: <Users size={16} />, iconBg: 'rgba(205,115,41,0.18)', iconColor: '#cd7329', title: 'Nouvelle demande', desc: 'Club Informatique a demandé le statut.', read: false },
-  { id: 2, icon: <CalendarCheck size={16} />, iconBg: 'rgba(99,102,241,0.18)', iconColor: '#6366F1', title: 'Événement en attente', desc: '"Science Fair" attend validation.', read: false },
-];
 
 const TABS = [
   { id: 'All Events', label: 'Tous les événements' },
@@ -31,7 +25,6 @@ export default function ValidateEvents() {
    
   const [events, setEvents] = useState([]);
   const [activeTab, setActiveTab] = useState('All Events');
-  const [notifications, setNotifications] = useState(INITIAL_NOTIFS);
   const [viewEvent, setViewEvent] = useState(null);
 const [loading, setLoading] = useState(true);
 
@@ -110,7 +103,7 @@ if (loading) {
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[120px] -z-10 pointer-events-none"></div>
 
-        <AdminHeader notifications={notifications} setNotifications={setNotifications} />
+        <Tobar />
 
         <div className="p-8 overflow-y-auto flex-1">
           <div className="max-w-7xl mx-auto">

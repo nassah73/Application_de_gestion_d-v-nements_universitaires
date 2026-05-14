@@ -49,7 +49,7 @@ function App() {
                 <Route path="/moderation" element={<Moderation />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/activity" element={<ActivityLog />} />
-                <Route path="/calendar" element={<Calendar />} />
+                {/*<Route path="/calendar" element={<Calendar />} />*/}
                 <Route path="/news" element={<NewsManager />} />
               </Routes>
             </Box>

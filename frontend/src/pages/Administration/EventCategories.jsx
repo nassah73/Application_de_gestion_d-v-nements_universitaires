@@ -1,23 +1,17 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Plus, Edit2, Trash2, Search, Bell, Settings, LogOut,
+  Plus, Edit2, Trash2, Search,
   CalendarCheck, Users, Save, X,
   CheckCircle2, AlertTriangle, Loader2
 } from 'lucide-react';
 import Sidebare from './components/Sidebare';
+import Tobar from './components/Tobar';
 import axios from 'axios';
 
 const PRESET_COLORS = [
   '#cd7329', '#6366F1', '#10B981', '#F59E0B',
   '#EC4899', '#06B6D4', '#8B5CF6', '#ef4444',
-];
-
-const ADMIN_NOTIFS = [
-  { id: 1, icon: <Users size={16} />, iconBg: 'rgba(205,115,41,0.18)', iconColor: '#cd7329', title: 'Nouvelle demande organisateur', desc: 'Le Club Informatique a demandé le statut organisateur.', time: 'Il y a 2 min', read: false },
-  { id: 2, icon: <CalendarCheck size={16} />, iconBg: 'rgba(99,102,241,0.18)', iconColor: '#6366F1', title: 'Événement en attente', desc: '"Science Fair 2026" attend votre validation.', time: 'Il y a 30 min', read: false },
-  { id: 3, icon: <AlertTriangle size={16} />, iconBg: 'rgba(245,158,11,0.18)', iconColor: '#F59E0B', title: 'Capacité critique', desc: 'Hackathon 2025 — seulement 2 places restantes.', time: 'Il y a 1h', read: false },
-  { id: 4, icon: <CheckCircle2 size={16} />, iconBg: 'rgba(16,185,129,0.18)', iconColor: '#10B981', title: 'Événement validé', desc: '"Cultural Night 2026" est maintenant en ligne.', time: 'Hier', read: true },
 ];
 
 // ── Category Card ──
@@ -71,12 +65,6 @@ const EventCategories = () => {
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [notifOpen,    setNotifOpen]    = useState(false);
-  const [profileOpen,  setProfileOpen]  = useState(false);
-  const [notifications, setNotifications] = useState(ADMIN_NOTIFS);
-  const notifRef   = useRef(null);
-  const profileRef = useRef(null);
-
   const [isAdding,     setIsAdding]     = useState(false);
   const [newName,      setNewName]      = useState('');
   const [newColor,     setNewColor]     = useState('#cd7329');
@@ -87,18 +75,8 @@ const EventCategories = () => {
   const [toast,        setToast]        = useState(null);
   const [searchTerm,   setSearchTerm]   = useState('');
 
-  const unreadCount = notifications.filter(n => !n.read).length;
-  const markAllRead = () => setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-  const dismiss = (id) => setNotifications(prev => prev.filter(n => n.id !== id));
-
   useEffect(() => {
     fetchCategories();
-    const h = (e) => {
-      if (notifRef.current   && !notifRef.current.contains(e.target))   setNotifOpen(false);
-      if (profileRef.current && !profileRef.current.contains(e.target)) setProfileOpen(false);
-    };
-    document.addEventListener('mousedown', h);
-    return () => document.removeEventListener('mousedown', h);
   }, []);
 
   const fetchCategories = async () => {
@@ -202,90 +180,7 @@ const EventCategories = () => {
       <Sidebare />
 
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Header */}
-        <header className="h-16 border-b flex items-center justify-between px-8 sticky top-0 z-10 shrink-0"
-          style={{ background: 'rgba(15,23,42,0.85)', backdropFilter: 'blur(12px)', borderColor: 'rgba(255,255,255,0.08)' }}>
-          <div className="relative w-80">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30"/>
-            <input 
-              className="w-full pl-9 pr-3 py-2 rounded-lg text-sm text-white outline-none"
-              style={{ background: 'rgba(255,255,255,0.06)' }} 
-              placeholder="Search categories..." 
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          <div className="flex items-center gap-4">
-            {/* Notifications */}
-            <div className="relative" ref={notifRef}>
-              <button onClick={() => setNotifOpen(o => !o)} className="relative p-2 rounded-full cursor-pointer transition-all"
-                style={{ background: notifOpen ? 'rgba(205,115,41,0.2)' : 'rgba(255,255,255,0.06)', color: notifOpen ? '#cd7329' : 'rgba(255,255,255,0.5)' }}>
-                <Bell size={18}/>
-                {unreadCount > 0 && (
-                  <span className="absolute top-1 right-1 min-w-[16px] h-[16px] rounded-full text-white text-[9px] flex items-center justify-center font-bold"
-                    style={{ background: '#cd7329' }}>{unreadCount}</span>
-                )}
-              </button>
-              {notifOpen && (
-                <div className="absolute right-0 top-[calc(100%+10px)] w-[360px] rounded-2xl shadow-2xl border overflow-hidden z-50"
-                  style={{ background: '#1e293b', borderColor: 'rgba(255,255,255,0.1)' }}>
-                  <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
-                    <h5 className="text-sm font-black text-white">Notifications</h5>
-                    {unreadCount > 0 && <button onClick={markAllRead} className="text-[10px] font-bold" style={{ color: '#cd7329' }}>Tout marquer</button>}
-                  </div>
-                  <div className="max-h-[320px] overflow-y-auto divide-y" style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
-                    {notifications.map(n => (
-                      <div key={n.id} className="flex items-start gap-3 px-4 py-3"
-                        style={{ background: n.read ? 'transparent' : 'rgba(205,115,41,0.06)' }}>
-                        <div className="shrink-0 w-8 h-8 rounded-xl flex items-center justify-center"
-                          style={{ background: n.iconBg, color: n.iconColor }}>{n.icon}</div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-[13px] font-bold text-white">{n.title}</p>
-                          <p className="text-[11px] mt-0.5" style={{ color: 'rgba(255,255,255,0.4)' }}>{n.desc}</p>
-                          <p className="text-[10px] mt-1 font-bold uppercase tracking-wider" style={{ color: 'rgba(255,255,255,0.25)' }}>{n.time}</p>
-                        </div>
-                        <button onClick={() => dismiss(n.id)} style={{ color: 'rgba(255,255,255,0.25)' }}><X size={12}/></button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Profile */}
-            <div className="relative" ref={profileRef}>
-              <button onClick={() => setProfileOpen(o => !o)}
-                className="flex items-center gap-3 border-l pl-4 hover:opacity-80 transition-all outline-none"
-                style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
-                <div className="text-right hidden sm:block">
-                  <p className="text-sm font-semibold text-white">Admin User</p>
-                  <p className="text-[10px] text-white/40 uppercase font-bold tracking-widest">Responsable</p>
-                </div>
-                <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-black text-sm"
-                  style={{ background: '#e07a20' }}>A</div>
-              </button>
-              {profileOpen && (
-                <div className="absolute right-0 top-[calc(100%+10px)] w-56 rounded-2xl shadow-2xl border overflow-hidden z-50"
-                  style={{ background: '#1e293b', borderColor: 'rgba(255,255,255,0.1)' }}>
-                  <div className="px-5 py-4 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
-                    <p className="text-xs font-bold text-white/40 uppercase">Compte Admin</p>
-                    <p className="text-sm font-bold text-white mt-1">Super Administrateur</p>
-                  </div>
-                  <div className="p-2">
-                    <button onClick={() => { setProfileOpen(false); navigate('/responsable/settings'); }}
-                      className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-bold text-white/70 hover:bg-white/5 transition-all">
-                      <Settings size={16}/> Paramètres
-                    </button>
-                    <button onClick={() => { setProfileOpen(false); navigate('/auth/login'); }}
-                      className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-bold text-red-400 hover:bg-red-500/10 transition-all">
-                      <LogOut size={16}/> Déconnexion
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </header>
+        <Tobar />
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-10">

@@ -76,7 +76,7 @@ export default function Sidebare() {
         <NavItem path="/responsable"               icon={<LayoutDashboard size={18} />} label="Dashboard"        active={location.pathname === '/responsable'} />
         <NavItem path="/responsable/events"        icon={<CalendarCheck   size={18} />} label="Event Validation" active={location.pathname === '/responsable/events'} />
         <NavItem path="/responsable/users"         icon={<Users           size={18} />} label="User Management"  active={location.pathname === '/responsable/users'} />
-        <NavItem path="/responsable/notifications" icon={<Bell            size={18} />} label="Notifications"    active={location.pathname === '/responsable/notifications'} />
+        {/*<NavItem path="/responsable/notifications" icon={<Bell            size={18} />} label="Notifications"    active={location.pathname === '/responsable/notifications'} />*/}
         <NavItem path="/responsable/categories"    icon={<Tag             size={18} />} label="Categories"       active={location.pathname === '/responsable/categories'} />
       </nav>
 

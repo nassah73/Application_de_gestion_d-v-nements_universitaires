@@ -1,17 +1,13 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Sidebare from './components/Sidebare';
+import Tobar from './components/Tobar';
 import {
-  FileText, Check, X, Search, Bell, LogOut, Settings, Tag,
+  FileText, Check, X, Search, Tag,
   LayoutDashboard, CalendarCheck, Users, ExternalLink,
-  AlertTriangle, CheckCircle2, Mail, Clock, Filter, Trash2, Sidebar
+  AlertTriangle, CheckCircle2, Mail, Clock, Filter, Trash2
 } from 'lucide-react';
-
-const ADMIN_NOTIFS = [
-  { id: 1, icon: <Users size={16} />, iconBg: 'rgba(205,115,41,0.18)', iconColor: '#cd7329', title: 'Nouvelle demande organisateur', desc: 'Un nouveau club a demandé le statut organisateur.', time: 'Il y a 2 min', read: false },
-  { id: 2, icon: <CalendarCheck size={16} />, iconBg: 'rgba(99,102,241,0.18)', iconColor: '#6366F1', title: 'Événement en attente', desc: '"Science Fair 2026" attend votre validation.', time: 'Il y a 30 min', read: false },
-];
 
 const STATUS_FILTERS = ['Tous', 'En attente', 'Validé', 'Rejeté'];
 
@@ -25,16 +21,6 @@ const ValidateOrganizers = () => {
   const [rejectReason, setRejectReason] = useState('');
   const [toast, setToast] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
-
-  const [notifOpen, setNotifOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
-  const [notifications, setNotifications] = useState(ADMIN_NOTIFS);
-  const notifRef = useRef(null);
-  const profileRef = useRef(null);
-
-  const unreadCount = notifications.filter(n => !n.read).length;
-  const markAllRead = () => setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-  const dismiss = (id) => setNotifications(prev => prev.filter(n => n.id !== id));
 
   // Fetch all organizers from backend
   useEffect(() => {
@@ -50,15 +36,6 @@ const ValidateOrganizers = () => {
       }
     };
     fetchOrganizers();
-  }, []);
-
-  useEffect(() => {
-    const h = (e) => {
-      if (notifRef.current && !notifRef.current.contains(e.target)) setNotifOpen(false);
-      if (profileRef.current && !profileRef.current.contains(e.target)) setProfileOpen(false);
-    };
-    document.addEventListener('mousedown', h);
-    return () => document.removeEventListener('mousedown', h);
   }, []);
 
   const showToast = (msg, type = 'success') => {
@@ -122,58 +99,7 @@ const ValidateOrganizers = () => {
 
       {/* Main */}
       <main className="flex-1 flex flex-col overflow-hidden">
-        <header className="h-16 border-b flex items-center justify-between px-8 sticky top-0 z-10 shrink-0" style={{ background: 'rgba(15,23,42,0.85)', backdropFilter: 'blur(12px)', borderColor: 'rgba(255,255,255,0.08)' }}>
-          <div className="relative w-80">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
-            <input className="w-full pl-9 pr-3 py-2 rounded-lg text-sm text-white placeholder-white/30 border outline-none focus:border-orange-400 transition-colors" style={{ background: 'rgba(255,255,255,0.06)', borderColor: 'rgba(255,255,255,0.12)' }} placeholder="Rechercher un club..." />
-          </div>
-          <div className="flex items-center gap-4">
-            {/* Notifications */}
-            <div className="relative" ref={notifRef}>
-              <button onClick={() => setNotifOpen(o => !o)} className="relative p-2 rounded-full cursor-pointer transition-all" style={{ background: notifOpen ? 'rgba(205,115,41,0.2)' : 'rgba(255,255,255,0.06)', color: notifOpen ? '#cd7329' : 'rgba(255,255,255,0.5)' }}>
-                <Bell size={18} />
-                {unreadCount > 0 && (<span className="absolute top-1 right-1 min-w-[16px] h-[16px] rounded-full text-white text-[9px] flex items-center justify-center" style={{ background: '#cd7329' }}>{unreadCount}</span>)}
-              </button>
-              {notifOpen && (
-                <div className="absolute right-0 top-[calc(100%+10px)] w-[360px] rounded-2xl shadow-2xl border overflow-hidden z-50" style={{ background: '#1e293b', borderColor: 'rgba(255,255,255,0.1)' }}>
-                  <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-white/10">
-                    <h5 className="text-sm font-bold text-white">Notifications</h5>
-                    {unreadCount > 0 && <button onClick={markAllRead} className="text-[10px] font-bold text-orange-400">Tout marquer</button>}
-                  </div>
-                  <div className="max-h-[320px] overflow-y-auto divide-y divide-white/5">
-                    {notifications.map(n => (
-                      <div key={n.id} className="flex items-start gap-3 px-4 py-3" style={{ background: n.read ? 'transparent' : 'rgba(205,115,41,0.06)' }}>
-                        <div className="shrink-0 w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: n.iconBg, color: n.iconColor }}>{n.icon}</div>
-                        <div className="flex-1"><p className="text-[13px] font-bold text-white">{n.title}</p><p className="text-[11px] text-white/40">{n.desc}</p></div>
-                        <button onClick={(e) => { e.stopPropagation(); dismiss(n.id); }} className="text-white/20"><X size={12} /></button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Profile */}
-            <div className="relative" ref={profileRef}>
-              <button onClick={() => setProfileOpen(o => !o)} className="flex items-center gap-3 border-l pl-4 hover:opacity-80 transition-all outline-none" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
-                <div className="text-right hidden sm:block">
-                  <p className="text-sm font-semibold text-white">Admin User</p>
-                  <p className="text-[10px] text-white/40 uppercase">Super Admin</p>
-                </div>
-                <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-black text-sm" style={{ background: 'linear-gradient(135deg,#cd7329,#eb8232)' }}>A</div>
-              </button>
-              {profileOpen && (
-                <div className="absolute right-0 top-[calc(100%+10px)] w-56 rounded-2xl shadow-2xl border overflow-hidden z-50" style={{ background: '#1e293b', borderColor: 'rgba(255,255,255,0.1)' }}>
-                  <div className="px-5 py-4 border-b border-white/5"><p className="text-xs font-bold text-white/40 uppercase">Compte</p><p className="text-sm font-bold text-white mt-1">Super Admin</p></div>
-                  <div className="p-2">
-                    <button onClick={() => { setProfileOpen(false); navigate('/responsable/settings'); }} className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-bold text-white/70 hover:bg-white/5 transition-all"><Settings size={16}/> Paramètres</button>
-                    <button onClick={() => { setProfileOpen(false); navigate('/auth/login'); }} className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-bold text-red-500 hover:bg-red-500/10 transition-all"><LogOut size={16}/> Déconnexion</button>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </header>
+        <Tobar />
 
         {/* Content */}
         <div className="p-8 overflow-y-auto flex-1">

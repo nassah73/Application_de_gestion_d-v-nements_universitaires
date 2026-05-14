@@ -140,7 +140,7 @@ const Sidebar = ({ isSidebar, isCollapsed, setIsCollapsed }) => {
             <Item title={t("Ajouter Admin")} to="/administrateur/create" icon={<FaUserPlus size={19} />} selected={selected} setSelected={setSelected} />
             {/*<Item title={t("Gestion Catégories")} to="/administrateur/categorie" icon={<FaLayerGroup size={17} />} selected={selected} setSelected={setSelected} />*/}
             <Item title={t("Paramètres")} to="/administrateur/settings" icon={<FaCogs size={17} />} selected={selected} setSelected={setSelected} />
-            <Item title={t("Calendrier")} to="/administrateur/calendar" icon={<MdCalendarMonth size={19} />} selected={selected} setSelected={setSelected} />
+            {/*<Item title={t("Calendrier")} to="/administrateur/calendar" icon={<MdCalendarMonth size={19} />} selected={selected} setSelected={setSelected} />*/}
             <Item title={t("News Hub")} to="/administrateur/news" icon={<FaNewspaper size={19} />} selected={selected} setSelected={setSelected} />
           </Box>
         </Menu>
