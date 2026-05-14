@@ -6,6 +6,7 @@ import axios from 'axios'
 import { Link, useNavigate } from 'react-router-dom';
 
 export default function Main() {
+    const [searchTerm, setSearchTerm] = useState("");
     const [Events, setEvents] = useState([])
     const profileRef = useRef(null);
     const [form, setform] = useState(false)
@@ -17,7 +18,13 @@ export default function Main() {
         setcategory(e.target.value);
     };
 
-    const filterObjet = category === 'all' ? Events : Events.filter((items) => items.category === category)
+    const filterObjet = Events.filter((item) => {
+    const matchesCategory = category === 'all' || item.category === category;
+    const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                          item.location.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    return matchesCategory && matchesSearch;
+});
 
     const handelForm = (e, item) => {
         if (e) e.stopPropagation();
@@ -87,9 +94,9 @@ export default function Main() {
                     <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: "easeOut" }} className="flex justify-around mt-5 gap-4">
                         <div className="flex mt-5 gap-2 bg-white/5 backdrop-blur-md border border-white/10 w-[40%] py-2 px-4 rounded-xl relative shadow-lg">
                             <Search className="text-[#cd7329] self-center" />
-                            <form action="" className="w-full flex">
-                                <input className="w-full bg-transparent text-white placeholder-slate-400 focus:outline-none" type="text" placeholder="Search events by name, category, location" />
-                            </form>
+                           
+                                <input onChange={(e) => setSearchTerm(e.target.value)}  className="w-full bg-transparent text-white placeholder-slate-400 focus:outline-none" type="text" placeholder="Search events by name, category, location" />
+                            
                         </div>
                         <button className="border border-white/10 relative h-[44px] px-10 bg-gradient-to-r from-[#cd7329] to-[#eb8232] hover:opacity-90 shadow-lg shadow-[#cd7329]/20 font-bold self-center rounded-xl mt-5 transition-all">Search</button>
                         <div className="self-center mt-5">
