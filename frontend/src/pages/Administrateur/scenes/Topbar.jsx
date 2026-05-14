@@ -59,32 +59,48 @@ const IconChevron = () => (
   </svg>
 );
 
-const IconTrash = () => (
-  <svg
-    width="14"
-    height="14"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-  >
-    <polyline points="3 6 5 6 21 6" />
-    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-  </svg>
-);
-
 // ─── Notifications ────────────────────────────────────────────────────────────
+
+const notifications = [
+  {
+    id: 1,
+    text: (
+      <>
+        Nouvel événement créé par{" "}
+        <strong style={{ color: "#cd7329" }}>Sarah M.</strong>
+      </>
+    ),
+    time: "il y a 5 min",
+  },
+  {
+    id: 2,
+    text: (
+      <>
+        12 nouvelles inscriptions{" "}
+        <strong style={{ color: "#cd7329" }}>
+          Conf Tech 2026
+        </strong>
+      </>
+    ),
+    time: "il y a 23 min",
+  },
+  {
+    id: 3,
+    text: "Rapport mensuel disponible",
+    time: "il y a 1h",
+  },
+];
 
 // ─── Notification Panel ───────────────────────────────────────────────────────
 
-const NotifPanel = ({ notifications, onClear, onDeleteSingle }) => (
+const NotifPanel = ({ onClear }) => (
   <Box
     sx={{
       position: "absolute",
       top: "calc(100% + 12px)",
       right: 0,
 
-      width: 340,
+      width: 320,
 
       background:
         "linear-gradient(180deg, rgba(17,28,53,0.98), rgba(10,15,30,0.98))",
@@ -152,6 +168,8 @@ const NotifPanel = ({ notifications, onClear, onDeleteSingle }) => (
 
           borderTop: "1px solid rgba(255,255,255,0.04)",
 
+          cursor: "pointer",
+
           transition: "0.25s",
 
           "&:hover": {
@@ -174,11 +192,7 @@ const NotifPanel = ({ notifications, onClear, onDeleteSingle }) => (
           }}
         />
 
-        <Box
-          sx={{
-            flex: 1,
-          }}
-        >
+        <Box>
           <Typography
             sx={{
               fontSize: "12px",
@@ -198,30 +212,6 @@ const NotifPanel = ({ notifications, onClear, onDeleteSingle }) => (
           >
             {n.time}
           </Typography>
-        </Box>
-        
-        <Box
-          onClick={(e) => {
-            e.stopPropagation();
-            onDeleteSingle(n.id);
-          }}
-          sx={{
-            width: 28,
-            height: 28,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: "8px",
-            cursor: "pointer",
-            color: "#ef4444",
-            transition: "all 0.15s ease",
-            "&:hover": {
-              backgroundColor: "rgba(239,68,68,0.12)",
-              transform: "scale(1.05)"
-            }
-          }}
-        >
-          <IconTrash />
         </Box>
       </Box>
     ))}
@@ -259,40 +249,9 @@ const UserMenu = () => <div />;
 
 // ─── Topbar ───────────────────────────────────────────────────────────────────
 
-const initialNotifications = [
-  {
-    id: 1,
-    text: (
-      <>
-        Nouvel événement créé par{" "}
-        <strong style={{ color: "#cd7329" }}>Sarah M.</strong>
-      </>
-    ),
-    time: "il y a 5 min",
-  },
-  {
-    id: 2,
-    text: (
-      <>
-        12 nouvelles inscriptions{" "}
-        <strong style={{ color: "#cd7329" }}>
-          Conf Tech 2026
-        </strong>
-      </>
-    ),
-    time: "il y a 23 min",
-  },
-  {
-    id: 3,
-    text: "Rapport mensuel disponible",
-    time: "il y a 1h",
-  },
-];
-
 const Topbar = ({ isMobile }) => {
   const [notifOpen, setNotifOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [notifications, setNotifications] = useState(initialNotifications);
   const [notifCount, setNotifCount] = useState(3);
 
   const notifRef = useRef(null);
@@ -332,13 +291,7 @@ const Topbar = ({ isMobile }) => {
     setNotifOpen(false);
   };
 
-  const deleteSingleNotif = (id) => {
-    setNotifications((prev) => prev.filter((n) => n.id !== id));
-    setNotifCount((prev) => Math.max(0, prev - 1));
-  };
-
   const clearNotifs = () => {
-    setNotifications([]);
     setNotifCount(0);
     setNotifOpen(false);
   };
@@ -561,11 +514,7 @@ const Topbar = ({ isMobile }) => {
           </Box>
 
           {notifOpen && (
-            <NotifPanel 
-              notifications={notifications} 
-              onClear={clearNotifs} 
-              onDeleteSingle={deleteSingleNotif} 
-            />
+            <NotifPanel onClear={clearNotifs} />
           )}
         </Box>
 
