@@ -1,5 +1,6 @@
 const Organisateur = require('../models/Organisateur');
 const Student = require('../models/Student');
+const Notification = require('../models/Notification');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const path = require('path');
@@ -78,6 +79,15 @@ exports.addStaff = async (req, res) => {
 
         organizer.staff.push({ student: student._id });
         await organizer.save();
+
+        // Créer une notification pour l'organisateur
+        const notification = new Notification({
+            recipient: organizerId,
+            title: "Membre ajouté",
+            message: `L'étudiant ${student.prenom} ${student.nom} a été ajouté à votre équipe.`,
+            type: 'system'
+        });
+        await notification.save();
 
         res.status(200).json({ message: "Assistant ajouté avec succès !", staffMember: student });
     } catch (error) {
@@ -192,11 +202,36 @@ exports.respondToStaffRequest = async (req, res) => {
             // Ajouter au staff
             organizer.staff.push({ student: studentId });
             await organizer.save();
+
+            // Récupérer les infos de l'étudiant pour le message
+            const student = await Student.findById(studentId);
+            
+            // Notification pour l'organisateur
+            const notification = new Notification({
+                recipient: organizerId,
+                title: "Demande de staff acceptée",
+                message: `Vous avez accepté la demande de ${student ? student.prenom + ' ' + student.nom : 'un étudiant'} pour rejoindre votre équipe.`,
+                type: 'registration'
+            });
+            await notification.save();
+
             return res.status(200).json({ message: "Demande acceptée. L'étudiant fait maintenant partie de votre équipe." });
         } else if (action === 'reject') {
             // Mettre à jour le statut de la demande
             organizer.staffRequests[requestIndex].status = 'refusé';
             await organizer.save();
+
+            const student = await Student.findById(studentId);
+
+            // Notification pour l'organisateur
+            const notification = new Notification({
+                recipient: organizerId,
+                title: "Demande de staff refusée",
+                message: `Vous avez refusé la demande de ${student ? student.prenom + ' ' + student.nom : 'un étudiant'}.`,
+                type: 'registration'
+            });
+            await notification.save();
+
             return res.status(200).json({ message: "Demande refusée." });
         } else {
             return res.status(400).json({ message: "Action non valide. Utilisez 'accept' ou 'reject'." });

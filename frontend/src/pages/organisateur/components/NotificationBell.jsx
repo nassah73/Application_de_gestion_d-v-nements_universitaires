@@ -62,6 +62,7 @@ const NotificationBell = () => {
     switch (type) {
       case 'registration': return { icon: <UserPlus size={18} />, bg: '#D1FAE5', color: '#059669' };
       case 'event_status': return { icon: <RefreshCw size={18} />, bg: '#E0E7FF', color: '#6366F1' };
+      case 'system': return { icon: <Check size={18} />, bg: '#FEF3C7', color: '#D97706' };
       default: return { icon: <AlertCircle size={18} />, bg: '#FEE2E2', color: '#DC2626' };
     }
   };
