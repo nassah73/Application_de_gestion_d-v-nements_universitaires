@@ -102,9 +102,16 @@ export default function Main() {
                         <div className="self-center mt-5">
                             <select onChange={handleCategoryChange} className="h-[44px] rounded-xl bg-[#1e293b] border border-white/10 px-8 text-white focus:outline-none focus:border-[#cd7329] hover:cursor-pointer shadow-lg" defaultValue={'all'}>
                                 <option value="all">All</option>
-                                <option value="sport">Sport</option>
-                                <option value="culturelle">Culturelle</option>
-                                <option value="scences & Etude">Sciences & Etude</option>
+                                <option value="Informatique">Informatique</option>
+                                <option value="Académique">Académique</option>
+                                <option value="Sciences">Sciences</option>
+                                <option value="Culturel">Culturel</option>
+                                <option value="Sportif">Sportif</option>
+                                <option value="Économique">Économique</option>
+                                <option value="الشريعة">الشريعة</option>
+                                <option value="Environnement">Environnement</option>
+                                <option value="Développement personnel">Développement personnel</option>
+                                <option value="Social">Social</option>
                             </select>
                         </div>
                     </motion.div>
