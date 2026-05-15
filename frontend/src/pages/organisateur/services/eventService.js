@@ -34,6 +34,15 @@ export const eventService = {
         });
         if (!response.ok) throw new Error('Erreur lors de la modification de l\'événement');
         return response.json();
+    },
+
+    // Supprimer un événement
+    deleteEvent: async (eventId) => {
+        const response = await fetch(`${API_URL}/${eventId}`, {
+            method: 'DELETE'
+        });
+        if (!response.ok) throw new Error('Erreur lors de la suppression de l\'événement');
+        return response.json();
     }
 };
 

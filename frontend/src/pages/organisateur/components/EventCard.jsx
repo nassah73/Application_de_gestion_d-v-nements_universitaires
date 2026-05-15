@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
-import { Calendar, MapPin, Users, ArrowRight, Clock, CheckCircle2, RotateCcw, XCircle } from 'lucide-react';
+import { Calendar, MapPin, Users, ArrowRight, Clock, CheckCircle2, RotateCcw, XCircle, Trash2 } from 'lucide-react';
 
-const EventCard = ({ event }) => {
+const EventCard = ({ event, onDelete }) => {
   const getStatusConfig = (status) => {
     switch (status) {
       case 'approved':
@@ -117,6 +117,17 @@ const EventCard = ({ event }) => {
                 <RotateCcw size={14} />
               </Link>
             )}
+
+            <button 
+              onClick={(e) => {
+                e.preventDefault();
+                onDelete();
+              }}
+              className="flex items-center gap-2 text-xs font-black text-red-500 uppercase tracking-widest hover:text-red-400 transition-colors ml-2"
+            >
+              Supprimer
+              <Trash2 size={14} />
+            </button>
           </div>
           <span className="text-[10px] font-black text-white/10 uppercase tracking-widest">
             #{id?.toString().slice(-6)}

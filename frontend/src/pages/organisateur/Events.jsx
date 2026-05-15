@@ -38,6 +38,20 @@ const Events = () => {
     fetchEvents();
   }, []);
 
+  const handleDeleteEvent = async (eventId) => {
+    if (!window.confirm("Êtes-vous sûr de vouloir supprimer cet événement ? Cette action est irréversible.")) {
+      return;
+    }
+
+    try {
+      await eventService.deleteEvent(eventId);
+      setEvents(events.filter(event => event._id !== eventId));
+    } catch (err) {
+      console.error(err);
+      alert("Erreur lors de la suppression de l'événement.");
+    }
+  };
+
   const filteredEvents = events.filter(event => {
     const matchesSearch = event.title?.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           event.location?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -146,7 +160,11 @@ const Events = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
               {filteredEvents.map((event) => (
-                <EventCard key={event._id} event={event} />
+                <EventCard 
+                  key={event._id} 
+                  event={event} 
+                  onDelete={() => handleDeleteEvent(event._id)}
+                />
               ))}
             </div>
           )}
