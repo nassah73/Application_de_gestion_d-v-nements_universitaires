@@ -6,7 +6,7 @@ import axios from 'axios';
 import { 
   Eye, Check, X, AlertTriangle, CheckCircle2, 
   Users, CalendarCheck, MapPin, Clock, User, Tag,
-  Search, Filter, Calendar, ChevronRight
+  Search, Filter, Calendar, ChevronRight, Trash2
 } from 'lucide-react';
 
 const TABS = [
@@ -92,6 +92,19 @@ if (loading) {
     } catch (error) {
       console.error("Error rejecting event:", error);
       alert("Erreur lors du refus de l'événement");
+    }
+  };
+
+  const handleDelete = async (Event_id) => {
+    if (!window.confirm("Êtes-vous sûr de vouloir supprimer définitivement cet événement ?")) return;
+
+    try {
+      const res = await axios.delete(`http://localhost:5000/Event/${Event_id}`);
+      setEvents(prev => prev.filter(e => e._id !== Event_id));
+      alert(res.data.message);
+    } catch (error) {
+      console.error("Error deleting event:", error);
+      alert("Erreur lors de la suppression de l'événement");
     }
   };
   return (
@@ -262,6 +275,14 @@ if (loading) {
                                   </button>
                                 </>
                               )}
+
+                              <button 
+                                onClick={() => handleDelete(event._id)} 
+                                className="p-3 bg-white/[0.03] border border-white/5 text-red-600 hover:text-white hover:bg-red-600 hover:border-red-600 rounded-xl transition-all group/btn shadow-lg"
+                                title="Supprimer définitivement"
+                              >
+                                <Trash2 size={16} className="group-hover/btn:scale-110 transition-transform" />
+                              </button>
                             </div>
                           </td>
                         </tr>
@@ -401,6 +422,15 @@ if (loading) {
                    </button>
                  </div>
                )}
+
+              <div className="mt-4">
+                <button 
+                  onClick={() => { handleDelete(viewEvent._id); setViewEvent(null); }}
+                  className="w-full py-4 bg-white border border-red-500 text-red-500 hover:bg-red-50 font-black uppercase tracking-widest text-xs rounded-2xl transition-all"
+                >
+                  Supprimer définitivement l'événement
+                </button>
+              </div>
             </div>
           </div>
         </div>
