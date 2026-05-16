@@ -59,7 +59,7 @@ export default function Main() {
                   initial={{ opacity: 0, y: 20 }} 
                   animate={{ opacity: 1, y: 0 }} 
                   transition={{ duration: 1, ease: "easeOut" }}  
-                  onClick={() => item.isScan && navigate('/organisateur/scanner')}
+                  onClick={() => item.isScan && navigate('/app/My_event')}
                   className={`bg-white/10 backdrop-blur-xl border border-white/20 text-white h-40 w-50 rounded-2xl shadow-[0_10px_25px_-5px_rgba(0,0,0,0.5)] hover:bg-white/15 transition-all ${item.isScan ? 'cursor-pointer border-orange-500/50 bg-orange-500/5' : ''}`}
                 >
                   <nav className='text-center relative top-1/6 font-[700] '>

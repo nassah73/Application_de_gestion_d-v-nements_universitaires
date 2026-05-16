@@ -181,15 +181,30 @@ const OrganizerDashboard = () => {
                         </p>
                       </div>
                     </div>
-                    <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border ${
-                      event.status === 'approved' 
-                        ? 'bg-green-500/10 text-green-400 border-green-500/20' 
-                        : event.status === 'pending'
-                        ? 'bg-orange-500/10 text-orange-400 border-orange-500/20'
-                        : 'bg-red-500/10 text-red-400 border-red-500/20'
-                    }`}>
-                      {event.status === 'approved' ? 'Validé' : event.status === 'pending' ? 'En cours' : 'Refusé'}
-                    </span>
+                    <div className="flex items-center gap-3">
+                      <span className={`px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider border ${
+                        event.status === 'approved' 
+                          ? 'bg-green-500/10 text-green-400 border-green-500/20' 
+                          : event.status === 'pending'
+                          ? 'bg-orange-500/10 text-orange-400 border-orange-500/20'
+                          : 'bg-red-500/10 text-red-400 border-red-500/20'
+                      }`}>
+                        {event.status === 'approved' ? 'Validé' : event.status === 'pending' ? 'En cours' : 'Refusé'}
+                      </span>
+                      
+                      {event.status === 'approved' && (
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/organisateur/scanner/${event._id}`);
+                          }}
+                          className="p-2 rounded-lg bg-orange-500/10 text-orange-500 hover:bg-orange-500 hover:text-white transition-all border border-orange-500/20"
+                          title="Scanner les présences"
+                        >
+                          <QrCode size={14} />
+                        </button>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -214,12 +229,12 @@ const OrganizerDashboard = () => {
                   </button>
 
                   <button 
-                    onClick={() => navigate('/organisateur/scanner')}
+                    onClick={() => navigate('/organisateur/events')}
                     className="w-full group/btn flex items-center justify-between p-5 rounded-2xl bg-white/5 border border-white/5 text-white font-black transition-all duration-500 hover:bg-white/10 hover:border-white/10 hover:-translate-y-1"
                   >
                     <div className="flex items-center gap-4 text-orange-400">
-                      <ScanLine size={22} />
-                      <span className="text-white text-sm">Scanner QR</span>
+                      <CalendarCheck size={22} />
+                      <span className="text-white text-sm">Mes Événements</span>
                     </div>
                     <TrendingUp size={18} className="opacity-0 group-hover/btn:opacity-40 transition-opacity" />
                   </button>

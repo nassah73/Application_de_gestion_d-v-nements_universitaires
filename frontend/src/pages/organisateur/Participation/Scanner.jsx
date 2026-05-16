@@ -13,10 +13,11 @@ import {
   Camera,
   Image as ImageIcon
 } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
 const QRScanner = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { eventId } = useParams(); 
   const [scanResult, setScanResult] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,7 +27,10 @@ const QRScanner = () => {
   const scannerRef = useRef(null);
   const userString = localStorage.getItem('user');
   const user = userString ? JSON.parse(userString) : null;
-  const isStudent = user && user.role === 'student';
+  
+  // Decide layout based on path rather than just role
+  const isStudentPath = location.pathname.startsWith('/student/Scanner');
+  const isStudent = user && user.role === 'student' && isStudentPath;
 
   useEffect(() => {
     // Cleanup function to stop scanner

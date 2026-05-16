@@ -22,7 +22,9 @@ import {
   XCircle,
   RotateCcw,
   Layout,
-  ScanQrCode
+  ScanQrCode,
+  FileText,
+  Trash2
 } from 'lucide-react';
 
 const EventDetails = () => {
@@ -491,6 +493,16 @@ const EventDetails = () => {
                           <p className="text-3xl font-black text-white tracking-tighter group-hover:scale-110 transition-transform origin-left">{event.capacity}</p>
                         </div>
                       </div>
+
+                      {event.status === 'approved' && (
+                        <Link 
+                          to={`/organisateur/scanner/${id}`}
+                          className="flex items-center justify-center gap-3 w-full py-4 rounded-2xl bg-green-500 text-white font-black uppercase tracking-widest text-xs hover:bg-green-600 transition-all shadow-xl shadow-green-500/20"
+                        >
+                          <ScanQrCode size={18} strokeWidth={3} />
+                          Scanner les présences
+                        </Link>
+                      )}
 
                       {fillRate >= 90 && (
                         <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center gap-3 text-red-400 text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-red-500/5">

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Calendar, MapPin, Users, ArrowRight, Clock, CheckCircle2, RotateCcw, XCircle, Trash2 } from 'lucide-react';
+import { Calendar, MapPin, Users, ArrowRight, Clock, CheckCircle2, RotateCcw, XCircle, Trash2, ScanQrCode } from 'lucide-react';
 
 const EventCard = ({ event, onDelete }) => {
   const getStatusConfig = (status) => {
@@ -118,20 +118,32 @@ const EventCard = ({ event, onDelete }) => {
               </Link>
             )}
 
-            <button 
-              onClick={(e) => {
-                e.preventDefault();
-                onDelete();
-              }}
-              className="flex items-center gap-2 text-xs font-black text-red-500 uppercase tracking-widest hover:text-red-400 transition-colors ml-2"
-            >
-              Supprimer
-              <Trash2 size={14} />
-            </button>
+            {(event.status === 'approved' || event.status === 'Validé' || event.status === 'approved-modified') && (
+              <Link 
+                to={`/organisateur/scanner/${id}`} 
+                className="flex items-center gap-2 text-xs font-black text-green-500 uppercase tracking-widest hover:text-green-400 transition-colors"
+              >
+                Scanner
+                <ScanQrCode size={14} />
+              </Link>
+            )}
           </div>
           <span className="text-[10px] font-black text-white/10 uppercase tracking-widest">
             #{id?.toString().slice(-6)}
           </span>
+        </div>
+
+        <div className="mt-4 pt-4 border-t border-white/5">
+          <button 
+            onClick={(e) => {
+              e.preventDefault();
+              onDelete();
+            }}
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-red-500/10 text-red-500 text-xs font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all duration-300 group/del"
+          >
+            <Trash2 size={14} className="group-hover/del:scale-110 transition-transform" />
+            Supprimer l'événement
+          </button>
         </div>
       </div>
     </div>

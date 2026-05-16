@@ -71,7 +71,6 @@ const OrgSidebar = () => {
     { name: 'Créer Événement', path: '/organisateur/create-event', icon: <CalendarPlus size={20}/> },
     { name: 'Mes Événements', path: '/organisateur/events', icon: <CalendarDays size={20}/> },
     { name: 'Notifications', path: '/organisateur/notifications', icon: <Bell size={20}/>, badge: unreadCount },
-    { name: 'Scanner QR', path: '/organisateur/scanner', icon: <QrCode size={20}/> },
     { name: 'Gestion Équipe', path: '/organisateur/equipe', icon: <Users size={20}/> },
     { name: 'Profil', path: '/organisateur/profile', icon: <User size={20}/> },
   ];
