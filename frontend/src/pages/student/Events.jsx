@@ -18,30 +18,41 @@ export default function Main() {
         setcategory(e.target.value);
     };
 
-    const filterObjet = Events.filter((item) => {
-    const matchesCategory = category === 'all' || item.category === category;
-    const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          item.location.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    return matchesCategory && matchesSearch;
-});
+   const filterObjet = Array.isArray(Events) 
+    ? Events.filter((item) => {
+        const matchesCategory = category === 'all' || item.category === category;
+        const matchesSearch = (item.title?.toLowerCase().includes(searchTerm.toLowerCase()) || false) || 
+                              (item.location?.toLowerCase().includes(searchTerm.toLowerCase()) || false);
+        
+        return matchesCategory && matchesSearch;
+      })
+    : [];
 
     const handelForm = (e, item) => {
         if (e) e.stopPropagation();
         navigate(`/app/Event/${item._id}`);
     }
 
-    useEffect(() => {
-        function handleClickOutside(event) {
-            if (profileRef.current && !profileRef.current.contains(event.target)) {
-                setform(false);
+  useEffect(() => {
+    const fetchEvents = async () => {
+        try {
+            const res = await axios.get('http://localhost:5000/Event/StuendtEvents');
+            
+            // يلا كانت res.data عبارة عن مصفوفة حطها، يلا كان Object وسطو events حطها
+            if (Array.isArray(res.data)) {
+                setEvents(res.data);
+            } else if (res.data && Array.isArray(res.data.events)) {
+                setEvents(res.data.events);
+            } else {
+                setEvents([]); // حماية باش يبقى ديما Array
             }
+        } catch (error) {
+            console.error("Error fetching events:", error);
+            setEvents([]); // حماية ف حالة الخطأ
         }
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [form]);
+    };
+    fetchEvents();
+}, []);
 
     // Logic ديال التسجيل: زدنا بارامتر isVolunteer باش نفرقو النوع ديال الطلب
     const requestEvent = async (item, isVolunteer = false) => {

@@ -168,11 +168,12 @@ export default function Navbar() {
           )}
         </div>
 
-        {location.pathname !== '/app/Home' && (
-          <NavLink to='/app/Home'>
-            <button className='bg-gradient-to-r from-[#cd7329] to-[#eb8232] text-white font-bold shadow-lg shadow-[#cd7329]/20 hover:shadow-[#cd7329]/40 hover:-translate-y-0.5 transition-all rounded-xl h-10 w-32 capitalize'>Retour</button>
-          </NavLink>
-        )}
+        <button 
+          onClick={handleLogout}
+          className='bg-gradient-to-r from-red-500 to-red-600 text-white font-bold shadow-lg shadow-red-500/20 hover:shadow-red-500/40 hover:-translate-y-0.5 transition-all rounded-xl h-10 w-32 capitalize'
+        >
+          Déconnexion
+        </button>
       </div>
     </nav>
   );
