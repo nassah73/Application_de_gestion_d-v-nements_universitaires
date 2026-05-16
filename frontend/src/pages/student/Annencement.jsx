@@ -80,8 +80,8 @@ export default function Main() {
             <Bell className="text-[#cd7329] w-8 h-8" />
           </div>
           <div>
-            <h1 className="text-4xl font-black text-white tracking-tight">News Hub</h1>
-            <p className="text-slate-400 font-medium">Get the latest updates from your campus</p>
+            <h1 className="text-4xl font-black text-white tracking-tight">Centre d'actualités</h1>
+            <p className="text-slate-400 font-medium">Recevez les dernières mises à jour de votre campus</p>
           </div>
         </motion.div>
 
@@ -90,12 +90,12 @@ export default function Main() {
           {/* Sidebar - Filters */}
           <div className="lg:col-span-3 space-y-6">
             <motion.div variants={itemVariants} className="bg-[#1a1f2e] border border-white/10 rounded-[2rem] p-6 shadow-2xl">
-              <h3 className="font-bold text-white mb-6 px-2">Categories</h3>
+              <h3 className="font-bold text-white mb-6 px-2">Catégories</h3>
               <nav className="space-y-2">
-                <FilterItem label="All Alerts" count={getCount('All')} active={filter === 'All'} onClick={() => setFilter('All')} color="bg-blue-500" />
-                <FilterItem label="Urgent Alert" count={getCount('Urgent Alert')} active={filter === 'Urgent Alert'} onClick={() => setFilter('Urgent Alert')} color="bg-red-500" />
-                <FilterItem label="Exam Schedule" count={getCount('Exam Schedule')} active={filter === 'Exam Schedule'} onClick={() => setFilter('Exam Schedule')} color="bg-orange-500" />
-                <FilterItem label="Club Alert" count={getCount('Club Alert')} active={filter === 'Club Alert'} onClick={() => setFilter('Club Alert')} color="bg-blue-400" />
+                <FilterItem label="Toutes les alertes" count={getCount('All')} active={filter === 'All'} onClick={() => setFilter('All')} color="bg-blue-500" />
+                <FilterItem label="Alerte urgente" count={getCount('Urgent Alert')} active={filter === 'Urgent Alert'} onClick={() => setFilter('Urgent Alert')} color="bg-red-500" />
+                <FilterItem label="Calendrier des examens" count={getCount('Exam Schedule')} active={filter === 'Exam Schedule'} onClick={() => setFilter('Exam Schedule')} color="bg-orange-500" />
+                <FilterItem label="Alerte club" count={getCount('Club Alert')} active={filter === 'Club Alert'} onClick={() => setFilter('Club Alert')} color="bg-blue-400" />
               </nav>
             </motion.div>
           </div>
@@ -103,7 +103,7 @@ export default function Main() {
           {/* Main List */}
           <div className="lg:col-span-9 space-y-6">
             {loading ? (
-              <div className="text-center py-20 text-slate-500 font-bold uppercase tracking-widest animate-pulse">Loading updates...</div>
+              <div className="text-center py-20 text-slate-500 font-bold uppercase tracking-widest animate-pulse">Chargement des mises à jour...</div>
             ) : (
               <AnimatePresence mode='popLayout'>
                 {filteredData.map((news) => (
@@ -120,7 +120,7 @@ export default function Main() {
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-3">
                           <span className={`text-[10px] font-black px-3 py-1 rounded-full border uppercase tracking-wider ${news.category === 'Urgent Alert' ? 'text-red-400 border-red-500/20' : 'text-orange-400 border-orange-500/20'}`}>
-                            {news.category}
+                            {news.category === 'Urgent Alert' ? 'Alerte urgente' : news.category}
                           </span>
                           <span className="text-slate-500 text-xs font-bold uppercase tracking-widest">
                             {new Date(news.createdAt).toLocaleDateString()}
@@ -131,12 +131,12 @@ export default function Main() {
                         <p className="text-slate-400 leading-relaxed mb-6 text-base">{news.description}</p>
 
                         <div className="flex flex-wrap gap-3">
-                          <ActionButton icon={<FileText size={16}/>} label="View Details" />
+                          <ActionButton icon={<FileText size={16}/>} label="Voir les détails" />
                           {news.pdfUrl && (
                             <ActionButton 
                               variant="secondary" 
                               icon={<Download size={16} className="text-red-400"/>} 
-                              label="Download PDF" 
+                              label="Télécharger le PDF" 
                               onClick={() => window.open(`http://localhost:5000${news.pdfUrl}`, '_blank')}
                             />
                           )}
@@ -150,7 +150,7 @@ export default function Main() {
             
             {!loading && filteredData.length === 0 && (
               <div className="text-center py-20 border-2 border-dashed border-white/5 rounded-[2.5rem] text-slate-600 font-bold">
-                No announcements found in this category.
+                Aucune annonce trouvée dans cette catégorie.
               </div>
             )}
           </div>

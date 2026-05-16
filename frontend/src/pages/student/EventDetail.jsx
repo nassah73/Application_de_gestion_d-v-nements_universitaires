@@ -80,6 +80,10 @@ export default function EventDetail() {
         );
     }
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     const dateObj = new Date(event.date);
     const formattedDate = dateObj.toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
     const formattedTime = dateObj.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });

@@ -89,19 +89,19 @@ export default function Main() {
             <section className='min-h-screen w-screen bg-bottom relative flex bg-slate-900'>
                 <div className="absolute inset-0 bg-gradient-to-br from-black/80 to-slate-900/90"></div>
                 <nav className="w-[1300px] mx-auto text-white relative mt-5">
-                    <h1 className="font-[600] uppercase text-4xl italic">Discover Events</h1>
+                    <h1 className="font-[600] uppercase text-4xl italic">Découvrir les événements</h1>
                     
                     <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: "easeOut" }} className="flex justify-around mt-5 gap-4">
                         <div className="flex mt-5 gap-2 bg-white/5 backdrop-blur-md border border-white/10 w-[40%] py-2 px-4 rounded-xl relative shadow-lg">
                             <Search className="text-[#cd7329] self-center" />
                            
-                                <input onChange={(e) => setSearchTerm(e.target.value)}  className="w-full bg-transparent text-white placeholder-slate-400 focus:outline-none" type="text" placeholder="Search events by name, category, location" />
+                                <input onChange={(e) => setSearchTerm(e.target.value)}  className="w-full bg-transparent text-white placeholder-slate-400 focus:outline-none" type="text" placeholder="Rechercher des événements par nom, catégorie, lieu" />
                             
                         </div>
-                        <button className="border border-white/10 relative h-[44px] px-10 bg-gradient-to-r from-[#cd7329] to-[#eb8232] hover:opacity-90 shadow-lg shadow-[#cd7329]/20 font-bold self-center rounded-xl mt-5 transition-all">Search</button>
+                        <button className="border border-white/10 relative h-[44px] px-10 bg-gradient-to-r from-[#cd7329] to-[#eb8232] hover:opacity-90 shadow-lg shadow-[#cd7329]/20 font-bold self-center rounded-xl mt-5 transition-all">Rechercher</button>
                         <div className="self-center mt-5">
                             <select onChange={handleCategoryChange} className="h-[44px] rounded-xl bg-[#1e293b] border border-white/10 px-8 text-white focus:outline-none focus:border-[#cd7329] hover:cursor-pointer shadow-lg" defaultValue={'all'}>
-                                <option value="all">All</option>
+                                <option value="all">Tous</option>
                                 <option value="Informatique">Informatique</option>
                                 <option value="Académique">Académique</option>
                                 <option value="Sciences">Sciences</option>
@@ -143,7 +143,7 @@ export default function Main() {
                                                     </Link>
                                                 </div>
                                             </nav>
-                                            <button className="bg-white/10 backdrop-blur-md border border-white/20 text-[#cd7329] font-bold w-[90%] mx-[5%] h-10 absolute bottom-0 rounded-xl hover:bg-[#cd7329] hover:text-white transition-all cursor-pointer" onClick={(e) => handelForm(e, item)}>Check Details</button>
+                                            <button className="bg-white/10 backdrop-blur-md border border-white/20 text-[#cd7329] font-bold w-[90%] mx-[5%] h-10 absolute bottom-0 rounded-xl hover:bg-[#cd7329] hover:text-white transition-all cursor-pointer" onClick={(e) => handelForm(e, item)}>Voir les détails</button>
                                         </div>
                                     </motion.div>
                                 )
@@ -172,7 +172,7 @@ export default function Main() {
                                         <span className="flex items-center gap-2"><MapPin size={16} className="text-[#cd7329]"/> {selectedEvent.location}</span>
                                     </div>
                                     <hr className="border-white/5" />
-                                    <p className="text-slate-400 text-sm leading-relaxed">{selectedEvent.description || "events "}</p>
+                                    <p className="text-slate-400 text-sm leading-relaxed">{selectedEvent.description || "événements"}</p>
                                     
                                     <div className="flex flex-col gap-3 pt-4">
                                         {/* Button التسجيل العادي */}
@@ -190,7 +190,7 @@ export default function Main() {
                                 </div>
 
                                 <div className="flex flex-col items-center justify-center space-y-4 bg-white/5 p-4 rounded-2xl border border-white/10">
-                                    <p className="text-xs text-slate-400 font-bold uppercase">Pass Ticket</p>
+                                    <p className="text-xs text-slate-400 font-bold uppercase">Billet d'entrée</p>
                                     <div className="bg-white p-2 rounded-lg">
                                         <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${selectedEvent._id}`} alt="QR Code" className="w-24 h-24" />
                                     </div>

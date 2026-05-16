@@ -67,11 +67,11 @@ export default function Navbar() {
       
       <ul className='flex gap-10 text-slate-400 relative'>
         {[
-          { name: 'Events', path: '/app/Event' },
-          { name: 'Calendar', path: '/app/Calendare' },
-          { name: 'My Events', path: '/app/My_event' },
-          { name: 'Announcements', path: '/app/Annencement' },
-          { name: 'Analytics', path: '/app/Analityc' }
+          { name: 'Événements', path: '/app/Event' },
+          { name: 'Calendrier', path: '/app/Calendare' },
+          { name: 'Mes Événements', path: '/app/My_event' },
+          { name: 'Annonces', path: '/app/Annencement' },
+          { name: 'Analyses', path: '/app/Analityc' }
         ].map((item, index) => (
           <NavLink to={item.path} key={index} className={({ isActive }) =>
             `px-4 py-2 transition-all duration-300 ${isActive ? 'text-[#cd7329] border-b-2 border-[#cd7329] bg-[#cd7329]/10' : 'hover:text-[#cd7329]'}`
@@ -162,7 +162,7 @@ export default function Navbar() {
                   <hr className='border-white/10 w-full' />
                   <div className='flex text-sm font-bold pt-2'>
                     <button className='w-1/2 py-2 flex gap-2 items-center justify-center hover:text-[#cd7329] transition-colors border-r border-white/10'>Modifier</button>
-                    <button onClick={handleLogout} className='w-1/2 py-2 flex gap-2 items-center justify-center hover:text-red-400 transition-colors text-red-500'>Logout</button>
+                    <button onClick={handleLogout} className='w-1/2 py-2 flex gap-2 items-center justify-center hover:text-red-400 transition-colors text-red-500'>Déconnexion</button>
                   </div>
                 </div>
              </div>
@@ -171,7 +171,7 @@ export default function Navbar() {
 
         {location.pathname !== '/app/Home' && (
           <NavLink to='/app/Home'>
-            <button className='bg-gradient-to-r from-[#cd7329] to-[#eb8232] text-white font-bold shadow-lg shadow-[#cd7329]/20 hover:shadow-[#cd7329]/40 hover:-translate-y-0.5 transition-all rounded-xl h-10 w-32 capitalize'>Return</button>
+            <button className='bg-gradient-to-r from-[#cd7329] to-[#eb8232] text-white font-bold shadow-lg shadow-[#cd7329]/20 hover:shadow-[#cd7329]/40 hover:-translate-y-0.5 transition-all rounded-xl h-10 w-32 capitalize'>Retour</button>
           </NavLink>
         )}
       </div>

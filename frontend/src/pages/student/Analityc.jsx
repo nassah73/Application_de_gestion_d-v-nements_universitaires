@@ -93,7 +93,7 @@ export default function StudentAnalytics() {
   const barConfig = {
     labels: stats.monthlyActivity.map(d => d.month),
     datasets: [{
-      label: 'Events',
+      label: 'Événements',
       data: stats.monthlyActivity.map(d => d.count),
       backgroundColor: '#cd7329',
       borderRadius: 6,
@@ -122,7 +122,7 @@ export default function StudentAnalytics() {
     }
   };
 
-  if (loading) return <div className="min-h-screen bg-slate-900 flex items-center justify-center text-white font-sans">Loading Analytics...</div>;
+  if (loading) return <div className="min-h-screen bg-slate-900 flex items-center justify-center text-white font-sans">Chargement des analyses...</div>;
 
   return (
     <>
@@ -138,13 +138,13 @@ export default function StudentAnalytics() {
              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-[#cd7329]">Student Analytics</h1>
-            <p className="text-slate-400">Track your event participation and achievements</p>
+            <h1 className="text-3xl font-bold text-[#cd7329]">Analyses de l'étudiant</h1>
+            <p className="text-slate-400">Suivez votre participation aux événements et vos réalisations</p>
           </div>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 relative z-10">
-          <StatCard title="Events Attended" value={stats.eventsAttended} sub="Activity record" icon="✅" />
+          <StatCard title="Événements assistés" value={stats.eventsAttended} sub="Registre d'activité" icon="✅" />
           
           <motion.div variants={itemVariants} className="bg-white/5 backdrop-blur-xl p-6 rounded-2xl border border-white/10 shadow-lg flex flex-col items-center">
             <div className="relative w-32 h-32 flex items-center justify-center">
@@ -157,15 +157,15 @@ export default function StudentAnalytics() {
               ></motion.div>
               <span className="text-2xl font-bold text-white">{stats.presenceRate}%</span>
             </div>
-            <p className="mt-4 text-slate-400 text-sm font-medium">Presence Rate</p>
+            <p className="mt-4 text-slate-400 text-sm font-medium">Taux de présence</p>
           </motion.div>
 
-          <StatCard title="Total Points Earned" value={stats.totalPoints} sub="Reward points" icon="🏆" />
+          <StatCard title="Total des points gagnés" value={stats.totalPoints} sub="Points de récompense" icon="🏆" />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 relative z-10">
           <motion.div variants={itemVariants} className="bg-white/5 backdrop-blur-xl p-6 rounded-2xl border border-white/10 shadow-lg">
-            <h2 className="text-xl font-bold text-white mb-6">Interests Distribution</h2>
+            <h2 className="text-xl font-bold text-white mb-6">Répartition des intérêts</h2>
             <div className="h-64 flex justify-center">
               <Doughnut data={doughnutConfig} options={{ plugins: { legend: { display: false } } }} />
             </div>
@@ -184,7 +184,7 @@ export default function StudentAnalytics() {
           </motion.div>
 
           <motion.div variants={itemVariants} className="bg-white/5 backdrop-blur-xl p-6 rounded-2xl border border-white/10 shadow-lg">
-            <h2 className="text-xl font-bold text-white mb-6">Monthly Participation</h2>
+            <h2 className="text-xl font-bold text-white mb-6">Participation mensuelle</h2>
             <div className="h-64">
               {/* حل مشكلة الهيستوغرام بزيادة الأوبشنز */}
               <Bar data={barConfig} options={barOptions} />

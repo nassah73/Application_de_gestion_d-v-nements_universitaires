@@ -95,7 +95,7 @@ export default function OrganizerEvents() {
                             <ArrowLeft size={24} />
                         </button>
                         <div>
-                            <h1 className="font-[600] uppercase text-4xl italic">Events par Organisateur</h1>
+                            <h1 className="font-[600] uppercase text-4xl italic">Événements par organisateur</h1>
                             <p className="text-slate-400">Découvrez tous les événements organisés par cet organisateur</p>
                         </div>
                     </div>
@@ -131,7 +131,7 @@ export default function OrganizerEvents() {
                                                             <p className="flex gap-3"><Clock size={18} className="text-[#cd7329]"/>{formattedTime}</p>
                                                         </div>
                                                     </nav>
-                                                    <button className="bg-white/10 backdrop-blur-md border border-white/20 text-[#cd7329] font-bold w-[90%] mx-[5%] h-10 absolute bottom-0 rounded-xl hover:bg-[#cd7329] hover:text-white transition-all cursor-pointer" onClick={(e) => handelForm(e, item)}>Check Details</button>
+                                                    <button className="bg-white/10 backdrop-blur-md border border-white/20 text-[#cd7329] font-bold w-[90%] mx-[5%] h-10 absolute bottom-0 rounded-xl hover:bg-[#cd7329] hover:text-white transition-all cursor-pointer" onClick={(e) => handelForm(e, item)}>Voir les détails</button>
                                                 </div>
                                             </motion.div>
                                         )
@@ -162,7 +162,7 @@ export default function OrganizerEvents() {
                                         <span className="flex items-center gap-2"><MapPin size={16} className="text-[#cd7329]"/> {selectedEvent.location}</span>
                                     </div>
                                     <hr className="border-white/5" />
-                                    <p className="text-slate-400 text-sm leading-relaxed">{selectedEvent.description || "events "}</p>
+                                    <p className="text-slate-400 text-sm leading-relaxed">{selectedEvent.description || "événements"}</p>
                                     
                                     <div className="flex flex-col gap-3 pt-4">
                                         <button onClick={() => requestEvent(selectedEvent, false)} className="w-full py-3 bg-white/5 border border-white/10 text-white font-bold rounded-xl hover:bg-white/10 transition-all">
@@ -178,7 +178,7 @@ export default function OrganizerEvents() {
                                 </div>
 
                                 <div className="flex flex-col items-center justify-center space-y-4 bg-white/5 p-4 rounded-2xl border border-white/10">
-                                    <p className="text-xs text-slate-400 font-bold uppercase">Pass Ticket</p>
+                                    <p className="text-xs text-slate-400 font-bold uppercase">Billet d'entrée</p>
                                     <div className="bg-white p-2 rounded-lg">
                                         <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${selectedEvent._id}`} alt="QR Code" className="w-24 h-24" />
                                     </div>

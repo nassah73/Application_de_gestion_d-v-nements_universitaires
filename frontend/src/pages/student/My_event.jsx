@@ -59,13 +59,13 @@ const MyEvents = () => {
       <Navbar />
       <div className="min-h-screen bg-slate-900 p-8 pt-[100px] font-sans overflow-x-hidden text-white">
         <header className="mb-10 text-center md:text-left">
-          <h1 className="text-4xl font-bold text-[#cd7329]">My Events</h1>
-          <p className="text-slate-400 mt-2">Manage your registrations and access passes</p>
+          <h1 className="text-4xl font-bold text-[#cd7329]">Mes événements</h1>
+          <p className="text-slate-400 mt-2">Gérez vos inscriptions et accédez à vos laissez-passer</p>
         </header>
 
         <section>
           <h2 className="text-2xl font-bold mb-6 text-white/90">
-            Upcoming Events ({eventsList.length})
+            Événements à venir ({eventsList.length})
           </h2>
           
           <div className="space-y-6">
@@ -97,7 +97,7 @@ const MyEvents = () => {
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-slate-600 italic">No Image</div>
+                          <div className="w-full h-full flex items-center justify-center text-slate-600 italic">Pas d'image</div>
                         )}
                       </div>
 
@@ -114,7 +114,7 @@ const MyEvents = () => {
 
                           <div className="flex flex-col h-full">
                             <span className="bg-[#cd7329] text-white text-xs font-bold px-4 py-1.5 rounded-full w-fit mb-4 uppercase">
-                              {eventData.category || "General"}
+                              {eventData.category || "Général"}
                             </span>
                             
                             <h3 className="text-2xl font-bold mb-2">{eventData.title}</h3>
