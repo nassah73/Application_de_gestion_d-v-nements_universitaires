@@ -9,10 +9,10 @@ router.delete('/delete_registration/:id', async (req, res) => {
     const deletedDoc = await Registration.findByIdAndDelete(registrationId);
 
     if (!deletedDoc) {
-      return res.status(404).json({ message: "Event not found" });
+      return res.status(404).json({ message: "Inscription non trouvée" });
     }
 
-    res.status(200).json({ message: "Registration deleted successfully" });
+    res.status(200).json({ message: "Désinscription réussie" });
   } catch (error) {
     console.error("Error deleting registration:", error);
     res.status(500).json({ message: "Error in the server while deleting" });

@@ -1,15 +1,60 @@
 import Navbar from "../../assets/NavBar";
 import React from 'react';
 import axios from 'axios';
-import { Calendar, Clock, Users, Trash2, Ticket, ScanQrCode, QrCode } from 'lucide-react';
+import { Calendar, Clock, Trash2, ScanQrCode, QrCode, FileDown } from 'lucide-react';
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from 'react-router-dom';
+import jsPDF from 'jspdf';
 
 const MyEvents = () => {
   const [eventsList, setEventsList] = React.useState([]);
-  const [staffOrganizerId, setStaffOrganizerId] = React.useState(null); 
   const [currentUser, setCurrentUser] = React.useState(null);
   const navigate = useNavigate();
+
+  const downloadPDF = async (eventData) => {
+    try {
+      const doc = new jsPDF();
+      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${currentUser._id}:${eventData._id}`;
+      
+      // Fetch image and convert to base64 for jsPDF
+      const response = await fetch(qrUrl);
+      const blob = await response.blob();
+      const reader = new FileReader();
+      
+      reader.readAsDataURL(blob);
+      reader.onloadend = () => {
+        const base64data = reader.result;
+        
+        doc.setFontSize(22);
+        doc.setTextColor(205, 115, 41); // #cd7329
+        doc.text("PASS D'ENTRÉE ÉVÉNEMENT", 105, 30, { align: "center" });
+        
+        doc.setDrawColor(205, 115, 41);
+        doc.setLineWidth(1);
+        doc.line(20, 40, 190, 40);
+        
+        doc.setFontSize(16);
+        doc.setTextColor(0, 0, 0);
+        doc.text(`Événement: ${eventData.title}`, 20, 60);
+        doc.text(`Date: ${new Date(eventData.date).toLocaleDateString('fr-FR')}`, 20, 75);
+        doc.text(`Lieu: ${eventData.location}`, 20, 90);
+        doc.text(`Participant: ${currentUser.prenom} ${currentUser.nom}`, 20, 105);
+        
+        // Add QR Code
+        doc.addImage(base64data, 'PNG', 55, 120, 100, 100);
+        
+        doc.setFontSize(10);
+        doc.setTextColor(150, 150, 150);
+        doc.text("Veuillez présenter ce code à l'entrée de l'événement.", 105, 240, { align: "center" });
+        doc.text(`ID Inscription: ${eventData._id}`, 105, 250, { align: "center" });
+        
+        doc.save(`Pass_${eventData.title.replace(/\s+/g, '_')}.pdf`);
+      };
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+      alert("Erreur lors de la génération du PDF.");
+    }
+  };
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -25,11 +70,6 @@ const MyEvents = () => {
           : [];
         setEventsList(validEvents);
 
-        const resStaff = await axios.get(`http://localhost:5000/organisateur/check-staff/${user._id}`);
-        if (resStaff.data.isStaff) {
-          setStaffOrganizerId(resStaff.data.organizerId);
-        }
-
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -37,7 +77,8 @@ const MyEvents = () => {
     fetchData();
   }, []);
 
-  const handleDelete = async (registrationId) => {
+  const handleDelete = async (e, registrationId) => {
+    if (e) e.stopPropagation();
     if (!window.confirm("Êtes-vous sûr de vouloir vous désinscrire de cet événement ?")) return;
     try {
       await axios.delete(`http://localhost:5000/Event/delete_registration/${registrationId}`);
@@ -74,9 +115,7 @@ const MyEvents = () => {
                 eventsList.map((registration) => {
                   const eventData = registration.event || {};
                   const eventDate = eventData.date ? new Date(eventData.date) : null;
-                  
-                  // التحقق هل المستخدم هو المنظم لهذا الحدث
-                  const isOrganizer = staffOrganizerId && eventData.organizer?._id === staffOrganizerId;
+                  const isVolunteer = registration.role === 'volunteer';
 
                   return (
                     <motion.div 
@@ -86,13 +125,14 @@ const MyEvents = () => {
                       animate="visible"
                       exit={{ opacity: 0, scale: 0.95 }}
                       variants={itemVariants}
-                      className="bg-white/5 backdrop-blur-lg rounded-2xl shadow-lg overflow-hidden flex flex-col md:flex-row border border-white/10 hover:bg-white/10 transition-all group"
+                      onClick={() => navigate(`/app/Event/${eventData._id}`)}
+                      className="bg-white/5 backdrop-blur-lg rounded-2xl shadow-lg overflow-hidden flex flex-col md:flex-row border border-white/10 hover:bg-white/10 transition-all group cursor-pointer"
                     >
                       {/* Image Section */}
                       <div className="md:w-64 h-48 md:h-auto relative overflow-hidden bg-slate-800">
                         {eventData.coverImage ? (
                           <img 
-                            src={`http://localhost:5000/${eventData.coverImage}`} 
+                            src={`http://localhost:5000/${eventData.coverImage.replace(/\\/g, '/')}`} 
                             alt={eventData.title} 
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" 
                           />
@@ -103,10 +143,9 @@ const MyEvents = () => {
 
                       {/* Content Section */}
                       <div className="flex-1 p-6 relative flex flex-col md:flex-row justify-between">
-                        
                         <div className="flex-1">
                           <button 
-                            onClick={() => handleDelete(registration._id)} 
+                            onClick={(e) => handleDelete(e, registration._id)} 
                             className="absolute top-6 right-6 text-red-400 hover:text-red-500 hover:bg-red-500/10 p-2 rounded-lg transition-all z-10"
                           >
                             <Trash2 size={20} />
@@ -136,17 +175,16 @@ const MyEvents = () => {
                               </div>
                             </div>
 
-                            {/* التبديل بين زر Scanner و QR Code للمشارك */}
+                            {/* الباركود والسكاينر بالحجم الكبير */}
                             <div className="mt-auto pt-4 border-t border-white/10">
-                              {isOrganizer ? (
-                                // حالة المنظم: يظهر زر السكاينر
+                              {isVolunteer ? (
                                 <div className="flex items-center justify-between">
                                   <div className="flex items-center gap-2">
                                     <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                                    <span className="text-[10px] font-black uppercase tracking-widest text-green-500">Mode Organisateur</span>
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-green-500">Mode Bénévole</span>
                                   </div>
                                   <button 
-                                    onClick={() => navigate(`/student/Scanner/${eventData._id}`)}
+                                    onClick={(e) => { e.stopPropagation(); navigate(`/student/Scanner/${eventData._id}`); }}
                                     className="flex items-center gap-2 bg-[#cd7329] hover:bg-orange-600 text-white px-6 py-2 rounded-xl font-bold text-xs transition-all shadow-lg shadow-orange-500/20"
                                   >
                                     <ScanQrCode size={16} />
@@ -154,28 +192,36 @@ const MyEvents = () => {
                                   </button>
                                 </div>
                               ) : (
-                                // حالة المشارك: يظهر الـ QR Code الخاص به
-                                <div className="flex items-center justify-between bg-white/5 p-3 rounded-xl border border-white/5">
-                                  <div className="flex flex-col gap-1">
+                                <div className="flex items-center justify-between bg-white/5 p-4 rounded-2xl border border-white/5">
+                                  <div className="flex flex-col gap-2">
                                     <div className="flex items-center gap-2 text-[#cd7329]">
-                                      <QrCode size={16} />
-                                      <span className="text-xs font-bold uppercase tracking-tight">Mon Pass d'entrée</span>
+                                      <QrCode size={20} />
+                                      <span className="text-sm font-black uppercase tracking-tight">Mon Pass d'entrée</span>
                                     </div>
-                                    <span className="text-[10px] text-slate-500 italic">Présentez ce code à l'entrée</span>
+                                    <p className="text-xs text-slate-500 italic max-w-[200px]">Présentez ce code à l'entrée de l'événement pour valider votre présence.</p>
+                                    
+                                    <button 
+                                      onClick={(e) => { e.stopPropagation(); downloadPDF(eventData); }}
+                                      className="mt-2 flex items-center gap-2 bg-white/10 hover:bg-[#cd7329] text-white px-4 py-2 rounded-xl text-xs font-bold transition-all border border-white/10"
+                                    >
+                                      <FileDown size={14} />
+                                      Télécharger PDF
+                                    </button>
                                   </div>
                                   
                                   {currentUser && (
-                                    <div className="bg-white p-1 rounded-lg shadow-xl shadow-black/50">
+                                    <div className="bg-white p-2 rounded-xl shadow-2xl shadow-black/50 hover:scale-105 transition-transform duration-300">
                                       <img 
-                                        src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${currentUser._id}`} 
+                                        src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${currentUser._id}:${eventData._id}`} 
                                         alt="Access QR" 
-                                        className="w-16 h-16"
+                                        className="w-24 h-24 md:w-32 md:h-32" // الحجم الكبير الذي طلبته
                                       />
                                     </div>
                                   )}
                                 </div>
                               )}
                             </div>
+
                           </div>
                         </div>
                       </div>

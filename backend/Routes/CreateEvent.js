@@ -13,6 +13,7 @@ router.get('/StuendtEvents',StudentEvents.Student_Events)
 router.get('/stats/:organizerId', EventControler.GetOrganizerStats);
 
 router.post('/mark-attendance', EventControler.MarkAttendance);
+router.post('/verify-scan', StudentEvents.VerifyScan);
 router.post('/My_events',StudentEvents.setMyEvent)
 router.get('/My_registers/:studentId',StudentEvents.My_registers)
 router.get('/:id', EventControler.GetEventById);

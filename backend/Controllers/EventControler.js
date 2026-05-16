@@ -189,7 +189,9 @@ const DeleteEvent = async (req, res) => {
 const GetEventById = async (req, res) => {
     try {
         const { id } = req.params;
-        const event = await Event.findById(id).lean();
+        const event = await Event.findById(id)
+            .populate('organizer', 'prenom nom email')
+            .lean();
         
         if (!event) {
             return res.status(404).json({ message: "Evenement non trouve" });

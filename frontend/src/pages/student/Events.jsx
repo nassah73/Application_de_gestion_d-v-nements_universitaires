@@ -122,9 +122,13 @@ export default function Main() {
                                 const dateObj = new Date(item.date);
                                 const formattedDate = dateObj.toLocaleDateString('fr-FR');
                                 const formattedTime = dateObj.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+                                
+                                // Handle backslashes in Windows paths
+                                const imageUrl = item.coverImage ? `http://localhost:5000/${item.coverImage.replace(/\\/g, '/')}` : '';
+
                                 return (
                                     <motion.div key={index} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ duration: 1, ease: "easeOut" }} className="h-70 rounded-2xl relative shadow-[0_10px_30px_-5px_rgba(0,0,0,0.6)] overflow-hidden border border-white/10">
-                                        <img src={`http://localhost:5000/${item.coverImage}`} alt="" className="w-[100%] h-[100%] bg-cover absolute z-0" />
+                                        <img src={imageUrl} alt="" className="w-[100%] h-[100%] bg-cover absolute z-0" />
                                         <div className="absolute z-10 bg-gradient-to-t from-slate-900 via-slate-900/80 to-black/40 inset-0"></div>
                                         <h1 className="absolute z-20 top-3 right-3 bg-[#cd7329] text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">{item.category}</h1>
                                         <div className="absolute h-50 z-20 top-1/4 text-white left-2 w-[100%]">
@@ -187,14 +191,6 @@ export default function Main() {
                                             </button>
                                         )}
                                     </div>
-                                </div>
-
-                                <div className="flex flex-col items-center justify-center space-y-4 bg-white/5 p-4 rounded-2xl border border-white/10">
-                                    <p className="text-xs text-slate-400 font-bold uppercase">Billet d'entrée</p>
-                                    <div className="bg-white p-2 rounded-lg">
-                                        <img src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${selectedEvent._id}`} alt="QR Code" className="w-24 h-24" />
-                                    </div>
-                                    <p className="text-[10px] text-center text-slate-500">Scannez pour valider votre entrée</p>
                                 </div>
                             </div>
                         </motion.div>

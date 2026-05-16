@@ -16,10 +16,10 @@ export default function NewsManager() {
   });
 
   const categoryConfigs = {
-    'Urgent Alert': { color: 'text-red-400', bg: 'bg-red-500/10', border: 'border-red-500/30', icon: <AlertTriangle /> },
-    'Exam Schedule': { color: 'text-orange-400', bg: 'bg-orange-500/10', border: 'border-orange-500/30', icon: <FileText /> },
-    'Club Alert': { color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/30', icon: <Stars /> },
-    'Reminders': { color: 'text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-500/30', icon: <Clock /> },
+    'Alerte Urgente': { color: 'text-red-400', bg: 'bg-red-500/10', border: 'border-red-500/30', icon: <AlertTriangle /> },
+    'Calendrier des Examens': { color: 'text-orange-400', bg: 'bg-orange-500/10', border: 'border-orange-500/30', icon: <FileText /> },
+    'Alerte Club': { color: 'text-blue-400', bg: 'bg-blue-500/10', border: 'border-blue-500/30', icon: <Stars /> },
+    'Rappels': { color: 'text-amber-400', bg: 'bg-amber-500/10', border: 'border-amber-500/30', icon: <Clock /> },
   };
 
   const handleFileChange = (e) => {
@@ -27,7 +27,7 @@ export default function NewsManager() {
     if (file && file.type === "application/pdf") {
       setSelectedFile(file);
     } else {
-      alert("Please upload a valid PDF file");
+      alert("Veuillez télécharger un fichier PDF valide");
     }
   };
 
@@ -35,7 +35,7 @@ export default function NewsManager() {
     e.preventDefault();
 
     if (!category || !newsData.title) {
-      alert("Please select a category and enter a title");
+      alert("Veuillez sélectionner une catégorie et saisir un titre");
       return;
     }
 
@@ -55,7 +55,7 @@ export default function NewsManager() {
       });
 
       if (response.status === 201) {
-        alert("✅ Announcement published successfully!");
+        alert("✅ Annonce publiée avec succès !");
         // Reset Form
         setNewsData({ title: '', description: '' });
         setSelectedFile(null);
@@ -63,7 +63,7 @@ export default function NewsManager() {
       }
     } catch (error) {
       console.error("Error publishing news:", error);
-      alert("❌ Error: " + (error.response?.data?.error || "Server error"));
+      alert("❌ Erreur : " + (error.response?.data?.error || "Erreur serveur"));
     }
   };
 
@@ -78,13 +78,13 @@ export default function NewsManager() {
           className="lg:col-span-7 bg-[#1a1f2e] border border-white/10 rounded-[2.5rem] p-8 shadow-2xl"
         >
           <h2 className="text-2xl font-bold mb-8 flex items-center gap-3 text-[#f97316]">
-            <Megaphone /> Broadcast Hub
+            <Megaphone /> Centre de Diffusion
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Selection de Catégorie */}
             <div className="space-y-3">
-              <label className="text-sm font-semibold text-slate-400">What are you broadcasting?</label>
+              <label className="text-sm font-semibold text-slate-400">Que diffusez-vous ?</label>
               <div className="grid grid-cols-2 gap-3">
                 {Object.keys(categoryConfigs).map((cat) => (
                   <button
@@ -111,32 +111,32 @@ export default function NewsManager() {
                 >
                   <div className="space-y-4">
                     <div className="space-y-2">
-                      <label className="text-sm text-slate-400 flex items-center gap-2"><Type size={14}/> Title</label>
+                      <label className="text-sm text-slate-400 flex items-center gap-2"><Type size={14}/> Titre</label>
                       <input 
                         type="text" 
                         required
                         value={newsData.title}
                         className="w-full bg-[#0f1117] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#f97316] transition-all"
-                        placeholder={`Enter ${category} heading...`}
+                        placeholder={`Saisissez le titre de ${category}...`}
                         onChange={(e) => setNewsData({...newsData, title: e.target.value})}
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm text-slate-400">Detailed Message</label>
+                      <label className="text-sm text-slate-400">Message Détaillé</label>
                       <textarea 
                         rows="3" 
                         value={newsData.description}
                         className="w-full bg-[#0f1117] border border-white/10 rounded-xl px-4 py-3 outline-none focus:border-[#f97316] transition-all"
-                        placeholder="Write your message here..."
+                        placeholder="Rédigez votre message ici..."
                         onChange={(e) => setNewsData({...newsData, description: e.target.value})}
                       ></textarea>
                     </div>
                   </div>
 
-                  {(category === 'Urgent Alert' || category === 'Exam Schedule') && (
+                  {(category === 'Alerte Urgente' || category === 'Calendrier des Examens') && (
                     <div className="space-y-2">
-                      <label className={`text-sm font-bold uppercase tracking-widest ${category === 'Urgent Alert' ? 'text-red-400' : 'text-orange-400'}`}>
-                        {category === 'Urgent Alert' ? 'Emergency Document (PDF)' : 'Official Timetable (PDF)'}
+                      <label className={`text-sm font-bold uppercase tracking-widest ${category === 'Alerte Urgente' ? 'text-red-400' : 'text-orange-400'}`}>
+                        {category === 'Alerte Urgente' ? "Document d'Urgence (PDF)" : "Emploi du Temps Officiel (PDF)"}
                       </label>
                       <div 
                         onClick={() => fileInputRef.current.click()}
@@ -152,7 +152,7 @@ export default function NewsManager() {
                         ) : (
                           <div className="text-center text-slate-500">
                             <FileUp className="mx-auto mb-2 opacity-50" />
-                            <p className="text-xs uppercase font-bold">Click to attach document</p>
+                            <p className="text-xs uppercase font-bold">Cliquez pour joindre un document</p>
                           </div>
                         )}
                       </div>
@@ -163,7 +163,7 @@ export default function NewsManager() {
                     type="submit" 
                     className="w-full bg-gradient-to-r from-[#f97316] to-[#fb923c] text-white font-black py-4 rounded-2xl shadow-xl hover:opacity-90 transition-all flex items-center justify-center gap-3"
                   >
-                    <Send size={18} /> BROADCAST NOW
+                    <Send size={18} /> DIFFUSER MAINTENANT
                   </button>
                 </motion.div>
               )}
@@ -173,7 +173,7 @@ export default function NewsManager() {
 
         {/* --- PREVIEW SECTION --- */}
         <div className="lg:col-span-5 text-left">
-          <h2 className="text-xl font-bold mb-6 flex items-center gap-2">Live Preview</h2>
+          <h2 className="text-xl font-bold mb-6 flex items-center gap-2">Aperçu en Direct</h2>
           <AnimatePresence mode="wait">
             {category ? (
               <motion.div 
@@ -182,7 +182,7 @@ export default function NewsManager() {
                 animate={{ scale: 1, opacity: 1 }}
                 className={`p-8 rounded-[2.5rem] border shadow-2xl relative ${categoryConfigs[category].bg} ${categoryConfigs[category].border}`}
               >
-                <div className={`absolute top-8 right-8 p-3 rounded-2xl ${category === 'Urgent Alert' ? 'bg-red-500' : 'bg-[#f97316]'} text-white`}>
+                <div className={`absolute top-8 right-8 p-3 rounded-2xl ${category === 'Alerte Urgente' ? 'bg-red-500' : 'bg-[#f97316]'} text-white`}>
                   {categoryConfigs[category].icon}
                 </div>
 
@@ -190,16 +190,16 @@ export default function NewsManager() {
                   <span className={`text-[10px] font-black px-3 py-1 rounded-full border w-fit uppercase ${categoryConfigs[category].color} border-current/20`}>
                     {category}
                   </span>
-                  <h3 className="text-2xl font-bold pr-12 leading-tight">{newsData.title || "Headline Goes Here"}</h3>
+                  <h3 className="text-2xl font-bold pr-12 leading-tight">{newsData.title || "Le titre s'affiche ici"}</h3>
                   <p className="text-slate-400 text-sm leading-relaxed mb-6">
-                    {newsData.description || "The full message will be displayed here for the students..."}
+                    {newsData.description || "Le message complet s'affichera ici pour les étudiants..."}
                   </p>
 
                   <div className="flex flex-col gap-3">
-                    <button type="button" className="w-full py-3 bg-[#f97316] text-white rounded-xl text-xs font-black shadow-lg">VIEW DETAILS</button>
+                    <button type="button" className="w-full py-3 bg-[#f97316] text-white rounded-xl text-xs font-black shadow-lg">VOIR LES DÉTAILS</button>
                     {selectedFile && (
                       <button type="button" className="w-full py-3 bg-white/5 border border-white/10 text-white rounded-xl text-xs font-black flex items-center justify-center gap-2">
-                        <FileText size={14} className="text-red-400"/> DOWNLOAD ATTACHED PDF
+                        <FileText size={14} className="text-red-400"/> TÉLÉCHARGER LE PDF JOINT
                       </button>
                     )}
                   </div>
@@ -207,7 +207,7 @@ export default function NewsManager() {
               </motion.div>
             ) : (
               <div className="h-64 border-2 border-dashed border-white/10 rounded-[2.5rem] flex items-center justify-center text-slate-600 font-bold uppercase text-xs tracking-widest text-center px-6">
-                Select a category to see the live preview
+                Sélectionnez une catégorie pour voir l'aperçu en direct
               </div>
             )}
           </AnimatePresence>

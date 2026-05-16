@@ -78,6 +78,8 @@ const startServer = async () => {
     const categoryRoutes = require('./Routes/CategoryRoutes');
     const newsRoutes = require('./Routes/NewsRoutes');
     const notificationRoutes = require('./Routes/NotificationRoutes');
+    const deleteMyEventRoutes = require('./Routes/DeleteMyEvent');
+
     app.use('/api/students', studentRoutes);
     app.use('/api/organisateurs', organisateurRoutes);
     app.use('/organisateur', organisateurRoutes); // Ajout du préfixe demandé par l'utilisateur
@@ -85,6 +87,7 @@ const startServer = async () => {
     app.use('/api/administrateur', administrateurRoutes);
     app.use('/api/auth', authRoutes);
     app.use('/Event', CreateEvent);
+    app.use('/Event', deleteMyEventRoutes); // Mount delete registration route under /Event
     app.use('/api/valide',ValideEvent)
     app.use('/api/categories', categoryRoutes);
     app.use('/api/notifications', notificationRoutes);

@@ -161,6 +161,12 @@ export default function Sidebare() {
           label="Categories"
           active={location.pathname === '/responsable/categories'}
         />
+        <NavItem
+          path="/responsable/news"
+          icon={<Bell size={19} />}
+          label="Annonces Hub"
+          active={location.pathname === '/responsable/news'}
+        />
       </Box>
 
       {/* Bottom Section: Settings & Logout */}

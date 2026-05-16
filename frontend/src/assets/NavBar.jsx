@@ -160,9 +160,8 @@ export default function Navbar() {
                   <p className='flex gap-3 items-center'><UserSquare size={17} className="text-[#cd7329]" /> Filière: <span className='uppercase font-medium'>{userData?.filiere}</span></p>
                   <p className='flex gap-3 items-center'><GraduationCap size={17} className="text-[#cd7329]" /> Niveau: {userData?.niveau}</p>
                   <hr className='border-white/10 w-full' />
-                  <div className='flex text-sm font-bold pt-2'>
-                    <button className='w-1/2 py-2 flex gap-2 items-center justify-center hover:text-[#cd7329] transition-colors border-r border-white/10'>Modifier</button>
-                    <button onClick={handleLogout} className='w-1/2 py-2 flex gap-2 items-center justify-center hover:text-red-400 transition-colors text-red-500'>Déconnexion</button>
+                  <div className='flex text-sm font-bold pt-2 justify-center'>
+                    <button onClick={handleLogout} className='w-full py-2 flex gap-2 items-center justify-center hover:text-red-400 transition-colors text-red-500'>Déconnexion</button>
                   </div>
                 </div>
              </div>

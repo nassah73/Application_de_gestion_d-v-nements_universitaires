@@ -113,4 +113,41 @@ const My_registers = async (req, res) => {
         res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 }
-module.exports={Student_Events,setMyEvent,My_registers};
+
+const VerifyScan = async (req, res) => {
+    try {
+        const { studentId, eventId } = req.body;
+
+        const registration = await Registration.findOne({ 
+            student: studentId, 
+            event: eventId 
+        }).populate('student', 'fullName profileImage');
+
+        if (!registration) {
+            return res.status(404).json({ 
+                success: false, 
+                message: "Étudiant non inscrit à cet événement." 
+            });
+        }
+
+        // Marquer comme présent si ce n'est pas déjà fait
+        if (registration.attendanceStatus !== 'present') {
+            registration.attendanceStatus = 'present';
+            registration.presentAt = new Date();
+            await registration.save();
+        }
+
+        return res.status(200).json({ 
+            success: true, 
+            message: "Présence validée avec succès.",
+            student: registration.student.fullName,
+            profileImage: registration.student.profileImage
+        });
+
+    } catch (error) {
+        console.error("Error verifying scan:", error);
+        res.status(500).json({ success: false, message: "Erreur serveur" });
+    }
+};
+
+module.exports={Student_Events,setMyEvent,My_registers,VerifyScan};

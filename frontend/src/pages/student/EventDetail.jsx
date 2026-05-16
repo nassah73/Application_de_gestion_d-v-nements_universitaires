@@ -22,6 +22,7 @@ export default function EventDetail() {
     const [event, setEvent] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    // 1. الـ Hook الأول: كيجيب الداتا من الـ API
     useEffect(() => {
         const fetchEvent = async () => {
             try {
@@ -37,6 +38,12 @@ export default function EventDetail() {
         fetchEvent();
     }, [id]);
 
+    // 2. الـ Hook الثاني: كيطالع الصفحة للفوق (Scroll) - حطيناه هنا باش ما يبقاش يعكس
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
+    // 3. الـ Fonction ديال الـ Inscription
     const requestEvent = async (isVolunteer = false) => {
         try {
             const userString = localStorage.getItem('user');
@@ -59,8 +66,25 @@ export default function EventDetail() {
         } catch (error) {
             alert(error.response?.data?.message || "Erreur lors de l'inscription");
         }
-    }
+    };
 
+    // 4. الـ Helper Function ديال الـ Images
+    const getImageUrl = (path) => {
+        if (!path) return "";
+        const cleanPath = path.replace(/\\/g, '/');
+        return `http://localhost:5000/${cleanPath}`;
+    };
+
+    // 5. الـ Logic ديال التواريخ (درناه بـ شرط باش ما يعطيش Error ف الأول)
+    const dateObj = event ? new Date(event.date) : null;
+    const formattedDate = dateObj && !isNaN(dateObj) 
+        ? dateObj.toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) 
+        : "Date non définie";
+    const formattedTime = dateObj && !isNaN(dateObj) 
+        ? dateObj.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) 
+        : "";
+
+    // 6. الشروط د الـ Render (الـ Early Returns مجموعين تحت الـ Hooks)
     if (loading) {
         return (
             <div className="min-h-screen bg-slate-900 flex items-center justify-center">
@@ -80,14 +104,7 @@ export default function EventDetail() {
         );
     }
 
-    useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
-
-    const dateObj = new Date(event.date);
-    const formattedDate = dateObj.toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    const formattedTime = dateObj.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-
+    // 7. الـ Return الرئيسي د الـ UI
     return (
         <>
             <Navbar />
@@ -96,7 +113,7 @@ export default function EventDetail() {
                 
                 <div className="max-w-6xl mx-auto px-4">
                     <button 
-                        onClick={() => navigate(-1)}
+                        onClick={() => navigate('/app/Event')}
                         className="flex items-center gap-2 text-[#cd7329] font-bold mb-8 hover:translate-x-[-4px] transition-transform"
                     >
                         <ArrowLeft size={20} /> Retour aux événements
@@ -111,7 +128,7 @@ export default function EventDetail() {
                                 className="relative rounded-3xl overflow-hidden aspect-video shadow-2xl border border-white/10"
                             >
                                 <img 
-                                    src={`http://localhost:5000/${event.coverImage}`} 
+                                    src={getImageUrl(event.coverImage)} 
                                     alt={event.title} 
                                     className="w-full h-full object-cover"
                                 />
@@ -222,19 +239,6 @@ export default function EventDetail() {
                                         </a>
                                     )}
                                 </div>
-                            </div>
-
-                            {/* QR Section */}
-                            <div className="bg-white/5 backdrop-blur-md rounded-3xl p-6 border border-white/10 text-center space-y-4">
-                                <p className="text-xs text-slate-500 font-black uppercase tracking-[0.2em]">Billet Numérique</p>
-                                <div className="bg-white p-4 rounded-2xl w-40 h-40 mx-auto shadow-2xl">
-                                    <img 
-                                        src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${event._id}`} 
-                                        alt="QR Code" 
-                                        className="w-full h-full"
-                                    />
-                                </div>
-                                <p className="text-[10px] text-slate-500 font-medium">Scannez lors de l'événement pour valider votre entrée</p>
                             </div>
                         </div>
                     </div>
