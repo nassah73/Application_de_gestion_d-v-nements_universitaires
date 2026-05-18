@@ -1,5 +1,7 @@
 const Events_db =require('../models/Event')
 const Organisateur = require('../models/Organisateur');
+const Registration = require('../models/My_Events'); 
+const Notification = require('../models/Notification');
 
 const Student_Events= async(req,res)=>{
     try{
@@ -18,8 +20,6 @@ const Student_Events= async(req,res)=>{
     }
 
 }
-const Registration = require('../models/My_Events'); 
-const Notification = require('../models/Notification');
 
 const setMyEvent = async (req, res) => {
     try {
@@ -38,15 +38,15 @@ const setMyEvent = async (req, res) => {
         const newRegistration = new Registration({ 
             student: studentId, 
             event: eventId,
-            role: type || 'participant' 
+            role: type || 'participant',
+            status: type === 'volunteer' ? 'pending' : 'approved' // Volontaires en attente, participants approuvés
         });
         
         await newRegistration.save();
 
-        // LOGIQUE SUPPLÉMENTAIRE POUR LE VOLONTARIAT ET LES NOTIFICATIONS
         const event = await Events_db.findById(eventId);
         if (event && event.organizer) {
-            // Créer une notification pour l'organisateur
+            // Notification pour l'organisateur
             const notification = new Notification({
                 recipient: event.organizer,
                 title: type === 'volunteer' ? "Nouvelle demande de staff" : "Nouvelle inscription",
@@ -61,7 +61,6 @@ const setMyEvent = async (req, res) => {
             if (type === 'volunteer') {
                 const organizer = await Organisateur.findById(event.organizer);
                 if (organizer) {
-                    // Vérifier si une demande existe déjà pour éviter les doublons dans staffRequests
                     const alreadyRequested = organizer.staffRequests.find(
                         r => r.student.toString() === studentId && r.status === 'en attente'
                     );
@@ -87,12 +86,11 @@ const setMyEvent = async (req, res) => {
         return res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 };
+
 const My_registers = async (req, res) => {
     try {
-        
         const { studentId } = req.params; 
 
-        
         const registrations = await Registration.find({ student: studentId })
             .populate({
                 path: 'event', 
@@ -102,12 +100,14 @@ const My_registers = async (req, res) => {
                 }
             });
 
-        
         if (registrations.length === 0) {
-            res.status(200).json(registrations);
+            return res.status(200).json([]);
         }
 
-        res.status(200).json(registrations);
+        // Retourner uniquement les inscriptions approuvées
+        const filteredRegistrations = registrations.filter(reg => reg.status === 'approved' && reg.event !== null);
+
+        res.status(200).json(filteredRegistrations);
     } catch (error) {
         console.error("Error fetching registrations:", error);
         res.status(500).json({ message: "Erreur serveur", error: error.message });
@@ -120,17 +120,17 @@ const VerifyScan = async (req, res) => {
 
         const registration = await Registration.findOne({ 
             student: studentId, 
-            event: eventId 
+            event: eventId,
+            status: 'approved'
         }).populate('student', 'fullName profileImage');
 
         if (!registration) {
             return res.status(404).json({ 
                 success: false, 
-                message: "Étudiant non inscrit à cet événement." 
+                message: "Étudiant non inscrit ou demande non approuvée." 
             });
         }
 
-        // Marquer comme présent si ce n'est pas déjà fait
         if (registration.attendanceStatus !== 'present') {
             registration.attendanceStatus = 'present';
             registration.presentAt = new Date();

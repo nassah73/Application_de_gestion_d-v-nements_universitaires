@@ -1,6 +1,7 @@
 const Organisateur = require('../models/Organisateur');
 const Student = require('../models/Student');
 const Notification = require('../models/Notification');
+const Registration = require('../models/My_Events');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const path = require('path');
@@ -18,11 +19,6 @@ const upload = multer({ storage: storage }).single('justificatif');
 
 exports.registerOrganisateur = (req, res) => {
     upload(req, res, async (err) => {
-        console.log('=== registerOrganisateur called ===');
-        console.log('req.body:', req.body);
-        console.log('req.file:', req.file);
-        console.log('err:', err);
-        
         if (err) {
             console.error('Upload error:', err);
             return res.status(500).json({ message: "Erreur lors de l'upload du justificatif" });
@@ -71,7 +67,6 @@ exports.addStaff = async (req, res) => {
             return res.status(404).json({ message: "Organisateur non trouvé." });
         }
 
-        // Vérifier si déjà dans le staff
         const alreadyStaff = organizer.staff.find(s => s.student.toString() === student._id.toString());
         if (alreadyStaff) {
             return res.status(400).json({ message: "Cet étudiant fait déjà partie de votre équipe." });
@@ -80,7 +75,6 @@ exports.addStaff = async (req, res) => {
         organizer.staff.push({ student: student._id });
         await organizer.save();
 
-        // Créer une notification pour l'organisateur
         const notification = new Notification({
             recipient: organizerId,
             title: "Membre ajouté",
@@ -126,9 +120,6 @@ exports.removeStaff = async (req, res) => {
     }
 };
 
-// --- NOUVELLES FONCTIONNALITÉS POUR LES DEMANDES DE STAFF ---
-
-// 1. L'étudiant envoie une demande pour rejoindre l'équipe
 exports.sendStaffRequest = async (req, res) => {
     try {
         const { studentId, organizerId } = req.body;
@@ -138,13 +129,11 @@ exports.sendStaffRequest = async (req, res) => {
             return res.status(404).json({ message: "Organisateur non trouvé." });
         }
 
-        // Vérifier si déjà dans le staff
         const alreadyStaff = organizer.staff.find(s => s.student.toString() === studentId);
         if (alreadyStaff) {
             return res.status(400).json({ message: "Vous faites déjà partie de cette équipe." });
         }
 
-        // Vérifier si une demande est déjà en attente
         const alreadyRequested = organizer.staffRequests.find(
             r => r.student.toString() === studentId && r.status === 'en attente'
         );
@@ -161,7 +150,6 @@ exports.sendStaffRequest = async (req, res) => {
     }
 };
 
-// 2. L'organisateur récupère ses demandes en attente
 exports.getStaffRequests = async (req, res) => {
     try {
         const { organizerId } = req.params;
@@ -170,7 +158,6 @@ exports.getStaffRequests = async (req, res) => {
             return res.status(404).json({ message: "Organisateur non trouvé." });
         }
 
-        // Retourner seulement les demandes en attente
         const pendingRequests = organizer.staffRequests.filter(r => r.status === 'en attente');
         res.status(200).json(pendingRequests);
     } catch (error) {
@@ -178,10 +165,9 @@ exports.getStaffRequests = async (req, res) => {
     }
 };
 
-// 3. L'organisateur accepte ou refuse une demande
 exports.respondToStaffRequest = async (req, res) => {
     try {
-        const { organizerId, studentId, action } = req.body; // action: 'accept' ou 'reject'
+        const { organizerId, studentId, action } = req.body;
 
         const organizer = await Organisateur.findById(organizerId);
         if (!organizer) {
@@ -197,16 +183,19 @@ exports.respondToStaffRequest = async (req, res) => {
         }
 
         if (action === 'accept') {
-            // Mettre à jour le statut de la demande
             organizer.staffRequests[requestIndex].status = 'accepté';
-            // Ajouter au staff
             organizer.staff.push({ student: studentId });
             await organizer.save();
 
-            // Récupérer les infos de l'étudiant pour le message
+            // Mettre à jour l'inscription de l'étudiant en tant que volontaire (approved)
+            await Registration.findOneAndUpdate(
+                { student: studentId, role: 'volunteer', status: 'pending' },
+                { status: 'approved' },
+                { sort: { registrationDate: -1 } }
+            );
+
             const student = await Student.findById(studentId);
             
-            // Notification pour l'organisateur
             const notification = new Notification({
                 recipient: organizerId,
                 title: "Demande de staff acceptée",
@@ -215,15 +204,13 @@ exports.respondToStaffRequest = async (req, res) => {
             });
             await notification.save();
 
-            return res.status(200).json({ message: "Demande acceptée. L'étudiant fait maintenant partie de votre équipe." });
+            return res.status(200).json({ message: "Demande acceptée." });
         } else if (action === 'reject') {
-            // Mettre à jour le statut de la demande
             organizer.staffRequests[requestIndex].status = 'refusé';
             await organizer.save();
 
             const student = await Student.findById(studentId);
 
-            // Notification pour l'organisateur
             const notification = new Notification({
                 recipient: organizerId,
                 title: "Demande de staff refusée",
@@ -234,19 +221,16 @@ exports.respondToStaffRequest = async (req, res) => {
 
             return res.status(200).json({ message: "Demande refusée." });
         } else {
-            return res.status(400).json({ message: "Action non valide. Utilisez 'accept' ou 'reject'." });
+            return res.status(400).json({ message: "Action non valide." });
         }
     } catch (error) {
-        res.status(500).json({ message: "Erreur lors du traitement de la demande", error: error.message });
+        res.status(500).json({ message: "Erreur lors du traitement", error: error.message });
     }
 };
 
-// 4. Vérifier si un étudiant est staff (pour activer le scan)
 exports.checkStaffStatus = async (req, res) => {
     try {
         const { studentId } = req.params;
-        
-        // Chercher si l'étudiant est dans le staff de n'importe quel organisateur
         const organizer = await Organisateur.findOne({ 'staff.student': studentId });
         
         if (organizer) {
@@ -255,7 +239,7 @@ exports.checkStaffStatus = async (req, res) => {
             return res.status(200).json({ isStaff: false });
         }
     } catch (error) {
-        res.status(500).json({ message: "Erreur lors de la vérification du statut", error: error.message });
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 };
 
@@ -282,7 +266,6 @@ exports.updateProfile = async (req, res) => {
             return res.status(404).json({ message: "Organisateur non trouvé." });
         }
 
-        // Si on veut changer le mot de passe
         if (currentPassword && newPassword) {
             const isMatch = await bcrypt.compare(currentPassword, organizer.password);
             if (!isMatch) {
@@ -291,7 +274,6 @@ exports.updateProfile = async (req, res) => {
             organizer.password = await bcrypt.hash(newPassword, 10);
         }
 
-        // Mettre à jour les autres champs
         if (prenom) organizer.prenom = prenom;
         if (nom) organizer.nom = nom;
         if (telephone) organizer.telephone = telephone;
@@ -300,7 +282,6 @@ exports.updateProfile = async (req, res) => {
 
         await organizer.save();
         
-        // Retourner l'objet mis à jour sans le password
         const updatedOrganizer = organizer.toObject();
         delete updatedOrganizer.password;
         
