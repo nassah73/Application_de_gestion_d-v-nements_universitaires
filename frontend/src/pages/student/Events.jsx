@@ -74,7 +74,11 @@ export default function Main() {
             const res = await axios.post('http://localhost:5000/Event/My_events', registrationData);
             
             setform(false);
-            alert(isVolunteer ? "Votre demande d'organisation a été envoyée !" : "Inscription réussie !");
+            if (isVolunteer) {
+                alert("Votre demande a été envoyée ! Veuillez patienter jusqu'à ce que l'organisateur valide votre demande pour rejoindre l'équipe.");
+            } else {
+                alert("Inscription réussie ! Retrouvez votre pass dans 'Mes événements'.");
+            }
             console.log(res.data);
 
         } catch (error) {
