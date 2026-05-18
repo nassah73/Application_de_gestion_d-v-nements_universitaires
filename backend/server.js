@@ -36,6 +36,8 @@ const startServer = async () => {
             if (!existingSuperAdmin) {
                 const hashedPassword = await bcrypt.hash('SuperAdmin@1234', 10);
                 const superAdmin = new Administrateur({
+                    prenom: 'Super',
+                    nom: 'Admin',
                     email: 'superadmin@uiz.ac.ma',
                     password: hashedPassword,
                     role: 'admin'
