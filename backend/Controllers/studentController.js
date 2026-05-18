@@ -7,9 +7,12 @@ exports.registerStudent = async (req, res) => {
     try {
         const { fullName, cne, email, phone, filiere, niveau, anneeUniv, password } = req.body;
 
-        // Validation: Email extension
-        if (!email.endsWith('@edu.uiz.ac.ma')) {
-            return res.status(400).json({ message: "Veuillez utiliser votre email académique (@edu.uiz.ac)" });
+        // Validation: Academic Email format (prenom.nom.XX@edu.uiz.ac.ma)
+        const academicEmailRegex = /^[a-z-]+\.[a-z-]+\.\d{2}@edu\.uiz\.ac\.ma$/i;
+        if (!academicEmailRegex.test(email)) {
+            return res.status(400).json({ 
+                message: "Format d'email académique invalide. Format attendu: prenom.nom.2chiffres@edu.uiz.ac.ma" 
+            });
         }
 
         // Validation: CNE (1 letter + 9 numbers)
