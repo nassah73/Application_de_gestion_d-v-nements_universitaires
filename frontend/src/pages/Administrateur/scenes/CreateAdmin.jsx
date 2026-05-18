@@ -1,362 +1,246 @@
-import { Box, Button, TextField, IconButton, Typography, LinearProgress, Snackbar, Alert } from "@mui/material";
-import { Formik } from "formik";
-import { useNavigate } from "react-router-dom";
-import * as yup from "yup";
-import useMediaQuery from "@mui/material/useMediaQuery";
+import React, { useState } from "react";
+import { User, Mail, Lock, Phone, CheckCircle2, X, Eye, EyeOff } from "lucide-react";
 import axios from "axios";
-import React, { useState } from 'react';
-import { InputAdornment } from "@mui/material";
-import LockIcon from "@mui/icons-material/Lock";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutlined";
 
-const getPasswordStrength = (password) => {
-  if (!password) return { score: 0, label: "", color: "#64748b" };
-  let score = 0;
-  if (password.length >= 6) score++;
-  if (password.length >= 10) score++;
-  if (/[A-Z]/.test(password)) score++;
-  if (/[0-9]/.test(password)) score++;
-  if (/[^A-Za-z0-9]/.test(password)) score++;
+const getPasswordStrength = (password) => { 
+  if (!password) return { score: 0, label: "", color: "#64748b" }; 
+  let score = 0; 
+  if (password.length >= 6) score++; 
+  if (password.length >= 10) score++; 
+  if (/[A-Z]/.test(password)) score++; 
+  if (/[0-9]/.test(password)) score++; 
+  if (/[^A-Za-z0-9]/.test(password)) score++; 
 
-  if (score <= 1) return { score: 20, label: "Très faible", color: "#ef4444" };
-  if (score === 2) return { score: 40, label: "Faible", color: "#f97316" };
-  if (score === 3) return { score: 60, label: "Moyen", color: "#eab308" };
-  if (score === 4) return { score: 80, label: "Fort", color: "#22c55e" };
-  return { score: 100, label: "Très fort", color: "#10b981" };
+  if (score <= 1) return { score: 20, label: "Très faible", color: "#ef4444" }; 
+  if (score === 2) return { score: 40, label: "Faible", color: "#f97316" }; 
+  if (score === 3) return { score: 60, label: "Moyen", color: "#eab308" }; 
+  if (score === 4) return { score: 80, label: "Fort", color: "#22c55e" }; 
+  return { score: 100, label: "Très fort", color: "#10b981" }; 
 };
 
-const Form = () => {
-  const isNonMobile = useMediaQuery("(min-width:600px)");
-  const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
-  const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
+const CreateAdmin = () => {
+  const [formData, setFormData] = useState({
+    prenom: "",
+    nom: "",
+    email: "",
+    telephone: "",
+    password: "",
+  });
 
-  const handleFormSubmit = async (values) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [toast, setToast] = useState(null);
+
+  const showToast = (msg, type = "success") => {
+    setToast({ msg, type });
+    setTimeout(() => {
+      setToast(null);
+    }, 3000);
+  };
+
+  const strength = getPasswordStrength(formData.password);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
       const response = await axios.post('http://localhost:5000/api/administrateur/create-administration', {
-        prenom: values.firstName,
-        nom: values.lastName,
-        telephone: values.contact,
-        email: values.email,
-        password: values.password
+        prenom: formData.prenom,
+        nom: formData.nom,
+        telephone: formData.telephone,
+        email: formData.email,
+        password: formData.password
       });
-      alert(response.data.message);
+      
+      showToast(response.data.message || "Compte créé avec succès !");
+      
+      setFormData({
+        prenom: "",
+        nom: "",
+        email: "",
+        telephone: "",
+        password: "",
+      });
     } catch (error) {
       console.error(error);
-      alert(error.response?.data?.message || 'Erreur lors de la création du compte');
+      showToast(error.response?.data?.message || 'Erreur lors de la création du compte', "error");
     }
   };
 
   return (
-    <Box
-      sx={{
-        minHeight: "100vh",
-        background: "#0f172a",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        p: "40px 24px",
+    <div
+      className="h-full overflow-y-auto font-sans"
+      style={{
+        background: "radial-gradient(circle at top left, #172554 0%, #0f172a 45%, #020617 100%)",
       }}
     >
-      <Box
-        sx={{
-          background: "rgba(255,255,255,0.03)",
-          backdropFilter: "blur(20px)",
-          border: "1px solid rgba(255,255,255,0.08)",
-          borderRadius: "24px",
-          padding: isNonMobile ? "48px" : "28px 24px",
-          width: "100%",
-          maxWidth: "680px",
-          boxShadow: "0 32px 64px rgba(0,0,0,0.3)",
-        }}
-      >
-        <Box
-          sx={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "8px",
-            background: "rgba(205, 115, 41, 0.12)",
-            border: "1px solid rgba(205, 115, 41, 0.2)",
-            borderRadius: "100px",
-            padding: "6px 16px",
-            fontSize: "11px",
-            fontWeight: 700,
-            color: "#cd7329",
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            mb: "24px",
-          }}
-        >
-          <Box
-            component="span"
-            sx={{
-              width: "6px",
-              height: "6px",
-              background: "#cd7329",
-              borderRadius: "50%",
-            }}
-          />
-          Nouvel utilisateur
-        </Box>
-
-        <Box
-          component="h1"
-          sx={{
-            fontSize: "36px",
-            fontWeight: 900,
+      {toast && (
+        <div
+          className="fixed top-6 right-6 z-[100] flex items-center gap-3 px-5 py-4 rounded-2xl shadow-2xl text-sm font-bold backdrop-blur-xl border animate-in fade-in slide-in-from-top-2"
+          style={{
+            background: toast.type === "success" ? "rgba(16,185,129,0.18)" : "rgba(239,68,68,0.18)",
+            borderColor: toast.type === "success" ? "rgba(16,185,129,0.3)" : "rgba(239,68,68,0.3)",
             color: "#fff",
-            m: 0,
-            mb: "12px",
-            letterSpacing: "-1px",
           }}
         >
-          Créer un profil
-        </Box>
-        <Box
-          component="p"
-          sx={{
-            fontSize: "15px",
-            color: "rgba(255,255,255,0.45)",
-            m: 0,
-            mb: "40px",
-          }}
-        >
-          Remplissez les détails ci-dessous pour ajouter un nouvel utilisateur au système.
-        </Box>
+          {toast.type === "success" ? <CheckCircle2 size={18} /> : <X size={18} />}
+          {toast.msg}
+        </div>
+      )}
 
-        <Formik
-          onSubmit={handleFormSubmit}
-          initialValues={initialValues}
-          validationSchema={checkoutSchema}
-        >
-          {({
-            values,
-            errors,
-            touched,
-            handleBlur,
-            handleChange,
-            handleSubmit,
-          }) => (
-            <form onSubmit={handleSubmit}>
-              <Box
-                sx={{
-                  display: "grid",
-                  gap: "24px",
-                  gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
-                  "& > div": {
-                    gridColumn: isNonMobile ? undefined : "span 4",
-                  },
-                }}
-              >
-                <TextField
-                  fullWidth
-                  variant="filled"
-                  type="text"
-                  label="Prénom"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.firstName}
-                  name="firstName"
-                  error={!!touched.firstName && !!errors.firstName}
-                  helperText={touched.firstName && errors.firstName}
-                  sx={{ gridColumn: "span 2", ...inputStyles, pb: "10px" }}
-                />
-                <TextField
-                  fullWidth
-                  variant="filled"
-                  type="text"
-                  label="Nom"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.lastName}
-                  name="lastName"
-                  error={!!touched.lastName && !!errors.lastName}
-                  helperText={touched.lastName && errors.lastName}
-                  sx={{ gridColumn: "span 2", ...inputStyles ,pb: "10px"}}
-                />
-                <TextField
-                  fullWidth
-                  variant="filled"
-                  type="text"
-                  label="Adresse Email"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.email}
-                  name="email"
-                  error={!!touched.email && !!errors.email}
-                  helperText={touched.email && errors.email}
-                  sx={{ gridColumn: "span 4", ...inputStyles ,pb: "10px"}}
-                />
-                <TextField
-                  fullWidth
-                  variant="filled"
-                  type="text"
-                  label="Numéro de contact"
-                  onBlur={handleBlur}
-                  onChange={handleChange}
-                  value={values.contact}
-                  name="contact"
-                  error={!!touched.contact && !!errors.contact}
-                  helperText={touched.contact && errors.contact}
-                  sx={{ gridColumn: "span 4", ...inputStyles ,pb: "10px"}}
-                />
-                <Box sx={{ gridColumn: "span 4" }}>
-                  <TextField
-                    fullWidth
-                    variant="filled"
-                    type={showPassword ? "text" : "password"}
-                    label="Mot de passe : (^A-Za-z0-9)"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.password}
-                    name="password"
-                    error={!!touched.password && !!errors.password}
-                    helperText={touched.password && errors.password}
-                    InputProps={{
-                      startAdornment: (
-                        <InputAdornment position="start">
-                          <LockIcon sx={{ color: "rgba(255,255,255,0.4)", fontSize: 20 }} />
-                        </InputAdornment>
-                      ),
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            onClick={() => setShowPassword(!showPassword)}
-                            edge="end"
-                            size="small"
-                            sx={{ color: "rgba(255,255,255,0.4)" }}
-                          >
-                            {showPassword ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                    sx={{ ...inputStyles, pb: "10px" }}
+      <div className="p-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-10">
+            <h1 className="text-4xl font-black text-white tracking-tight">Créer un compte</h1>
+            <p className="text-white/40 mt-2 text-sm">Ajoutez un nouveau compte administration au système.</p>
+          </div>
+
+          <div
+            className="rounded-[30px] border p-8 md:p-10 backdrop-blur-2xl shadow-2xl animate-in fade-in"
+            style={{
+              background: "rgba(255,255,255,0.05)",
+              borderColor: "rgba(255,255,255,0.08)",
+            }}
+          >
+            <form onSubmit={handleSubmit} className="space-y-7">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Field label="Prénom" icon={<User size={16} />}>
+                  <input
+                    type="text"
+                    className="field-input"
+                    value={formData.prenom}
+                    onChange={(e) => setFormData({ ...formData, prenom: e.target.value })}
+                    required
                   />
-                  {values.password && (() => {
-                    const strength = getPasswordStrength(values.password);
-                    return (
-                      <Box sx={{ mt: "4px", px: "4px" }}>
-                        <LinearProgress
-                          variant="determinate"
-                          value={strength.score}
-                          sx={{
-                            height: 4,
-                            borderRadius: 2,
-                            backgroundColor: "rgba(255,255,255,0.08)",
-                            "& .MuiLinearProgress-bar": {
-                              backgroundColor: strength.color,
-                              borderRadius: 2,
-                              transition: "transform 0.3s ease, background-color 0.3s ease",
-                            },
+                </Field>
+
+                <Field label="Nom" icon={<User size={16} />}>
+                  <input
+                    type="text"
+                    className="field-input"
+                    value={formData.nom}
+                    onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
+                    required
+                  />
+                </Field>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Field label="Email" icon={<Mail size={16} />}>
+                  <input
+                    type="email"
+                    className="field-input"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    required
+                  />
+                </Field>
+
+                <Field label="Téléphone" icon={<Phone size={16} />}>
+                  <input
+                    type="text"
+                    className="field-input"
+                    value={formData.telephone}
+                    onChange={(e) => setFormData({ ...formData, telephone: e.target.value })}
+                    required
+                  />
+                </Field>
+              </div>
+
+              <div className="grid grid-cols-1 gap-6">
+                <Field label="Mot de passe" icon={<Lock size={16} />}>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      className="field-input pr-14"
+                      value={formData.password}
+                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                      required
+                      minLength={6}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-white/40 hover:text-white transition-colors"
+                    >
+                      {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                    </button>
+                  </div>
+                  
+                  {formData.password && (
+                    <div className="mt-3">
+                      <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
+                        <div
+                          className="h-full rounded-full transition-all duration-300"
+                          style={{
+                            width: `${strength.score}%`,
+                            backgroundColor: strength.color
                           }}
                         />
-                        <Typography sx={{ fontSize: "11px", color: strength.color, mt: "4px", fontWeight: 600 }}>
-                          {strength.label}
-                        </Typography>
-                      </Box>
-                    );
-                  })()}
-                </Box>
-              </Box>
-              <Box sx={{ display: "flex", justifyContent: "end", mt: "40px" }}>
-                <Button
+                      </div>
+                      <div className="text-xs font-bold mt-1" style={{ color: strength.color }}>
+                        {strength.label}
+                      </div>
+                    </div>
+                  )}
+                </Field>
+              </div>
+
+              <div className="flex justify-center">
+                <button
                   type="submit"
-                  variant="contained"
-                  sx={{
-                    mt: "10px", ml: "30%",
-                    backgroundColor: "#cd7329",
-                    color: "white",
-                    fontWeight: 700,
-                    fontSize: "15px",
-                    textTransform: "none",
-                    padding: "12px 40px",
-                    borderRadius: "12px",
-                    boxShadow: "0 10px 20px rgba(205, 115, 41, 0.2)",
-                    "&:hover": {
-                      backgroundColor: "#b36222",
-                      transform: "translateY(-1px)",
-                      boxShadow: "0 12px 24px rgba(205, 115, 41, 0.3)",
-                    },
+                  className="flex items-center gap-2 text-white px-8 py-4 rounded-2xl font-black text-sm shadow-2xl transition-all duration-300 hover:scale-[1.02] active:scale-95"
+                  style={{
+                    background: "linear-gradient(135deg,#cd7329,#ea580c)",
                   }}
                 >
-                  Créer le profil
-                </Button>
-              </Box>
+                  <CheckCircle2 size={18} />
+                  Créer le compte
+                </button>
+              </div>
             </form>
-          )}
-        </Formik>
-      </Box>
+          </div>
+        </div>
+      </div>
 
-      {/* Success Snackbar */}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={3000}
-        onClose={() => setSnackbar({ ...snackbar, open: false })}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-      >
-        <Alert
-          severity={snackbar.severity}
-          variant="filled"
-          icon={<CheckCircleOutlineIcon />}
-          sx={{ width: "100%", borderRadius: "12px", fontWeight: 600 }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-    </Box>
+      <style>{`
+        .field-input {
+          width: 100%;
+          padding: 15px 18px;
+          border-radius: 18px;
+          font-size: 0.92rem;
+          color: #fff;
+          border: 1px solid rgba(255,255,255,0.08);
+          background: rgba(15,23,42,0.65);
+          backdrop-filter: blur(12px);
+          outline: none;
+          transition: all .25s ease;
+          font-weight: 500;
+        }
+        .field-input::placeholder {
+          color: rgba(255,255,255,0.25);
+        }
+        .field-input:hover {
+          border-color: rgba(205,115,41,0.3);
+        }
+        .field-input:focus {
+          border-color: #cd7329;
+          box-shadow: 0 0 0 4px rgba(205,115,41,0.12);
+          background: rgba(15,23,42,0.8);
+        }
+      `}</style>
+    </div>
   );
 };
 
-const phoneRegExp =
-  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
-
-const checkoutSchema = yup.object().shape({
-  firstName: yup.string().required("Prénom requis"),
-  lastName: yup.string().required("Nom requis"),
-  email: yup.string().email("Email invalide").required("Email requis"),
-  contact: yup
-    .string()
-    .matches(phoneRegExp, "Numéro de téléphone non valide")
-    .required("Contact requis"),
-  password: yup.string().required("Mot de passe requis").min(6, "Mot de passe doit contenir au moins 6 caractères"),
-});
-
-const initialValues = {
-  firstName: "",
-  lastName: "",
-  email: "",
-  contact: "",
-  password: "",
+const Field = ({ label, icon, children }) => {
+  return (
+    <div>
+      <label className="block text-[11px] font-bold text-white/30 uppercase tracking-[2px] mb-3 ml-1 flex items-center gap-2">
+        {icon && <span style={{ color: 'rgba(255,255,255,0.3)' }}>{icon}</span>}
+        {label}
+      </label>
+      {children}
+    </div>
+  );
 };
 
-const inputStyles = {
-  "& .MuiFilledInput-root": {
-    background: "rgba(255,255,255,0.04)",
-    borderRadius: "12px",
-    border: "1px solid rgba(255,255,255,0.1)",
-    "&::before, &::after": { display: "none" },
-    "&:hover": { background: "rgba(255,255,255,0.06)" },
-    "&.Mui-focused": {
-      background: "rgba(255,255,255,0.06)",
-      borderColor: "#818cf8",
-      boxShadow: "0 0 0 4px rgba(129,140,248,0.15)",
-    },
-  },
-  "& .MuiInputLabel-root": {
-    color: "rgba(255,255,255,0.45)",
-    "&.Mui-focused": { color: "#818cf8" },
-  },
-  "& .MuiFilledInput-input": {
-    color: "#fff",
-    padding: "24px 16px 10px",
-  },
-  "& .MuiFormHelperText-root": {
-    marginLeft: "4px",
-    marginTop: "4px",
-  },
-};
-
-export default Form;
+export default CreateAdmin;
