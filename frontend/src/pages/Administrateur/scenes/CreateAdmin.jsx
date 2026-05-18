@@ -27,6 +27,7 @@ const CreateAdmin = () => {
     password: "",
   });
 
+  const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [toast, setToast] = useState(null);
 
@@ -39,18 +40,61 @@ const CreateAdmin = () => {
 
   const strength = getPasswordStrength(formData.password);
 
+  const validateForm = () => {
+    const newErrors = {};
+    
+    if (!formData.prenom.trim()) {
+      newErrors.prenom = "Prénom requis";
+    }
+    
+    if (!formData.nom.trim()) {
+      newErrors.nom = "Nom requis";
+    }
+    
+    if (!formData.email.trim()) {
+      newErrors.email = "Email requis";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Email doit contenir @ et .";
+    } else if (!/^[^\s@]+@uiz\.ac\.ma$/.test(formData.email)) {
+      newErrors.email = "Email doit être @uiz.ac.ma";
+    }
+    
+    const cleanPhone = formData.telephone.replace(/\s/g, '');
+    if (!formData.telephone.trim()) {
+      newErrors.telephone = "Téléphone requis";
+    } else if (!/^\+212[67]\d{8}$/.test(cleanPhone)) {
+      newErrors.telephone = "Téléphone doit être +212 suivi de 9 chiffres";
+    }
+    
+    if (!formData.password) {
+      newErrors.password = "Mot de passe requis";
+    } else if (formData.password.length < 8) {
+      newErrors.password = "Mot de passe doit contenir au moins 8 caractères";
+    }
+    
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!validateForm()) {
+      showToast("Veuillez remplir tous les champs correctement", "error");
+      return;
+    }
+    
     try {
+      const cleanPhone = formData.telephone.replace(/\s/g, '');
       const response = await axios.post('http://localhost:5000/api/administrateur/create-administration', {
         prenom: formData.prenom,
         nom: formData.nom,
-        telephone: formData.telephone,
+        telephone: cleanPhone,
         email: formData.email,
         password: formData.password
       });
       
-      showToast(response.data.message || "Compte créé avec succès !");
+      showToast(response.data.message || "Compte Administration créé avec succès !");
       
       setFormData({
         prenom: "",
@@ -59,9 +103,17 @@ const CreateAdmin = () => {
         telephone: "",
         password: "",
       });
+      setErrors({});
     } catch (error) {
       console.error(error);
       showToast(error.response?.data?.message || 'Erreur lors de la création du compte', "error");
+    }
+  };
+
+  const handleChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    if (errors[field]) {
+      setErrors(prev => ({ ...prev, [field]: undefined }));
     }
   };
 
@@ -89,8 +141,8 @@ const CreateAdmin = () => {
       <div className="p-8">
         <div className="max-w-4xl mx-auto">
           <div className="mb-10">
-            <h1 className="text-4xl font-black text-white tracking-tight">Créer un compte</h1>
-            <p className="text-white/40 mt-2 text-sm">Ajoutez un nouveau compte administration au système.</p>
+            <h1 className="text-4xl font-black text-white tracking-tight">Créer un compte Administration</h1>
+            <p className="text-white/40 mt-2 text-sm">Ajoutez un nouveau compte membre de l'administration au système.</p>
           </div>
 
           <div
@@ -102,59 +154,76 @@ const CreateAdmin = () => {
           >
             <form onSubmit={handleSubmit} className="space-y-7">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Field label="Prénom" icon={<User size={16} />}>
+                <Field 
+                  label="Prénom" 
+                  icon={<User size={16} />}
+                  error={errors.prenom}
+                >
                   <input
                     type="text"
-                    className="field-input"
+                    className={`field-input ${errors.prenom ? 'border-red-500' : ''}`}
                     value={formData.prenom}
-                    onChange={(e) => setFormData({ ...formData, prenom: e.target.value })}
-                    required
+                    onChange={(e) => handleChange('prenom', e.target.value)}
                   />
                 </Field>
 
-                <Field label="Nom" icon={<User size={16} />}>
+                <Field 
+                  label="Nom" 
+                  icon={<User size={16} />}
+                  error={errors.nom}
+                >
                   <input
                     type="text"
-                    className="field-input"
+                    className={`field-input ${errors.nom ? 'border-red-500' : ''}`}
                     value={formData.nom}
-                    onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
-                    required
+                    onChange={(e) => handleChange('nom', e.target.value)}
                   />
                 </Field>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Field label="Email" icon={<Mail size={16} />}>
+                <Field 
+                  label="Email" 
+                  icon={<Mail size={16} />}
+                  error={errors.email}
+                >
                   <input
                     type="email"
-                    className="field-input"
+                    className={`field-input ${errors.email ? 'border-red-500' : ''}`}
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    required
+                    onChange={(e) => handleChange('email', e.target.value)}
+                    placeholder="exemple@uiz.ac.ma"
                   />
                 </Field>
 
-                <Field label="Téléphone" icon={<Phone size={16} />}>
+                <Field 
+                  label="Téléphone" 
+                  icon={<Phone size={16} />}
+                  error={errors.telephone}
+                >
                   <input
                     type="text"
-                    className="field-input"
+                    className={`field-input ${errors.telephone ? 'border-red-500' : ''}`}
                     value={formData.telephone}
-                    onChange={(e) => setFormData({ ...formData, telephone: e.target.value })}
-                    required
+                    onChange={(e) => handleChange('telephone', e.target.value)}
+                    placeholder="+212612345678"
                   />
                 </Field>
               </div>
 
               <div className="grid grid-cols-1 gap-6">
-                <Field label="Mot de passe" icon={<Lock size={16} />}>
+                <Field 
+                  label="Mot de passe" 
+                  icon={<Lock size={16} />}
+                  error={errors.password}
+                >
                   <div className="relative">
                     <input
                       type={showPassword ? "text" : "password"}
-                      className="field-input pr-14"
+                      className={`field-input pr-14 ${errors.password ? 'border-red-500' : ''}`}
                       value={formData.password}
-                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                      required
-                      minLength={6}
+                      onChange={(e) => handleChange('password', e.target.value)}
+                      placeholder="********"
                     />
                     <button
                       type="button"
@@ -193,7 +262,7 @@ const CreateAdmin = () => {
                   }}
                 >
                   <CheckCircle2 size={18} />
-                  Créer le compte
+                  Créer le compte Administration
                 </button>
               </div>
             </form>
@@ -226,12 +295,15 @@ const CreateAdmin = () => {
           box-shadow: 0 0 0 4px rgba(205,115,41,0.12);
           background: rgba(15,23,42,0.8);
         }
+        .field-input.border-red-500 {
+          border-color: #ef4444;
+        }
       `}</style>
     </div>
   );
 };
 
-const Field = ({ label, icon, children }) => {
+const Field = ({ label, icon, children, error }) => {
   return (
     <div>
       <label className="block text-[11px] font-bold text-white/30 uppercase tracking-[2px] mb-3 ml-1 flex items-center gap-2">
@@ -239,6 +311,11 @@ const Field = ({ label, icon, children }) => {
         {label}
       </label>
       {children}
+      {error && (
+        <div className="text-xs font-bold text-red-500 mt-2 ml-1">
+          {error}
+        </div>
+      )}
     </div>
   );
 };
