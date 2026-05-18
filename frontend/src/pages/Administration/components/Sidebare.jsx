@@ -177,12 +177,12 @@ export default function Sidebare() {
           mt: "auto",
         }}
       >
-        <NavItem
+        {/*<NavItem
           path="/responsable/settings"
           icon={<Settings size={17} />}
           label="Paramètres"
           active={location.pathname === '/responsable/settings'}
-        />
+      />*/}
         <Box
           onClick={handleLogout}
           sx={{
