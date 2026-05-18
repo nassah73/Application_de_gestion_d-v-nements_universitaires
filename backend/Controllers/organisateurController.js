@@ -28,6 +28,12 @@ exports.registerOrganisateur = (req, res) => {
             const { prenom, nom, telephone, nomClub, email, password } = req.body;
             const justificatifPath = req.file ? req.file.path : null;
 
+            // Validation: Basic email format
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                return res.status(400).json({ message: "Veuillez fournir une adresse email valide." });
+            }
+
             if (!justificatifPath) {
                 return res.status(400).json({ message: "Veuillez fournir un justificatif." });
             }

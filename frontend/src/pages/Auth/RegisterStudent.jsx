@@ -25,6 +25,20 @@ export default function RegisterStudent() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        // Validation: Email académique
+        if (!formData.email.endsWith('@edu.uiz.ac.ma')) {
+            alert("Veuillez utiliser votre email académique (@edu.uiz.ac.ma)");
+            return;
+        }
+
+        // Validation: CNE (1 lettre + 9 chiffres)
+        const cneRegex = /^[A-Z]\d{9}$/i;
+        if (!cneRegex.test(formData.cne)) {
+            alert("Format CNE invalide (Ex: D123456789). Il doit commencer par une lettre suivie de 9 chiffres.");
+            return;
+        }
+
         console.log('=== Register Student Submitted ===');
         console.log('formData:', formData);
 

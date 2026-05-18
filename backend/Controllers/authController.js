@@ -12,7 +12,7 @@ exports.login = async (req, res) => {
         let role = null;
         let staffOf = null;
 
-        // 1. التشييك على Student
+       
         user = await Student.findOne({ email });
         if (user) {
             role = 'student';
@@ -25,7 +25,7 @@ exports.login = async (req, res) => {
             }
         }
 
-        // 2. التشييك على Organisateur
+       
         if (!user) {
             user = await Organisateur.findOne({ email });
             role = 'organizer';

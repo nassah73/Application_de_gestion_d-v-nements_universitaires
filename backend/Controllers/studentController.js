@@ -6,6 +6,18 @@ exports.registerStudent = async (req, res) => {
     console.log('req.body:', req.body);
     try {
         const { fullName, cne, email, phone, filiere, niveau, anneeUniv, password } = req.body;
+
+        // Validation: Email extension
+        if (!email.endsWith('@edu.uiz.ac.ma')) {
+            return res.status(400).json({ message: "Veuillez utiliser votre email académique (@edu.uiz.ac)" });
+        }
+
+        // Validation: CNE (1 letter + 9 numbers)
+        const cneRegex = /^[A-Z]\d{9}$/i;
+        if (!cneRegex.test(cne)) {
+            return res.status(400).json({ message: "Le CNE doit commencer par une lettre suivie de 9 chiffres." });
+        }
+
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const newStudent = new Student({

@@ -27,6 +27,14 @@ export default function RegisterOrganisateur() {
 
         const handleSubmit = async (e) => {
             e.preventDefault();
+
+            // Validation: Format email basique
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(formData.email)) {
+                alert("Veuillez fournir une adresse email valide.");
+                return;
+            }
+
             console.log('=== Submitting Organisateur Registration ===');
             console.log('formData:', formData);
             
