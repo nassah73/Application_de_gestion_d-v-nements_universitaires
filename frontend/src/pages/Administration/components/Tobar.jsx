@@ -350,26 +350,7 @@ const UserMenu = () => {
       }}
     >
       {/* Header */}
-      <Box
-        sx={{
-          p: "18px",
-          borderBottom: "1px solid rgba(255,255,255,0.05)",
 
-          background:
-            "linear-gradient(135deg, rgba(205,115,41,0.12), transparent)",
-        }}
-      >
-        <Typography
-          sx={{
-            color: "#fff",
-            fontSize: "14px",
-            fontWeight: 800,
-            mb: "2px",
-          }}
-        >
-          Mon Compte
-        </Typography>
-      </Box>
 
       {/* Menu */}
       <Box sx={{ p: "10px" }}>
@@ -429,61 +410,7 @@ const UserMenu = () => {
           </Box>
         </Box>
 
-        {/* Sécurité */}
-        <Box
-          onClick={() => navigate("/responsable/settings")}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: "14px",
 
-            p: "13px 14px",
-
-            borderRadius: "16px",
-
-            cursor: "pointer",
-
-            transition: "all .25s ease",
-
-            "&:hover": {
-              background: "rgba(205,115,41,0.10)",
-              transform: "translateX(4px)",
-            },
-          }}
-        >
-          <Box
-            sx={{
-              width: 38,
-              height: 38,
-
-              borderRadius: "12px",
-
-              background:
-                "linear-gradient(135deg, rgba(205,115,41,0.18), rgba(205,115,41,0.08))",
-
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-
-              color: "#cd7329",
-            }}
-          >
-            <IconSettings />
-          </Box>
-
-          <Box>
-            <Typography
-              sx={{
-                color: "#fff",
-                fontSize: "13px",
-                fontWeight: 700,
-              }}
-            >
-              Sécurité
-            </Typography>
-
-          </Box>
-        </Box>
 
         {/* Divider */}
         <Box
