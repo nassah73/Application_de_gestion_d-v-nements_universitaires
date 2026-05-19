@@ -11,12 +11,16 @@ mongoose.connect('mongodb://127.0.0.1:27017/pfe_fpt')
         if (!existingSuperAdmin) {
             const hashedPassword = await bcrypt.hash('SuperAdmin@1234', 10);
             const superAdmin = new Administrateur({
+                prenom: 'Super',
+                nom: 'Admin',
                 email: 'superadmin@uiz.ac.ma',
                 password: hashedPassword,
                 role: 'admin'
             });
             await superAdmin.save();
             console.log('✅ Compte Administrateur créé avec succès !');
+            console.log('   Prénom: Super');
+            console.log('   Nom: Admin');
             console.log('   Email: superadmin@uiz.ac.ma');
             console.log('   Password: SuperAdmin@1234');
         } else {

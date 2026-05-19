@@ -1,5 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
@@ -70,6 +71,35 @@ const IconTrash = () => (
   >
     <polyline points="3 6 5 6 21 6" />
     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+  </svg>
+);
+
+const IconUser = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+    <circle cx="12" cy="7" r="4" />
+  </svg>
+);
+
+const IconLogout = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+    <polyline points="16 17 21 12 16 7" />
+    <line x1="21" y1="12" x2="9" y2="12" />
   </svg>
 );
 
@@ -285,15 +315,194 @@ const NotifPanel = ({ notifications, onClear, onDeleteSingle }) => (
 
 // ─── User Menu ────────────────────────────────────────────────────────────────
 
-const UserMenu = () => <div />;
+const UserMenu = ({ onLogout, onClose, onProfileClick, userData }) => {
+  let prenom = userData?.prenom;
+  let nom = userData?.nom;
+  
+  if (!prenom || prenom.trim() === "") prenom = "Super";
+  if (!nom || nom.trim() === "") nom = "Admin";
+  
+  const initials = (prenom[0] + nom[0]).toUpperCase();
+  
+  return (
+    <Box
+      sx={{
+        position: "absolute",
+        top: "calc(100% + 12px)",
+        right: 0,
+        width: 260,
+        background: "linear-gradient(180deg, rgba(17,28,53,0.98), rgba(10,15,30,0.98))",
+        backdropFilter: "blur(18px)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        borderRadius: "24px",
+        overflow: "hidden",
+        zIndex: 999,
+        boxShadow: "0 25px 70px rgba(0,0,0,0.45)",
+        animation: "fadeIn .25s ease",
+      }}
+    >
+      <Box
+        sx={{
+          p: "16px 18px",
+          display: "flex",
+          gap: "12px",
+          alignItems: "center",
+          borderBottom: "1px solid rgba(255,255,255,0.05)",
+        }}
+      >
+        <Box
+          sx={{
+            width: 44,
+            height: 44,
+            borderRadius: "14px",
+            background: "linear-gradient(135deg,#cd7329,#ff9c55)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            color: "#fff",
+            fontWeight: 900,
+            fontSize: "15px",
+            boxShadow: "0 10px 25px rgba(205,115,41,0.35)",
+          }}
+        >
+          {initials}
+        </Box>
+        <Box>
+          <Typography
+            sx={{
+              fontSize: "13px",
+              fontWeight: 800,
+              color: "#fff",
+            }}
+          >
+            {prenom.toUpperCase()} {nom.toUpperCase()}
+          </Typography>
+          <Typography
+            sx={{
+              fontSize: "11px",
+              color: "rgba(255,255,255,0.5)",
+              mt: "2px",
+            }}
+          >
+            Administrateur système
+          </Typography>
+        </Box>
+      </Box>
+
+      <Box sx={{ p: "8px" }}>
+        <Box
+          onClick={onProfileClick}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            px: "14px",
+            py: "12px",
+            borderRadius: "16px",
+            cursor: "pointer",
+            transition: "0.2s",
+            color: "rgba(255,255,255,0.85)",
+            "&:hover": {
+              background: "rgba(205,115,41,0.08)",
+              color: "#cd7329",
+            },
+          }}
+        >
+          <IconUser />
+          <Typography
+            sx={{
+              fontSize: "13px",
+              fontWeight: 600,
+            }}
+          >
+            Mon Profil
+          </Typography>
+        </Box>
+
+        <Box
+          onClick={onLogout}
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: "12px",
+            px: "14px",
+            py: "12px",
+            borderRadius: "16px",
+            cursor: "pointer",
+            transition: "0.2s",
+            color: "#ef4444",
+            mt: "4px",
+            "&:hover": {
+              background: "rgba(239,68,68,0.08)",
+            },
+          }}
+        >
+          <IconLogout />
+          <Typography
+            sx={{
+              fontSize: "13px",
+              fontWeight: 600,
+            }}
+          >
+            Se déconnecter
+          </Typography>
+        </Box>
+      </Box>
+    </Box>
+  );
+};
 
 // ─── Topbar ───────────────────────────────────────────────────────────────────
 
 const Topbar = ({ isMobile }) => {
+  const navigate = useNavigate();
   const [notifOpen, setNotifOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [notifications, setNotifications] = useState(initialNotifications);
   const [notifCount, setNotifCount] = useState(3);
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const loadUserData = () => {
+      const userStr = localStorage.getItem('user');
+      if (userStr) {
+        try {
+          setUserData(JSON.parse(userStr));
+        } catch (e) {
+          console.error("Error parsing user data:", e);
+        }
+      }
+    };
+
+    loadUserData();
+
+    const handleStorageChange = () => {
+      loadUserData();
+    };
+
+    const handleUserUpdate = () => {
+      loadUserData();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('userDataUpdated', handleUserUpdate);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('userDataUpdated', handleUserUpdate);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    setMenuOpen(false);
+    navigate('/auth/login');
+  };
+
+  const handleProfileClick = () => {
+    setMenuOpen(false);
+    navigate('/administrateur/settings');
+  };
 
   const notifRef = useRef(null);
   const menuRef = useRef(null);
@@ -342,6 +551,14 @@ const Topbar = ({ isMobile }) => {
     setNotifCount(0);
     setNotifOpen(false);
   };
+
+  let prenom = userData?.prenom;
+  let nom = userData?.nom;
+  
+  if (!prenom || prenom.trim() === "") prenom = "SUPER";
+  if (!nom || nom.trim() === "") nom = "ADMINISTRATEUR";
+  
+  const avatarInitials = (prenom[0] + nom[0]).toUpperCase();
 
   return (
     <Box
@@ -643,7 +860,7 @@ const Topbar = ({ isMobile }) => {
                       "0 10px 25px rgba(205,115,41,0.35)",
                   }}
                 >
-                  SA
+                  {avatarInitials}
                 </Box>
 
                 <Box
@@ -674,7 +891,7 @@ const Topbar = ({ isMobile }) => {
                     lineHeight: 1.2,
                   }}
                 >
-                  SUPER ADMINISTRATEUR
+                  {prenom.toUpperCase()} {nom.toUpperCase()}
                 </Typography>
 
                 <Typography
@@ -701,7 +918,14 @@ const Topbar = ({ isMobile }) => {
               </Box>
             </Box>
 
-            {menuOpen && <UserMenu />}
+            {menuOpen && (
+              <UserMenu 
+                onLogout={handleLogout} 
+                onClose={() => setMenuOpen(false)} 
+                onProfileClick={handleProfileClick}
+                userData={userData}
+              />
+            )}
           </Box>
         )}
 

@@ -30,9 +30,10 @@ export default function RegisterStudent() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        // Validation: Email académique
-        if (!formData.email.endsWith('@edu.uiz.ac.ma')) {
-            alert("Veuillez utiliser votre email académique (@edu.uiz.ac.ma)");
+        // Validation: Email académique format prenom.nom.XX@edu.uiz.ac.ma
+        const academicEmailRegex = /^[a-z-]+\.[a-z-]+\.\d{2}@edu\.uiz\.ac\.ma$/i;
+        if (!academicEmailRegex.test(formData.email)) {
+            alert("Format d'email invalide. Utilisez le format: prenom.nom.2chiffres@edu.uiz.ac.ma");
             return;
         }
 

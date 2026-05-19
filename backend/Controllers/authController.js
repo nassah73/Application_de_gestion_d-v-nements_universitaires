@@ -84,6 +84,8 @@ exports.login = async (req, res) => {
         res.status(200).json({
             _id: user._id,
             displayName: displayName,
+            prenom: user.prenom || null,
+            nom: user.nom || null,
             email: user.email,
             role: role, 
             staffOf: staffOf,

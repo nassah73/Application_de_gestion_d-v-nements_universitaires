@@ -4,7 +4,7 @@ const bcrypt = require('bcrypt');
 
 exports.createAdministrateur = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { prenom, nom, email, password } = req.body;
         
         const existing = await Administrateur.findOne({ email });
         if (existing) {
@@ -13,6 +13,8 @@ exports.createAdministrateur = async (req, res) => {
         
         const hashedPassword = await bcrypt.hash(password, 10);
         const newAdmin = new Administrateur({
+            prenom: prenom || 'Super',
+            nom: nom || 'Admin',
             email,
             password: hashedPassword
         });
@@ -85,14 +87,26 @@ exports.getAllAdministrations = async (req, res) => {
 exports.updateAdministrateur = async (req, res) => {
     try {
         const { id } = req.params;
-        const { email, password } = req.body;
+        const { prenom, nom, email, password } = req.body;
         
         const updateData = {};
+        if (prenom) updateData.prenom = prenom;
+        if (nom) updateData.nom = nom;
         if (email) updateData.email = email;
         if (password) updateData.password = await bcrypt.hash(password, 10);
         
-        await Administrateur.findByIdAndUpdate(id, updateData);
-        res.status(200).json({ message: "Administrateur mis à jour avec succès!" });
+        const updatedAdmin = await Administrateur.findByIdAndUpdate(id, updateData, { new: true });
+        
+        res.status(200).json({ 
+            message: "Administrateur mis à jour avec succès!",
+            admin: {
+                _id: updatedAdmin._id,
+                prenom: updatedAdmin.prenom,
+                nom: updatedAdmin.nom,
+                email: updatedAdmin.email,
+                role: updatedAdmin.role
+            }
+        });
     } catch (error) {
         res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
