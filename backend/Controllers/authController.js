@@ -92,6 +92,7 @@ exports.login = async (req, res) => {
             phone: user.phone || null,
             filiere: user.filiere || null,
             niveau: user.niveau || null,
+            profileImage: user.profileImage || null,
             message: "Bienvenue"
         });
 

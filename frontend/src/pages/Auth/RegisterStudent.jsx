@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
 
-import { User, Mail, BookOpen, Lock, UserPlus, Phone, Hash, GraduationCap } from 'lucide-react';
+import { User, Mail, BookOpen, Lock, UserPlus, Phone, Hash, GraduationCap, Camera } from 'lucide-react';
 import Icon_image from "../../assets/Masters_et_Masters_Spécialisés_à_la_FP_Taroudant_2020-2021-removebg-preview.png";
 import style from './style.module.css';
 import axios from 'axios';
@@ -15,12 +15,16 @@ export default function RegisterStudent() {
         phone: '',
         filiere: '',
         niveau: '',
-        
         password: ''
     });
+    const [profileImage, setProfileImage] = useState(null);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleFileChange = (e) => {
+        setProfileImage(e.target.files[0]);
     };
 
     const handleSubmit = async (e) => {
@@ -40,10 +44,21 @@ export default function RegisterStudent() {
         }
 
         console.log('=== Register Student Submitted ===');
-        console.log('formData:', formData);
+        
+        const data = new FormData();
+        Object.keys(formData).forEach(key => {
+            data.append(key, formData[key]);
+        });
+        if (profileImage) {
+            data.append('profileImage', profileImage);
+        }
 
         try {
-            const response = await axios.post('http://localhost:5000/api/students/register', formData);
+            const response = await axios.post('http://localhost:5000/api/students/register', data, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
             console.log('Response:', response.data);
             alert(response.data.message);
             navigate('/auth/login');
@@ -138,7 +153,13 @@ export default function RegisterStudent() {
                     </div>
 
                     <div className={style.inputRow} style={{ marginBottom: '12px', gap: '15px' }}>
-                       
+                        <div className={style.inputGroup} style={{ marginBottom: '0' }}>
+                            <label>Photo de Profil</label>
+                            <div className={style.inputWrapper}>
+                                <input name='profileImage' onChange={handleFileChange} type="file" accept="image/*" />
+                                <Camera className={style.inputIcon} size={16} />
+                            </div>
+                        </div>
                         <div className={style.inputGroup} style={{ marginBottom: '0' }}>
                             <label>Mot de passe</label>
                             <div className={style.inputWrapper}>

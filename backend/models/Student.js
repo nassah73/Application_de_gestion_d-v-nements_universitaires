@@ -12,13 +12,14 @@ const StudentSchema = new mongoose.Schema({
     type: String, 
     required: true, 
     unique: true,
-    match: [/@edu\.uiz\.ac\.ma$/, 'Veuillez utiliser votre email académique (@edu.uiz.ac.ma)']
+    match: [/^[a-z]+\.[a-z]+\.\d{2}@edu\.uiz\.ac\.ma$/i, 'Format d\'email académique invalide (Ex: prenom.nom.22@edu.uiz.ac.ma)']
   },
   phone: { type: String, required: true },
   filiere: { type: String, required: true },
   niveau:  { type: String, required: true },
   
   role: { type: String, default: 'student' } ,
+  profileImage: { type: String },
   password: { type: String, required: true },
   resetOTP: { type: String },
   resetOTPExpires: { type: Date }

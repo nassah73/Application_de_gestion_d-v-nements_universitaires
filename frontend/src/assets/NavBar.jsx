@@ -140,13 +140,25 @@ export default function Navbar() {
         {/* Profile Dropdown (كما هو) */}
         <div className='relative leading-5' ref={profileRef}>
           <button className={`hover:cursor-pointer transition-colors pt-1 ${profilOpen ? 'text-[#cd7329]' : 'text-slate-400 hover:text-white'}`} onClick={() => { setProfilOpen(!profilOpen); setNotificationsOpen(false); }}>
-            <UserCircle size={26} strokeWidth={1.5} />
+            {userData?.profileImage ? (
+              <img 
+                src={`http://localhost:5000/${userData.profileImage.replace(/\\/g, '/')}`} 
+                alt="Profile Icon" 
+                className='h-7 w-7 rounded-full object-cover border border-white/20' 
+              />
+            ) : (
+              <UserCircle size={26} strokeWidth={1.5} />
+            )}
           </button>
           {profilOpen && (
              <div className='absolute z-40 right-0 mt-6 h-auto py-4 w-80 bg-[#1e293b] border border-white/10 shadow-2xl rounded-2xl animate-in fade-in zoom-in duration-200'>
                 {/* ... (باقي كود البروفايل) ... */}
                 <div className='flex flex-col items-center'>
-                  <img src={ProfileImg} alt="Profile" className='rounded-full h-24 w-24 object-cover mt-2 border-2 border-[#cd7329]/30' />
+                  <img 
+                    src={userData?.profileImage ? `http://localhost:5000/${userData.profileImage.replace(/\\/g, '/')}` : ProfileImg} 
+                    alt="Profile" 
+                    className='rounded-full h-24 w-24 object-cover mt-2 border-2 border-[#cd7329]/30' 
+                  />
                   <div className='text-center mt-3 text-white px-4'>
                     <h1 className="font-bold truncate w-64">{userData?.fullName || userData?.displayName || 'Utilisateur'}</h1>
                     <p className="text-slate-400 text-sm uppercase tracking-wider">CNE: {userData?.cne || '---'}</p>
