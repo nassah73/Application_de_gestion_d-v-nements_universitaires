@@ -80,9 +80,29 @@
     padding: 60px 70px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     background: transparent;
     position: relative;
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+.formSection::-webkit-scrollbar {
+    width: 6px;
+}
+
+.formSection::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.2);
+    border-radius: 3px;
+}
+
+.formSection::-webkit-scrollbar-thumb {
+    background: rgba(205, 115, 41, 0.5);
+    border-radius: 3px;
+}
+
+.formSection::-webkit-scrollbar-thumb:hover {
+    background: rgba(205, 115, 41, 0.7);
 }
 
 .formSection h1 {

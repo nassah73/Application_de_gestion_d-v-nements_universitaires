@@ -9,19 +9,24 @@ export default function ForgotPassword() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [submitted, setSubmitted] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const [testOtp, setTestOtp] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setErrorMessage('');
         try {
-            
             const response = await axios.post('http://localhost:5000/api/auth/forgot-password', { email });
-            
             if (response.status === 200) {
+                setTestOtp(response.data.testOtp || '');
                 setSubmitted(true);
             }
         } catch (error) {
             console.error("Erreur ❌", error.response?.data || error.message);
-            alert("Une erreur est survenue. Vérifiez votre connexion.");
+            const message = error.response?.data?.message || "Une erreur est survenue. Vérifiez votre connexion.";
+            setErrorMessage(message);
+            alert(message);
         }
     };
 
@@ -39,6 +44,12 @@ export default function ForgotPassword() {
                         <>
                             <h1>Mot de passe oublié ?</h1>
                             <p className={style.subtitle}>Saisissez votre email pour recevoir un lien de réinitialisation</p>
+
+                            {errorMessage && (
+                                <div className="bg-red-100 text-red-700 p-4 rounded-lg mb-6">
+                                    {errorMessage}
+                                </div>
+                            )}
 
                             <form onSubmit={handleSubmit}>
                                 <div className={style.inputGroup}>
@@ -65,28 +76,23 @@ export default function ForgotPassword() {
                     ) : (
                         <div className="text-center py-8">
                             <div className="bg-green-100 text-green-700 p-4 rounded-lg mb-6">
-                                Un lien de réinitialisation a été envoyé à <strong>{email}</strong>. 
-                                Veuillez vérifier votre boîte de réception.
+                                Un code de réinitialisation a été envoyé à <strong>{email}</strong>.
                             </div>
+                            {testOtp && (
+                                <div className="bg-yellow-100 text-yellow-800 p-4 rounded-lg mb-6">
+                                    <strong>Code de test (dev only):</strong> {testOtp}
+                                </div>
+                            )}
+                            <button 
+                                onClick={() => navigate('/auth/reset-password')} 
+                                className={style.submitBtn}
+                                style={{marginBottom: '10px'}}
+                            >
+                                Saisir le code <ArrowRight size={20} />
+                            </button>
                             <button onClick={() => navigate('/auth/login')} className={style.submitBtn}>
                                 Retour à la connexion <ArrowLeft size={20} strokeWidth={2.5} />
                             </button>
-                            <div className="bg-green-100 text-green-700 p-4 rounded-lg mb-6">
-            Un code de réinitialisation a été envoyé à <strong>{email}</strong>.
-        </div>
-        
-        {/* زرار جديد باش يدوز لصفحة إدخال الكود */}
-        <button 
-            onClick={() => navigate('/auth/reset-password')} 
-            className={style.submitBtn}
-            style={{marginBottom: '10px'}}
-        >
-            Saisir le code <ArrowRight size={20} />
-        </button>
-
-        <button onClick={() => navigate('/auth/login')} className={style.submitBtn}>
-            Retour à la connexion <ArrowLeft size={20} />
-        </button>
                         </div>
                         
                     )}

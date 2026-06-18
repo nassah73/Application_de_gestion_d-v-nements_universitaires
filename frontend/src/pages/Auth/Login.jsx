@@ -58,7 +58,7 @@ export default function Login() {
                                 <Lock className={style.inputIcon} size={20} strokeWidth={2.5} />
                             </div>
                             <div className="flex justify-end mt-1">
-                                <NavLink to="/forgot-password" className="text-xs text-blue-600 hover:underline">Mot de passe oublié ?</NavLink>
+                                <NavLink to="/auth/forgot-password" className="text-xs text-blue-600 hover:underline">Mot de passe oublié ?</NavLink>
                             </div>
                         </div>
 

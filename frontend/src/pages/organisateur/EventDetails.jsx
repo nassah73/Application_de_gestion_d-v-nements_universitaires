@@ -20,7 +20,7 @@ import {
   Info,
   CheckCircle2,
   XCircle,
-  RotateCcw,
+  RotateCcw, 
   Layout,
   ScanQrCode,
   FileText,

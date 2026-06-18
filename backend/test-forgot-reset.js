@@ -56,10 +56,10 @@ const testForgotReset = async () => {
     try {
         const result = await sendRequest('POST', '/api/auth/forgot-password', { email: testEmail });
         console.log('   Statut:', result.status);
-        const { otp, ...safeResponse } = result.data || {};
-        console.log('   Réponse:', { ...safeResponse, otp: otp ? '******' : undefined });
-        if (result.data.otp) {
-            otpCode = result.data.otp;
+        const { otp, testOtp, ...safeResponse } = result.data || {};
+        console.log('   Réponse:', { ...safeResponse, otp: otp || testOtp ? '******' : undefined });
+        if (result.data.otp || result.data.testOtp) {
+            otpCode = result.data.otp || result.data.testOtp;
             console.log('   OTP reçu: ******');
         }
     } catch (error) {
